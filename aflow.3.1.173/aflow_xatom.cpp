@@ -9695,7 +9695,12 @@ xstructure GetSuperCell(const xstructure& aa, const xmatrix<double> &supercell,v
   vector<xvector<double> > cshifts; //corey
   //double zeroTol=1e-10;
   double radius;
+  //cout << a.lattice << endl;
   b.lattice=supercell*a.lattice;
+  //cout << b.lattice << endl;
+  //b.lattice=a.lattice * trasp(supercell);  //Prof. YANG fixes bug on 05-12-2018
+  //cout << b.lattice << endl;
+  //exit(0);
   // the scale is kept the same....it is always saved as positive
   b.FixLattices();
   for(i=0;i<(int) b.num_each_type.size();i++) b.num_each_type[i]=0;
