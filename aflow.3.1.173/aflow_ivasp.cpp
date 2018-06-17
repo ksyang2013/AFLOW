@@ -2607,14 +2607,30 @@ namespace KBIN {
         xvasp.INCAR << aurostd::PaddedPOST("NELMIN=4",_incarpad_) << "# The forces have to be well converged " << endl;
         xvasp.INCAR << aurostd::PaddedPOST("ADDGRID=.TRUE.",_incarpad_) << "# To support finer forces calculation " << endl;
         xvasp.INCAR << aurostd::PaddedPOST("EDIFFG="+aurostd::utype2string(DEFAULT_VASP_PREC_EDIFFG,12),_incarpad_) << "# The final structure has to have zero forces! " << endl;
-        //    xvasp.INCAR << aurostd::PaddedPOST("EDIFFG=-1E-5",_incarpad_) << "# The final structure has to have zero forces! " << endl;
+        xvasp.INCAR << aurostd::PaddedPOST("EDIFFG=-1E-2",_incarpad_) << "# The final structure has to have zero forces! " << endl; //KESONG
         xvasp.INCAR << aurostd::PaddedPOST("IBRION=1",_incarpad_) << "# More stable algorithm " << endl;
         xvasp.INCAR << aurostd::PaddedPOST("NSW=100",_incarpad_) << "# relax for very long " << endl;
-        // xvasp.INCAR << "ISIF=3         # relax everything " << endl;
         xvasp.INCAR << aurostd::PaddedPOST("ISIF="+aurostd::utype2string(isif),_incarpad_)     << "# relax appropriately         " << endl;
         xvasp.INCAR << aurostd::PaddedPOST("LORBIT=10",_incarpad_) << "# get spin decomposition      " << endl; //180130 CO get spinD
         if(vflags.KBIN_VASP_INCAR_VERBOSE) xvasp.INCAR << "# Performing RELAX=FORCES [AFLOW] end " << endl;
       }
+      //Prof. YANG puts more arguments here, 20180617
+      xvasp.INCAR << aurostd::PaddedPOST("LWAVE=FALSE",_incarpad_) <<  endl;
+      xvasp.INCAR << aurostd::PaddedPOST("LCHARG=FALSE",_incarpad_) <<  endl;
+      xvasp.INCAR << endl;
+      if (vflags.KBIN_VASP_FORCE_OPTION_SYM.option) {
+          xvasp.INCAR << "#(Added by Porf. K. YANG 20180617)" << endl;
+          xvasp.INCAR << "ISYM = 2" << endl;
+          xvasp.INCAR << "ALGO = FAST" << endl;
+          xvasp.INCAR << "LREAL = AUTO" << endl;
+      }
+      else {
+          xvasp.INCAR << "#(Added by Prof. K. YANG 20180617)" << endl;
+          xvasp.INCAR << "ISYM = 0" << endl;
+          xvasp.INCAR << "ALGO = FAST" << endl;
+          xvasp.INCAR << "LREAL = AUTO" << endl;
+      }
+
       // done now write if necessary
       if(vflags.KBIN_VASP_FORCE_OPTION_RELAX_TYPE.isscheme("IONS_CELL_VOLUME") && number>1) {  // whatever is the number
         xvasp.aopts.flag("FLAG::XVASP_INCAR_changed",FALSE);
@@ -2670,12 +2686,26 @@ namespace KBIN {
       if(vflags.KBIN_VASP_INCAR_VERBOSE) xvasp.INCAR << "# Performing STATIC [AFLOW]" << endl;
       if(vflags.KBIN_VASP_FORCE_OPTION_BADER.isentry && vflags.KBIN_VASP_FORCE_OPTION_BADER.option) xvasp.INCAR << aurostd::PaddedPOST("LAECHG=.TRUE.",_incarpad_) << "# Performing STATIC  (Bader ON)" << endl;
       if(vflags.KBIN_VASP_FORCE_OPTION_BADER.isentry && !vflags.KBIN_VASP_FORCE_OPTION_BADER.option) xvasp.INCAR << aurostd::PaddedPOST("LAECHG=.FALSE.",_incarpad_) << "# Performing STATIC  (Bader OFF)" << endl;
-      // if(vflags.KBIN_VASP_FORCE_OPTION_BADER.option) xvasp.INCAR << aurostd::PaddedPOST("ADDGRID=.TRUE.",_incarpad_) << "# Performing STATIC  (Bader ON)" << endl;
       if(vflags.KBIN_VASP_FORCE_OPTION_ELF.isentry && vflags.KBIN_VASP_FORCE_OPTION_ELF.option) xvasp.INCAR << aurostd::PaddedPOST("LELF=.TRUE.",_incarpad_) << "# Performing STATIC  (Elf ON)" << endl;
       if(vflags.KBIN_VASP_FORCE_OPTION_ELF.isentry && !vflags.KBIN_VASP_FORCE_OPTION_ELF.option) xvasp.INCAR << aurostd::PaddedPOST("LELF=.FALSE.",_incarpad_) << "# Performing STATIC  (Elf OFF)" << endl;
       if(vflags.KBIN_VASP_FORCE_OPTION_ALGO.preserved==FALSE) xvasp.INCAR << "ALGO=Normal      # Performing STATIC" << endl;
-      xvasp.INCAR << "LORBIT=10        # Performing STATIC" << endl; //180130 CO get spinD
-      if(vflags.KBIN_VASP_INCAR_VERBOSE) xvasp.INCAR << "#removing IBRION, NSW, ISIF" << endl;
+      // Prof. K. YANG Adds them for proper static calculations 20180617
+      xvasp.INCAR << "# Performing STATIC [AFLOW]" << endl;
+      xvasp.INCAR << aurostd::PaddedPOST("NSW=0",_incarpad_) << "# Performing RELAX_STATIC (zero ionic steps, so no relax, just static)" << endl;
+      xvasp.INCAR << aurostd::PaddedPOST("IBRION=-1",_incarpad_) << "# Performing RELAX_STATIC (no relax, just static)" << endl;
+      xvasp.INCAR << aurostd::PaddedPOST("NELM=90",_incarpad_) << "# Performing RELAX_STATIC" << endl;
+      xvasp.INCAR << aurostd::PaddedPOST("EDIFF=1E-6",_incarpad_) << "# Performing RELAX_STATIC" << endl;
+      xvasp.INCAR << aurostd::PaddedPOST("NELMIN=2",_incarpad_) << "# Performing RELAX_STATIC" << endl;
+      xvasp.INCAR << aurostd::PaddedPOST("LCHARG=.TRUE.",_incarpad_) << "# Performing RELAX_STATIC" << endl;
+      xvasp.INCAR << aurostd::PaddedPOST("LWAVE=.FALSE.",_incarpad_) << "# Performing RELAX_STATIC" << endl;
+      xvasp.INCAR << aurostd::PaddedPOST("LELF=.TRUE.",_incarpad_) << "# Performing RELAX_STATIC" << endl;
+      xvasp.INCAR << aurostd::PaddedPOST("ISMEAR=-5",_incarpad_) << "# Performing RELAX_STATIC KESONG YANG 20140807" << endl;
+      xvasp.INCAR << aurostd::PaddedPOST("SIGMA=0.05",_incarpad_) << "# Performing RELAX_STATIC" << endl;
+      xvasp.INCAR << aurostd::PaddedPOST("LORBIT=10",_incarpad_) << "# Performing RELAX_STATIC" << endl;
+      xvasp.INCAR << aurostd::PaddedPOST("EMIN= -25.0",_incarpad_) << "# Performing RELAX_STATIC (ks adjusts it) force search for EMIN" << endl; 
+      xvasp.INCAR << aurostd::PaddedPOST("EMAX=  25.0",_incarpad_) << "# Performing RELAX_STATIC (ks adjusts it)" << endl;  // was 15
+      xvasp.INCAR << aurostd::PaddedPOST("NEDOS= 5001",_incarpad_) << "# Performing RELAX_STATIC (ks adjusts it)" << endl;
+      xvasp.INCAR << "#adjusting ISMEAR,SIGMA,NSW,IBRION, NELM,NELMIN,LORBIT,LCHARG,LWAVE (ks adds it for only static)" << endl;
     }
   }
 
@@ -3534,21 +3564,16 @@ namespace KBIN {
               if(vflags.KBIN_VASP_INCAR_VERBOSE) xvasp.INCAR << strline << endl;
             }
           }
-          // xvasp.INCAR << endl;
           if(vflags.KBIN_VASP_INCAR_VERBOSE && OPTION==ON) xvasp.INCAR << "# Performing AUTO_MAGMOM=ON [AFLOW] begin" << endl;
-          // if(vflags.KBIN_VASP_INCAR_VERBOSE && OPTION==OFF) xvasp.INCAR << "# Performing AUTO_MAGMOM=OFF [AFLOW] begin" << endl;
           if(OPTION==ON) {
             xvasp.INCAR << "MAGMOM= ";
             for(uint i=0;i<xvasp.str.atoms.size();i++) {
-              if(xvasp.str.atoms.at(i).order_parameter_atom==FALSE) xvasp.INCAR << " 0";
+              if(xvasp.str.atoms.at(i).order_parameter_atom==FALSE) xvasp.INCAR << " 5";  ////Prof. YANG CHANGES IT FROM 0 TO 5
               if(xvasp.str.atoms.at(i).order_parameter_atom==TRUE) xvasp.INCAR << " " << xvasp.str.atoms.at(i).order_parameter_value;
             }
             xvasp.INCAR << "   # " << xvasp.str.atoms.size() << " atoms " << endl;
           }
-          if(OPTION==OFF) {;} // nothing to be done
           if(vflags.KBIN_VASP_INCAR_VERBOSE && OPTION==ON) xvasp.INCAR << "# Performing AUTO_MAGMOM=ON [AFLOW] end " << endl;
-          // if(vflags.KBIN_VASP_INCAR_VERBOSE && OPTION==OFF) xvasp.INCAR << "# Performing AUTO_MAGMOM=OFF [AFLOW] end " << endl;
-
           DONE=TRUE;
         }
 
@@ -4908,7 +4933,19 @@ namespace KBIN {
             }
             // rewrite to restart ---------------------------------
             if(rewrite_incar) {aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));}
-            if(rewrite_poscar) {aurostd::stringstream2file(xvasp.POSCAR,string(xvasp.Directory+"/POSCAR"));}
+            // -------------------------------------------------------------------------------- 
+            //Prof. YANG ADDS THIS, recycle CONTCAR, no waste time in relaxation; 2016-12-10
+            if(aurostd::FileExist(xvasp.Directory+string("/CONTCAR")) && !aurostd::FileEmpty(xvasp.Directory+string("/CONTCAR"))) {
+                ostringstream aus;
+                aus << "cd " << xvasp.Directory << endl;
+                aus << "mv POSCAR  POSCAR.orig.error" << endl;
+                aus << "cp CONTCAR POSCAR" << endl;
+                aurostd::execute(aus);
+            }
+            else {
+                if(rewrite_poscar) {aurostd::stringstream2file(xvasp.POSCAR,string(xvasp.Directory+"/POSCAR"));}
+            }
+            // -------------------------------------------------------------------------------- 
             if(rewrite_kpoints) {aurostd::stringstream2file(xvasp.KPOINTS,string(xvasp.Directory+"/KPOINTS"));}
             // reload to restart ---------------------------------
             if(reload_incar) {
