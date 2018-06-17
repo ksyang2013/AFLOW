@@ -1,0 +1,15 @@
+*.o
+aconvasp
+aflow_data
+aflow_data_calculated.cpp
+aflow_data_extra.cpp
+aflow_data_htqc.cpp
+aflow_data_latex.cpp
+aflow_data_libraries.cpp
+aflow_data_nist.cpp
+aflow_data_readme.cpp
+aflow_data_stokes.cpp
+aflow
+aflowd
+apennsy
+
