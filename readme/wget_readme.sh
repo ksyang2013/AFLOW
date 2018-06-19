@@ -1,0 +1,17 @@
+wget http://materials.duke.edu/AFLOW/README_AFLOW.TXT                    
+wget http://materials.duke.edu/AFLOW/README_AFLOW_ACONVASP.TXT           
+wget http://materials.duke.edu/AFLOW/README_AFLOW_AEL.TXT                
+wget http://materials.duke.edu/AFLOW/README_AFLOW_AGL.TXT                
+wget http://materials.duke.edu/AFLOW/README_AFLOW_ANRL.TXT               
+wget http://materials.duke.edu/AFLOW/README_AFLOW_APENNSY.TXT            
+wget http://materials.duke.edu/AFLOW/README_AFLOW_APL.TXT                
+wget http://materials.duke.edu/AFLOW/README_AFLOW_CHULL.TXT              
+wget http://materials.duke.edu/AFLOW/README_AFLOW_COMPARE.TXT            
+wget http://materials.duke.edu/AFLOW/README_AFLOW_FROZSL.TXT             
+wget http://materials.duke.edu/AFLOW/README_AFLOW_LICENSE_GPL3.TXT       
+wget http://materials.duke.edu/AFLOW/README_AFLOW_POCC.TXT               
+wget http://materials.duke.edu/AFLOW/README_AFLOW_SCRIPTING.TXT          
+wget http://materials.duke.edu/AFLOW/README_AFLOW_SYM.TXT                
+wget http://materials.duke.edu/AFLOW/README_AFLOW_VERSIONS_HISTORY.TXT   
+wget http://materials.duke.edu/AFLOW/README_CONTRIBS.TXT                 
+wget http://materials.duke.edu/AFLOW/README_PROTO.TXT                    
