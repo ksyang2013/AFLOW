@@ -4669,15 +4669,17 @@ namespace KBIN {
                     aus_exec << "echo \"# Performing XVASP_Afix_GENERIC (" << mode << ") [AFLOW] end\" >> INCAR " << endl;
                     aurostd::execute(aus_exec);
 
-                    if(mode=="SYMPREC" || mode=="SGRCON" || mode=="INVGRP") {
+                    if(mode=="SYMPREC" || mode=="SGRCON" || mode=="INVGRP" || mode =="SYMPREC2") {
                         file_error="aflow.error.symprec";
                         reload_incar=TRUE;
                         aus_exec << "cd " << xvasp.Directory << endl;
                         aus_exec << "cat INCAR | sed \"s/SYMPREC/#SYMPREC/g\" > aflow.tmp && mv aflow.tmp INCAR" << endl; // remove SYMPREC
                         if(vflags.KBIN_VASP_INCAR_VERBOSE) aus_exec << "echo \"# Performing KBIN::XVASP_Afix (" << mode << ") [AFLOW] begin\" >> INCAR " << endl;
-                        // aus_exec << "echo \"#fixed symprec \" >> INCAR " << endl;
-                        // aus_exec << "echo \"SYMPREC=1e-6\" >> INCAR " << endl;
-                        aus_exec << "echo \"SYMPREC=1e-7    # (fix=" << mode << "\" >> INCAR " << endl;
+                        aus_exec << "echo \"SYMPREC=1E-8                       # (fix=" << mode << "\" >> INCAR " << endl;
+                        if (mode=="SYMPREC2") {
+                            aus_exec << "cat INCAR | sed \"s/ISYM/#ISYM/g\" > aflow.tmp && mv aflow.tmp INCAR" << endl; // remove ISYM
+                            aus_exec << "echo \"ISYM = 0                       # (fix=" << mode << "\" >> INCAR " << endl;
+                        }
                         if(vflags.KBIN_VASP_INCAR_VERBOSE) aus_exec << "echo \"# Performing KBIN::XVASP_Afix (" << mode << ") [AFLOW] end\" >> INCAR " << endl;
                         aurostd::execute(aus_exec);
                     }
@@ -4687,7 +4689,7 @@ namespace KBIN {
                         aus_exec << "cd " << xvasp.Directory << endl;
                         aus_exec << "cat INCAR | sed \"s/ISYM/#ISYM/g\" > aflow.tmp && mv aflow.tmp INCAR" << endl; // remove SYMPREC
                         if(vflags.KBIN_VASP_INCAR_VERBOSE) aus_exec << "echo \"# Performing KBIN::XVASP_Afix (" << mode << ") [AFLOW] begin\" >> INCAR " << endl;
-                        aus_exec << "echo \"ISYM=0    # (fix=" << mode << "\" >> INCAR " << endl;
+                        aus_exec << "echo \"ISYM=0                      # (fix=" << mode << "\" >> INCAR " << endl;
                         if(vflags.KBIN_VASP_INCAR_VERBOSE) aus_exec << "echo \"# Performing KBIN::XVASP_Afix (" << mode << ") [AFLOW] end\" >> INCAR " << endl;
                         aurostd::execute(aus_exec);
                     }
