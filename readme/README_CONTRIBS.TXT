@@ -40,7 +40,7 @@
 *  (findsym, frozsl, plotband/dos); 2013-2017 Cormac Toher (AGL Debye-Gruneisen, AEL elastic);     *
 *  2013-2017 Frisco Rose (API, Aflux); 2013-2017 Pinku Nath (Quasi-harmonic approximation);        *
 *  2013-2017 Jose J. Plata (AAPL, thermal cond.); 2014-2017 David Hicks (symmetry, structure       *
-*  comparison, prototypes); 2014-2017 Corey Oses (bader, chull, APL); 2017 Andrew Supka (AFLOWpi); *
-*  2017 Marco Biongiorno Nardelli (AFLOWpi); 2017 Marco Fornari (AFLOWpi);                         *
+*  comparison, prototypes); 2014-2017 Corey Oses (bader, chull, APL, pocc); 2017 Andrew Supka      *
+*  (AFLOWpi); 2017 Marco Buongiorno Nardelli (AFLOWpi); 2017 Marco Fornari (AFLOWpi);              *
 ****************************************************************************************************
 

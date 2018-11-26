@@ -250,6 +250,17 @@ This procedure is similar to that required to run AFLOW APL and AFLOW AGL.
     [AFLOW_AGL]SPRESSURE=number
     [AFLOW_AGL]NPRESSURE=number
 
+    Specific pressures can also be specified for the AEL pressure calculations,
+    independently of the AGL calculations, by including the following line in the
+    aflow.in file:
+
+    [AFLOW_AEL]SPRESSURE=number
+    [AFLOW_AEL]NPRESSURE=number
+
+    Using this option allows a different set of pressures to be using for calculating
+    the elastic constants than for the final AGL postprocessing, within a single
+    ingetrated workflow.
+
     Once the appropriate volumes are determined from the AGL calculations, AEL then
     generates the appropriate normal and shear strained structures, and calculates
     the stress tensors with DFT. The elastic properties at different pressures are
@@ -262,6 +273,20 @@ This procedure is similar to that required to run AFLOW APL and AFLOW AGL.
     STATIC option will prevent any relaxation, and will ensure that the set pressure
     is obtained, although this will result in the "clamped ion" elastic tensor being
     obtained.
+
+    Elastic properties calculated at a finite pressure where the materials is stable
+    can be used in other parts of the code by including the following line in the
+    aflow.in file:
+
+    [AFLOW_AEL]USESTABLEPRESSURE=option
+
+    If this option is set to "ON", then the elastic properties at the lowest
+    calculated pressure where the material is elastically stable will be
+    set as the main elastic properties for this material: these values
+    will be written to the main aflow.ael.out file, this value of the
+    Poisson ratio will be used if requested by AGL, etc. The default value
+    is "OFF", so that the elastic properties calculated at zero pressure
+    are used.
 
 12) The elastic tensor can be symmetrized after calculation. This option can be selected
     by including the following line in the aflow.in file:
@@ -327,13 +352,9 @@ This procedure is similar to that required to run AFLOW APL and AFLOW AGL.
 [AFLOW_APL]TP=y                                       // README_AFLOW_APL.TXT
 [AFLOW_APL]TPT=0:2000:10                              // README_AFLOW_APL.TXT
 [AFLOW] ************************************************************************************************************************** 
-#[AFLOW_QHA]CALC                                      // README_AFLOW_APL.TXT
-[AFLOW_QHA]GP_VOL_DISTORTION_PERCENTAGE=0.03          // README_AFLOW_APL.TXT
-[AFLOW_QHA]DISPLACEMENTS=y                            // README_AFLOW_APL.TXT
-[AFLOW_QHA]PROJECTION_DIR=1:1:1                       // README_AFLOW_APL.TXT
-[AFLOW_QHA]EOS=n                                      // README_AFLOW_APL.TXT
-[AFLOW_QHA]EOS_VOLRANGE_DIST=-2:4:0.5                 // README_AFLOW_APL.TXT
-[AFLOW_QHA]EOS_KPOINTS_MODE=32768:10000:20:100000     // README_AFLOW_APL.TXT
+#[AFLOW_QHA]CALC                                      // README_AFLOW_QHA_SCQHA_QHA3P.TXT
+[AFLOW_QHA]MODE=QHA3P                                 // README_AFLOW_QHA_SCQHA_QHA3P.TXT
+[AFLOW_QHA]EOS=y                                      // README_AFLOW_QHA_SCQHA_QHA3P.TXT
 [AFLOW] ************************************************************************************************************************** 
 #[AFLOW_AAPL]CALC                                     // README_AFLOW_APL.TXT
 [AFLOW_AAPL]TDMAG=0.015                               // README_AFLOW_APL.TXT

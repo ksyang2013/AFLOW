@@ -581,7 +581,18 @@ LATEST VERSION OF THE FILE:                              materials.duke.edu/AFLO
         subdirectory BANDS with the band structures files.
 
   aflow --bzdirections | --bzd < POSCAR
-        Calculates lattice and print a nice looking KPOINTS in VASP format.
+        Calculates lattice and print a nice looking KPOINTS in VASP format
+        for the AFLOW standard lattice (Setyawan and Curtarolo, 2010). 
+        Options:
+          [--transform2original]: Use this option if you need consistent labels for reciprocal lattice points 
+                                  of a non-standard AFLOW lattice. 
+                                  For low symmetry space groups several equivalent cell choices exist 
+                                  and k-point labels must be transformed accordingly. 
+                                  If the metric tensor of your cell choice and the AFLOW standard lattice 
+                                  differ this option will transform the AFLOW standard k-points labels/path 
+                                  back to your cell choice. (addition suggested by Prof. B. Kiefer) 
+          [--print_transformation_matrix]: Print the transformation matrices P and Q(=P^1) with output.
+                                           (addition suggested by Prof. B. Kiefer)
 
   aflow --bzdirections= | --bzd=LATTICE
         Print a nice looking KPOINTS in VASP format for one of the lattices,
@@ -659,7 +670,7 @@ LATTICES = (the ones with "")
 
   aflow --calculated=icsd --random 
        Print one of the available calculated directories (usefull for webs).
-  aflow --calculated[[=]all|icsd|lib1|lib2|lib3|lib4|lib5|lib6|lib7|lib8|lib9|auro]
+  aflow --calculated[[=]all|icsd|lib1|lib2|lib3|lib4|lib5|lib6|lib7|lib8|lib9]
        "all":  print the total number of calculations in the databases.
        "icsd": print the list of calculated ICSD-structures.
        "lib1": print the list of calculated pure systems.
@@ -671,7 +682,6 @@ LATTICES = (the ones with "")
        "lib7": print the list of calculated 6-species systems (very few)
        "lib8": print the list of calculated 6-species systems (very few)
        "lib9": print the list of calculated 6-species systems (very few)
-       "auro": print the list of calculated auro database system.
  
   aflow --cart [-c] < POSCAR
         Outputs to standard out a new POSCAR file with atom
@@ -681,7 +691,7 @@ LATTICES = (the ones with "")
                               |CHGCAR,CUTOFF[,DOWNSAMPLE]
         options:
             [ --usage ]
-            [ --output=|--o= ]
+            [ --output=|--o=OUTPUT_FILE ]
         
         Converts a surface data file (e.g. CHGCAR file) to a .jvxl file at a specified cutoff.
         See http://chemapps.stolaf.edu/jmol/docs/misc/JVXL-format.pdf.
@@ -728,11 +738,24 @@ LATTICES = (the ones with "")
         on different versions (at least 4.4.1 and 4.4.5 (including PAW)  
         work).  For a large cell this can take a while (e.g., 80 atoms  
         might take ~20 minutes).  vasp4631 ok.
-  aflow --cif < POSCAR
+  aflow --cif[=tolerance | =tight | =loose] [--setting=1| =2] [--no_symmetry] < POSCAR
         Outputs to standard out a Crystallographic Information File
         (cif) format file based on the POSCAR input file.  
         This can be used as input for Mercury, and is the preferred  
         format in Gerd's structure collection.
+        Tolerance:
+           The tolerance is given in Angstroms.  There are two preset tolerances:
+             tight: minimum_interatomic_distance/100.0
+             loose: minimum_interatomic_distance/10.0
+           The default tolerance is the "tight" tolerance value.
+           A value can also be specified. (Note, it must not be below the minimum
+           interatomic distance, otherwise an error will be thrown.)
+        Space group setting:
+          The space group setting can be specified with the optional flag [--setting=1| =2] (the default is setting 1).
+          For rhombohedral systems, setting 1=rhl and 2=hex.
+          For monoclinic systems, setting 1=unique axis-b and 2=unique axis-c.
+        Options:
+          [--no_symmetry] : Will not perform symmetry analysis and return the CIF with space group 1.
   aflow --clat=a,b,c,alpha,beta,gamma
         Outputs to standard out the cartesian lattice vectors obtained
         from the input a b c alpha beta gamma.
@@ -818,10 +841,13 @@ LATTICES = (the ones with "")
         --chull : Necessary flag for entering mode for calculating convex hull.
         --alloy : Necessary argument, specifies system. This code is not dimension specific, 
               i.e., you can calculate the convex hull for any n-ary system.
+              There are two input modes:  raw (comma-separated) and combinatorial (colon- and comma-separated).
+              Raw input:  --alloy=MnPdPt,AlCuZn.
+              Combinatorial input:  --alloy=Ag,Au:Mn.  This is interpreted as --alloy=AgMn,AuMn.
         [--destination=[DIRECTORY]] : Optional argument, specify the directory for the output.  
               Default is "./".
         [--usage] : Returns usage commands and options.
-        [--output=|--o=|--print=|--p=latex|pdf|json|text] : Select the output format. Latex/PDF are the same (.pdf).
+        [--print=|--p=|--output=|--o=latex|pdf|json|text] : Select the output format. Latex/PDF are the same (.pdf).
              JSON and plain text have the following extensions:  .json and .txt.
              Default is Latex/PDF.
         [--screen_only] : Output is direct to screen (stdout) instead of writing to a file. 
@@ -847,6 +873,8 @@ LATTICES = (the ones with "")
               with default PAW_PBE (same level of theory, differently parametrized).
 
         ANALYSIS OPTIONS:
+        [--distance_to_hull=|--distancetohull=|--distance2hull=|--dist2hull=|--d2h=aflow:bb0d45ab555bc208,aflow:fb9eaa58604ce774] :
+              Calculates a structure's distance below/above (Hf/Ts) the hull.
         [--stability_criterion=|--stabilitycriterion=|--stable_criterion=|--scriterion=|--sc=aflow:bb0d45ab555bc208,aflow:fb9eaa58604ce774] :
               Calculates the stability criterion of the ground state structure. Will return
               a warning if structure is not a ground state one. It removes the point from the 
@@ -861,12 +889,16 @@ LATTICES = (the ones with "")
               equivalent ground state structures is skipped (can be time consuming).
         [--skip_stability_criterion_analysis|--skipstabilitycriterionanalysis|--skipscriterion|--sscriterion] : analysis
               of stability criterion for ground state structures is skipped (can be time consuming).
+        [--include_skewed_hulls|--include_skewed|--ish] : process hull despite skewed endpoints (abs(ground state endpoint energy) < 15 meV).
         [--include_unreliable_hulls|--include_unreliable|--iuh] : process hull despite poor statistics (binary hull count < 200).
         [--include_outliers|--io] : include any detected outliers (output/warning is still shown).
         [--force] : force output despite warnings.
 
         PDF/LATEX OPTIONS:
-        [--image_only|--imageonly|--image|--no_document|--nodocument|--no_doc|--nodoc|--full_page_image|--fullpageimage] :
+        [--image_only|--imageonly|--image] : Latex/PDF output mode only. Similar to --document_only, 
+             but the image dimensions are not necessarily for a standard page. Preferred option for 
+             importing into papers/presentations.
+        [--no_document|--nodocument|--no_doc|--nodoc|--full_page_image|--fullpageimage] :
               Latex/PDF output mode only. Generates a PDF of just the convex hull illustration (2/3D).
               Dimensions: 8.5x11 inches (standard page), landscape.
         [--document_only|--documentonly|--doc_only|--doconly|--doc] : Latex/PDF output mode only.
@@ -881,6 +913,7 @@ LATTICES = (the ones with "")
              hull illustration color scheme to be lighter.
         [--large_font|--largefont|--large|--lf] : Latex/PDF output mode only. Prints a "larger" font size 
              for convex hull illustration.
+        [--png_resolution=|--pngresolution=|--pngr=300] : Set PNG resolution (-density in convert).
         [--plot_iso_max_latent_heat|--iso_max|--isomax] : Plot iso-max-latent-heat lines for ground state structures.
               See dx.doi.org/10.1063/1.4902865.
         
@@ -948,7 +981,7 @@ LATTICES = (the ones with "")
         The smallest mesh to satisfy this requirement is calculated.
         See also --kpoints.
 
-  aflow --edata[=tolerance| =tight| =loose] [--no_scan] [--print=txt| =json] < POSCAR
+  aflow --edata[=tolerance| =tight| =loose] [--setting=1| =2] [--no_scan] [--print=txt| =json] < POSCAR
         Outputs to standard the information given by --data in addition
         to lattice-, superlattice- and reciprocal-lattice types.
         This routine consists of symmetry consistency checks. If symmetry rules are broken,
@@ -960,6 +993,10 @@ LATTICES = (the ones with "")
            The default tolerance is the "tight" tolerance value.
            A value can also be specified. (Note, it must not be below the minimum
            interatomic distance, otherwise an error will be thrown.)
+        Space group setting:
+          The space group setting can be specified with the optional flag [--setting=1| =2] (the default is setting 1).
+          For rhombohedral systems, setting 1=rhl and 2=hex.
+          For monoclinic systems, setting 1=unique axis-b and 2=unique axis-c.
         Magnetic analysis:
           The magnetic tag specifies the magnetic moment on each of the atoms.  The
           two input formats are a comma separated string of the magnetic moments -
@@ -2614,7 +2651,7 @@ LATTICES = (the ones with "")
         Charges must be entered after each atom position.
         E.g.,   Co 0 0 0 +2.  
 
-  aflow --sgdata | --space_group_data[=tolerance| =tight| =loose] [--no_scan] [--print=txt| =json] [--no_scan] [--print=txt| =json] [--screen_only] [--mag|--magnetic|--magmom=[m1,m2,...|INCAR|OUTCAR]] < POSCAR
+  aflow --sgdata | --space_group_data[=tolerance| =tight| =loose] [--setting=1| =2][--no_scan] [--print=txt| =json] [--screen_only] [--mag|--magnetic|--magmom=[m1,m2,...|INCAR|OUTCAR]] < POSCAR
         Outputs the following space group information: space group number, space group labels 
         (Hermann Mauguin, Hall, Schoenflies), Laue class, crystal class, ITC setting, ITC origin shift, 
         general Wyckoff position, and the WYCCAR (similar to --edata).
@@ -2635,6 +2672,10 @@ LATTICES = (the ones with "")
           (must be a static calculation, otherwise this information isn't specified).
           Works for both collinear and non-collinear systems (AFLOW autodetects
           collinear/non-collinear based on the input).
+        Space group setting:
+          The space group setting can be specified with the optional flag [--setting=1| =2] (the default is setting 1).
+          For rhombohedral systems, setting 1=rhl and 2=hex.
+          For monoclinic systems, setting 1=unique axis-b and 2=unique axis-c.
         Options:
           [--no_scan] : Will not perform tolerance scan.
           [--print=txt| =json] : Specify output format.
@@ -2928,12 +2969,34 @@ LATTICES = (the ones with "")
   aflow --volume+= x < POSCAR
         Outputs POSCAR with volume changes as *=, += actor (like in c,c++).
 
-  aflow --wyccar[=tolerance | =tight | =loose] < POSCAR
+  aflow --wyccar[=tolerance | =tight | =loose] [--no_scan] [--setting=1| =2] [--mag|--magnetic|--magmom=[m1,m2,...|INCAR|OUTCAR]] < POSCAR
         Prints the wyccar file (the poscar file with wyckoff positions) for the input POSCAR
         The wyccar format presents the lattice in standard conventional form and the wyckoff 
         positions with their associated labels and site symmetry. If variability in the 
         Wyckoff positions exists, the algorithm finds the Wykoff positions with the "smallest" 
         lettering scheme ("a" being the smallest). (R. Taylor/ D. Hicks)
+        Tolerance:
+           The tolerance is given in Angstroms.  There are two preset tolerances:
+             tight: minimum_interatomic_distance/100.0
+             loose: minimum_interatomic_distance/10.0
+           The default tolerance is the "tight" tolerance value.
+           A value can also be specified. (Note, it must not be below the minimum
+           interatomic distance, otherwise an error will be thrown.)
+        Space group setting:
+          The space group setting can be specified with the optional flag [--setting=1| =2] (the default is setting 1).
+          For rhombohedral systems, setting 1=rhl and 2=hex.
+          For monoclinic systems, setting 1=unique axis-b and 2=unique axis-c.
+        Magnetic analysis:
+          The magnetic tag specifies the magnetic moment on each of the atoms.  The
+          two input formats are a comma separated string of the magnetic moments -
+          in the same order as the input file, the location of the INCAR, or the location
+          of the OUTCAR, which is then read and the magnetic moment for each atom is found
+          (must be a static calculation, otherwise this information isn't specified).
+          Works for both collinear and non-collinear systems (AFLOW autodetects
+          collinear/non-collinear based on the input).
+        Options:
+          [--no_scan] : Will not perform tolerance scan.
+          [--mag|--magnetic|--magmom=[m1,m2,...|INCAR|OUTCAR]]: Perform symmetry analysis of spin system, where spin degree of freedom breaks symmetry
         Check aflow --readme=symmetry
 
   aflow --xray=lambda < POSCAR

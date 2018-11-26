@@ -47,13 +47,9 @@ structure (mostly written by Kesong Yang).
 [AFLOW_APL]TP=y                                       // README_AFLOW_APL.TXT
 [AFLOW_APL]TPT=0:2000:10                              // README_AFLOW_APL.TXT
 [AFLOW] ************************************************************************************************************************** 
-#[AFLOW_QHA]CALC                                      // README_AFLOW_APL.TXT
-[AFLOW_QHA]GP_VOL_DISTORTION_PERCENTAGE=0.03          // README_AFLOW_APL.TXT
-[AFLOW_QHA]DISPLACEMENTS=y                            // README_AFLOW_APL.TXT
-[AFLOW_QHA]PROJECTION_DIR=1:1:1                       // README_AFLOW_APL.TXT
-[AFLOW_QHA]EOS=n                                      // README_AFLOW_APL.TXT
-[AFLOW_QHA]EOS_VOLRANGE_DIST=-2:4:0.5                 // README_AFLOW_APL.TXT
-[AFLOW_QHA]EOS_KPOINTS_MODE=32768:10000:20:100000     // README_AFLOW_APL.TXT
+#[AFLOW_QHA]CALC                                      // README_AFLOW_QHA_SCQHA_QHA3P.TXT
+[AFLOW_QHA]MODE=QHA3P                                 // README_AFLOW_QHA_SCQHA_QHA3P.TXT
+[AFLOW_QHA]EOS=y                                      // README_AFLOW_QHA_SCQHA_QHA3P.TXT
 [AFLOW] ************************************************************************************************************************** 
 #[AFLOW_AAPL]CALC                                     // README_AFLOW_APL.TXT
 [AFLOW_AAPL]TDMAG=0.015                               // README_AFLOW_APL.TXT

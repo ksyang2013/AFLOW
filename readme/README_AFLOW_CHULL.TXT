@@ -44,10 +44,13 @@ LIST OF AFLOW-CHULL COMMANDS:
         --chull : Necessary flag for entering mode for calculating convex hull.
         --alloy : Necessary argument, specifies system. This code is not dimension specific, 
               i.e., you can calculate the convex hull for any n-ary system.
+              There are two input modes:  raw (comma-separated) and combinatorial (colon- and comma-separated).
+              Raw input:  --alloy=MnPdPt,AlCuZn.
+              Combinatorial input:  --alloy=Ag,Au:Mn.  This is interpreted as --alloy=AgMn,AuMn.
         [--destination=[DIRECTORY]] : Optional argument, specify the directory for the output.  
               Default is "./".
         [--usage] : Returns usage commands and options.
-        [--output=|--o=|--print=|--p=latex|pdf|json|text] : Select the output format. Latex/PDF are the same (.pdf).
+        [--print=|--p=|--output=|--o=latex|pdf|json|text] : Select the output format. Latex/PDF are the same (.pdf).
              JSON and plain text have the following extensions:  .json and .txt.
              Default is Latex/PDF.
         [--screen_only] : Output is direct to screen (stdout) instead of writing to a file. 
@@ -73,6 +76,8 @@ LIST OF AFLOW-CHULL COMMANDS:
               with default PAW_PBE (same level of theory, differently parametrized).
 
         ANALYSIS OPTIONS:
+        [--distance_to_hull=|--distancetohull=|--distance2hull=|--dist2hull=|--d2h=aflow:bb0d45ab555bc208,aflow:fb9eaa58604ce774] :
+              Calculates a structure's distance below/above (Hf/Ts) the hull.
         [--stability_criterion=|--stabilitycriterion=|--stable_criterion=|--scriterion=|--sc=aflow:bb0d45ab555bc208,aflow:fb9eaa58604ce774] :
               Calculates the stability criterion of the ground state structure. Will return
               a warning if structure is not a ground state one. It removes the point from the 
@@ -87,12 +92,16 @@ LIST OF AFLOW-CHULL COMMANDS:
               equivalent ground state structures is skipped (can be time consuming).
         [--skip_stability_criterion_analysis|--skipstabilitycriterionanalysis|--skipscriterion|--sscriterion] : analysis
               of stability criterion for ground state structures is skipped (can be time consuming).
+        [--include_skewed_hulls|--include_skewed|--ish] : process hull despite skewed endpoints (abs(ground state endpoint energy) < 15 meV).
         [--include_unreliable_hulls|--include_unreliable|--iuh] : process hull despite poor statistics (binary hull count < 200).
         [--include_outliers|--io] : include any detected outliers (output/warning is still shown).
         [--force] : force output despite warnings.
 
         PDF/LATEX OPTIONS:
-        [--image_only|--imageonly|--image|--no_document|--nodocument|--no_doc|--nodoc|--full_page_image|--fullpageimage] :
+        [--image_only|--imageonly|--image] : Latex/PDF output mode only. Similar to --document_only, 
+             but the image dimensions are not necessarily for a standard page. Preferred option for 
+             importing into papers/presentations.
+        [--no_document|--nodocument|--no_doc|--nodoc|--full_page_image|--fullpageimage] :
               Latex/PDF output mode only. Generates a PDF of just the convex hull illustration (2/3D).
               Dimensions: 8.5x11 inches (standard page), landscape.
         [--document_only|--documentonly|--doc_only|--doconly|--doc] : Latex/PDF output mode only.
@@ -107,6 +116,7 @@ LIST OF AFLOW-CHULL COMMANDS:
              hull illustration color scheme to be lighter.
         [--large_font|--largefont|--large|--lf] : Latex/PDF output mode only. Prints a "larger" font size 
              for convex hull illustration.
+        [--png_resolution=|--pngresolution=|--pngr=300] : Set PNG resolution (-density in convert).
         [--plot_iso_max_latent_heat|--iso_max|--isomax] : Plot iso-max-latent-heat lines for ground state structures.
               See dx.doi.org/10.1063/1.4902865.
 

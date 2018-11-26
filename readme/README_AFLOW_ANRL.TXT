@@ -12,12 +12,15 @@ AFLOW/ANRL Prototypes
 
 AFLOW implementation: Stefano Curtarolo and David Hicks
 
-Citation Information: M. J. Mehl, D. Hicks, C. Toher, O. Levy, R. M. Hanson, G. L. W. Hart, and S. Curtarolo, 
-                      The AFLOW Library of Crystallographic Prototypes, Comp. Mat. Sci. 136, S1–S828 (2017).
+Citation Information: 
+    - M. J. Mehl, D. Hicks, C. Toher, O. Levy, R. M. Hanson, G. L. W. Hart, and S. Curtarolo, 
+      The AFLOW Library of Crystallographic Prototypes: Part 1, Comp. Mat. Sci. 136, S1–S828 (2017).
+    - D. Hicks, M. J. Mehl, E. Gossett, C. Toher, O. Levy, R. M. Hanson, G. L. W. Hart, and S. Curtarolo, 
+      The AFLOW Library of Crystallographic Prototypes: Part 2, submitted (2018).
 
 
-The AFLOW/ANRL Library consists of 288 crystallographic prototypes from the above paper. These 
-prototypes have been programmed into AFLOW. The list of prototypes and how to call them can be 
+The AFLOW/ANRL Library consists of 590 (part 1: 288, part 2: 302) crystallographic prototypes from the papers listed above. 
+These prototypes have been programmed into AFLOW. The list of prototypes and how to call them can be 
 found in aflow_anrl.cpp. The prototypes are generally listed in the order they appear in the 
 paper (low space group number to high space group number).
 
@@ -26,9 +29,9 @@ structure prototypes depending on the parameters chosen. Therefore, these protot
 general and powerful.
 
 
-The general format for the command is as follows:
+The general format for the command is as follows (optional arguments are enclosed in square brackets "[]"):
 
-  aflow --proto=label --params=a,b/a,c/a,alpha,beta,gamma,x1,y1,z1,x2,y2,z2,... [--hex]
+  aflow --proto=label:A:B:C... --params=a,b/a,c/a,alpha,beta,gamma,x1,y1,z1,x2,y2,z2,... [--hex] [--vasp|--aims|--qe|--abinit|--wyccar] [--add_equations|--equations_only]
 
 Example:
 
@@ -49,6 +52,9 @@ A description of each input is described below:
                 -  ...
                 -  ...
                 -  ...
+
+  A:B:C...:   The prototype can be decorated with different atoms by appending the elements 
+              to the label separated by colons ":".
 
   parameters: The parameters are necessary to create the structure prototype.
               The parameter information is separated by commas. The parameters are 
@@ -79,7 +85,21 @@ A description of each input is described below:
               The default representation is RHL. To show the prototype in the HEX representation, 
               we add the --hex flag. 
               NOTE: Only applicable for rhombohedral systems.    
+  
+  [--vasp|--aims|--qe|--abinit|--wyccar]: The structure can be represented in a variety of ab-initio formats,
+                                          e.g., VASP, FHI-AIMS, Quantum Espresso, ABINIT, and WYCKAR.
+                                          The POSCAR (VASP) format is the default. 
 	
+  [--add_equations|--equations_only]:     The symbolic math representations (i.e., equations) of the prototype 
+				          can also be printed.  
+
+                                            - [--add_equations]  : appends the symbolic math representation to the output
+
+                                            - [--equations_only] : only prints the symbolic math represention; does not require
+                                                                   parameters to be specified (i.e., can neglect --params=...)
+
+                                          Currently, the symbolic math representation is only supported for the VASP and AIMS formats. 
+                                          Other formats will be implemented in the future. 
 
 
 For additional information contact: David Hicks (d.hicks@duke.edu)
