@@ -3579,114 +3579,117 @@ namespace KBIN {
 } // namespace KBIN
 
 namespace KBIN {
-  void VASP_CONTCAR_Save(_xvasp xvasp,string relax) {        // AFLOW_FUNCTION_IMPLEMENTATION
-    if(aurostd::FileExist(xvasp.Directory+string("/CONTCAR")))
-      if(!aurostd::FileEmpty(xvasp.Directory+string("/CONTCAR"))) {
-	ostringstream aus;
-	aus << "cd " << xvasp.Directory << endl;
-	aus << "echo \"[AFLOW] SELF-MODIFICATION \" >> " << _AFLOWIN_ << " " << endl;
-	aus << "echo \"[AFLOW] Recycling CONTCAR of " << relax << " \" >> " << _AFLOWIN_ << " " << endl;
-    //string str_tmp = aurostd::file2string(xvasp.Directory+string("/CONTCAR"));   
-    ////KESONG fixes potential aflow command problem in future, 2018-11-25
-    //stringstream ss_tmp; ss_tmp << ""; 
-    //ss_tmp << str_tmp << endl;
-    //string str_tmp2 = pflow::AFLOWIN(ss_tmp) + " >> ";
-    //aus <<   str_tmp2  <<  _AFLOWIN_ << " " << endl;
-	aus << "cat CONTCAR | aflow --aflowin  >> " << _AFLOWIN_ << " " << endl;
-	aurostd::execute(aus);
-	aus << "cd " << xvasp.Directory << endl;
-	aus << "cat " << _AFLOWIN_ << " | sed \"s/\\[VASP_FORCE_OPTION\\]VOLUME/#\\[VASP_FORCE_OPTION\\]VOLUME/g\" | sed \"s/##\\[/#\\[/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl; // PRESERVE VOLUME
-	aurostd::execute(aus);
-	// cerr << aus.str();
-      }
-  }
-} // namespace KBIN
+    void VASP_CONTCAR_Save(_xvasp xvasp,string relax) {        // AFLOW_FUNCTION_IMPLEMENTATION
+        if(aurostd::FileExist(xvasp.Directory+string("/CONTCAR")))
+            if(!aurostd::FileEmpty(xvasp.Directory+string("/CONTCAR"))) {
+                ostringstream aus;
+                aus << "cd " << xvasp.Directory << endl;
+                aus << "echo \"[AFLOW] SELF-MODIFICATION \" >> " << _AFLOWIN_ << " " << endl;
+                aus << "echo \"[AFLOW] Recycling CONTCAR of " << relax << " \" >> " << _AFLOWIN_ << " " << endl;
 
-namespace KBIN {
-  void VASP_Recycle(_xvasp xvasp,string relax) {        // AFLOW_FUNCTION_IMPLEMENTATION
-    ostringstream aus;
-    aus << "cd " << xvasp.Directory << endl;
-    aus << "cp CONTCAR." << relax << " POSCAR" << endl;
-    aus << "cp INCAR." << relax << " INCAR" << endl;
-    aus << "cp KPOINTS." << relax << " KPOINTS" << endl;
-    aus << "cp POTCAR." << relax << " POTCAR" << endl;
-    aurostd::execute(aus);
-  }
-} // namespace KBIN
+                /*//KESONG fixes potential aflow command problem in future, 2018-11-25
+                  string str_tmp = aurostd::file2string(xvasp.Directory+string("/CONTCAR"));   
+                  stringstream ss_tmp; ss_tmp << ""; 
+                  ss_tmp << str_tmp << endl;
+                  string str_tmp2 = pflow::AFLOWIN(ss_tmp) + " >> ";
+                  aurostd::string2file(str_tmp2, "test.txt");
+                  aus <<   str_tmp2  <<  _AFLOWIN_ << " " << endl;
+                  */
 
-namespace KBIN {
-  void VASP_Recycle(_xvasp xvasp,int relax_number) {        // AFLOW_FUNCTION_IMPLEMENTATION
-    ostringstream aus;
-
-    deque<string> vext; aurostd::string2tokens(".bz2,.xz,.gz",vext,",");
-    deque<string> vzip; aurostd::string2tokens("bzip2,xz,gzip",vzip,",");
-    
-    aus << "cd " << xvasp.Directory << endl;
-    for(uint iext=0;iext<vext.size();iext++) { 
-      aus << vzip.at(iext) << " -dqf *" << vext.at(iext) << endl;
-     }
-    aus << "cp CONTCAR.relax" << relax_number << " POSCAR" << endl;
-    aus << "cp INCAR.relax" << relax_number << " INCAR" << endl;
-    aus << "cp KPOINTS.relax" << relax_number << " KPOINTS" << endl;
-    aus << "cp POTCAR.relax" << relax_number << " POTCAR" << endl;
-    aurostd::execute(aus);
-  }
-} // namespace KBIN
-
-namespace KBIN {
-  void VASP_RecycleExtraFile(_xvasp xvasp,string xfile,string relax) {        // AFLOW_FUNCTION_IMPLEMENTATION
-    ostringstream aus;
-    aus << "cd " << xvasp.Directory << endl;
-    aus << "cp " << xfile << "." << relax << " " << xfile << endl;
-    aurostd::execute(aus);
-  }
-} // namespace KBIN
-
-namespace KBIN {
-  void VASP_RecycleExtraFile(_xvasp xvasp,string xfile,int relax_number) {        // AFLOW_FUNCTION_IMPLEMENTATION
-    ostringstream aus;
-
-    deque<string> vext; aurostd::string2tokens(".bz2,.xz,.gz",vext,",");
-    deque<string> vzip; aurostd::string2tokens("bzip2,xz,gzip",vzip,",");
-
-    aus << "cd " << xvasp.Directory << endl;
-    for(uint iext=0;iext<vext.size();iext++) { 
-      aus << vzip.at(iext) << " -dqf " <<  xfile << vext.at(iext) << endl;
+                aus << "cat CONTCAR | aflow --aflowin  >> " << _AFLOWIN_ << " " << endl;
+                aurostd::execute(aus);
+                aus << "cd " << xvasp.Directory << endl;
+                aus << "cat " << _AFLOWIN_ << " | sed \"s/\\[VASP_FORCE_OPTION\\]VOLUME/#\\[VASP_FORCE_OPTION\\]VOLUME/g\" | sed \"s/##\\[/#\\[/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl; // PRESERVE VOLUME
+                aurostd::execute(aus);
+            }
     }
-    aus << "cp " <<  xfile << ".relax" << relax_number << " " << xfile << endl;
-    aurostd::execute(aus);
-  }
 } // namespace KBIN
 
 namespace KBIN {
-  void VASP_BackupOriginal(_xvasp xvasp) {        // AFLOW_FUNCTION_IMPLEMENTATION
-    ostringstream aus;
-    aus << "cd " << xvasp.Directory << endl;
-    aus << "cp KPOINTS KPOINTS.orig" << endl;
-    aus << "cp INCAR   INCAR.orig" << endl;
-    aus << "cp POSCAR  POSCAR.orig" << endl;
-    aurostd::execute(aus);
-  }
-} // namespace KBIN
-
-namespace KBIN {
-  bool VASP_CheckUnconvergedOSZICAR(string dir) {
-    uint ielectrons=0,issues=0,cutoff=3;
-    vector<string> vlines,vrelax,tokens;
-    aurostd::file2vectorstring(dir+"/OSZICAR",vlines);
-    for(uint i=0;i<vlines.size();i++)
-      if(aurostd::substring2bool(vlines.at(i),"F="))
-	vrelax.push_back(vlines.at(i-1));
-    if(vrelax.size()<cutoff) return FALSE; // no problem
-    // otherwise check for issues.
-    for(uint i=0;i<vrelax.size()&&i<cutoff;i++) {
-      aurostd::string2tokens(vrelax.at(i),tokens," ");
-      ielectrons=aurostd::string2utype<uint>(tokens.at(1));
-      if(ielectrons==60 || ielectrons==120) issues++;
+    void VASP_Recycle(_xvasp xvasp,string relax) {        // AFLOW_FUNCTION_IMPLEMENTATION
+        ostringstream aus;
+        aus << "cd " << xvasp.Directory << endl;
+        aus << "cp CONTCAR." << relax << " POSCAR" << endl;
+        aus << "cp INCAR." << relax << " INCAR" << endl;
+        aus << "cp KPOINTS." << relax << " KPOINTS" << endl;
+        aus << "cp POTCAR." << relax << " POTCAR" << endl;
+        aurostd::execute(aus);
     }
-    if(issues==cutoff) return TRUE;
-    return FALSE;
-  }
+} // namespace KBIN
+
+namespace KBIN {
+    void VASP_Recycle(_xvasp xvasp,int relax_number) {        // AFLOW_FUNCTION_IMPLEMENTATION
+        ostringstream aus;
+
+        deque<string> vext; aurostd::string2tokens(".bz2,.xz,.gz",vext,",");
+        deque<string> vzip; aurostd::string2tokens("bzip2,xz,gzip",vzip,",");
+
+        aus << "cd " << xvasp.Directory << endl;
+        for(uint iext=0;iext<vext.size();iext++) { 
+            aus << vzip.at(iext) << " -dqf *" << vext.at(iext) << endl;
+        }
+        aus << "cp CONTCAR.relax" << relax_number << " POSCAR" << endl;
+        aus << "cp INCAR.relax" << relax_number << " INCAR" << endl;
+        aus << "cp KPOINTS.relax" << relax_number << " KPOINTS" << endl;
+        aus << "cp POTCAR.relax" << relax_number << " POTCAR" << endl;
+        aurostd::execute(aus);
+    }
+} // namespace KBIN
+
+namespace KBIN {
+    void VASP_RecycleExtraFile(_xvasp xvasp,string xfile,string relax) {        // AFLOW_FUNCTION_IMPLEMENTATION
+        ostringstream aus;
+        aus << "cd " << xvasp.Directory << endl;
+        aus << "cp " << xfile << "." << relax << " " << xfile << endl;
+        aurostd::execute(aus);
+    }
+} // namespace KBIN
+
+namespace KBIN {
+    void VASP_RecycleExtraFile(_xvasp xvasp,string xfile,int relax_number) {        // AFLOW_FUNCTION_IMPLEMENTATION
+        ostringstream aus;
+
+        deque<string> vext; aurostd::string2tokens(".bz2,.xz,.gz",vext,",");
+        deque<string> vzip; aurostd::string2tokens("bzip2,xz,gzip",vzip,",");
+
+        aus << "cd " << xvasp.Directory << endl;
+        for(uint iext=0;iext<vext.size();iext++) { 
+            aus << vzip.at(iext) << " -dqf " <<  xfile << vext.at(iext) << endl;
+        }
+        aus << "cp " <<  xfile << ".relax" << relax_number << " " << xfile << endl;
+        aurostd::execute(aus);
+    }
+} // namespace KBIN
+
+namespace KBIN {
+    void VASP_BackupOriginal(_xvasp xvasp) {        // AFLOW_FUNCTION_IMPLEMENTATION
+        ostringstream aus;
+        aus << "cd " << xvasp.Directory << endl;
+        aus << "cp KPOINTS KPOINTS.orig" << endl;
+        aus << "cp INCAR   INCAR.orig" << endl;
+        aus << "cp POSCAR  POSCAR.orig" << endl;
+        aurostd::execute(aus);
+    }
+} // namespace KBIN
+
+namespace KBIN {
+    bool VASP_CheckUnconvergedOSZICAR(string dir) {
+        uint ielectrons=0,issues=0,cutoff=3;
+        vector<string> vlines,vrelax,tokens;
+        aurostd::file2vectorstring(dir+"/OSZICAR",vlines);
+        for(uint i=0;i<vlines.size();i++)
+            if(aurostd::substring2bool(vlines.at(i),"F="))
+                vrelax.push_back(vlines.at(i-1));
+        if(vrelax.size()<cutoff) return FALSE; // no problem
+        // otherwise check for issues.
+        for(uint i=0;i<vrelax.size()&&i<cutoff;i++) {
+            aurostd::string2tokens(vrelax.at(i),tokens," ");
+            ielectrons=aurostd::string2utype<uint>(tokens.at(1));
+            if(ielectrons==60 || ielectrons==120) issues++;
+        }
+        if(issues==cutoff) return TRUE;
+        return FALSE;
+    }
 } // namespace KBIN
 
 // ***************************************************************************
@@ -3700,82 +3703,82 @@ namespace KBIN {
 
 // ***************************************************************************
 namespace KBIN {
-  void GetStatDiel(string& outcar, xvector<double>& eigr, xvector<double>& eigi) { // loop GetStatDiel
-    int PATH_LENGTH_MAX = 1024 ;
-    char work_dir[PATH_LENGTH_MAX] ;
-    string outcarfile, outcarpath ;
-    string outcarpath_tmp = aurostd::TmpFileCreate("OUTCARc1.tmp") ;
-    vector<string> outcarlines, endline, startline, vasptoken ;
-    xmatrix<double> statdiel(3,3), eigenvec(3,3) ;
-    double eps = 1.0E-5 ; // need to define this more rigorously
-    getcwd(work_dir, PATH_LENGTH_MAX) ;
+    void GetStatDiel(string& outcar, xvector<double>& eigr, xvector<double>& eigi) { // loop GetStatDiel
+        int PATH_LENGTH_MAX = 1024 ;
+        char work_dir[PATH_LENGTH_MAX] ;
+        string outcarfile, outcarpath ;
+        string outcarpath_tmp = aurostd::TmpFileCreate("OUTCARc1.tmp") ;
+        vector<string> outcarlines, endline, startline, vasptoken ;
+        xmatrix<double> statdiel(3,3), eigenvec(3,3) ;
+        double eps = 1.0E-5 ; // need to define this more rigorously
+        getcwd(work_dir, PATH_LENGTH_MAX) ;
 
-    if(!aurostd::FileExist(outcar)) {
-      cout << "KBIN::GetStatDiel: check filename || file missing" << endl ;
-      exit(0) ;
-    } else {
-      outcarpath = "/" + outcar ;
-      outcarpath = work_dir + outcarpath ;
-      vector<string> outcardata ;
-      aurostd::string2tokens(outcarpath, outcardata, ".") ;
-      if(outcardata.at(outcardata.size()-1) == "bz2") { // compressed option
-	aurostd::execute("bzcat " + outcarpath + " > " + outcarpath_tmp) ;
-	aurostd::file2vectorstring(outcarpath_tmp, outcarlines) ;
-      } else if(outcardata.at(outcardata.size()-1) == "xz") { // compressed option
-	aurostd::execute("xzcat " + outcarpath + " > " + outcarpath_tmp) ;
-	aurostd::file2vectorstring(outcarpath_tmp, outcarlines) ;
-      } else if(outcardata.at(outcardata.size()-1) == "gz") { // compressed option
-	aurostd::execute("gzcat " + outcarpath + " > " + outcarpath_tmp) ;
-	aurostd::file2vectorstring(outcarpath_tmp, outcarlines) ;
-      } else { // plain text option
-	aurostd::execute("cat " + outcarpath + " > " + outcarpath_tmp) ;
-	aurostd::file2vectorstring(outcarpath_tmp, outcarlines) ;
-      }
-    }
-    // check the loaded OUTCAR
-    aurostd::string2tokens(outcarlines.at(0),startline," ");
-    aurostd::string2tokens(startline.at(0),vasptoken,".");
-    aurostd::string2tokens(outcarlines.at(outcarlines.size()-1),endline," ");
-    if(vasptoken.at(0) != "vasp" || endline.at(0) != "Voluntary") { // first and last line check
-      cerr << "OUTCAR file is probably corrupt" << endl ;
-      exit(0) ;
-    }
-    uint sec_count = 0 ;
-    for (uint ii=outcarlines.size()-12 ; ii<outcarlines.size() ; ii++) { // presence timing information check
-      vector<string> timetoken ;
-      aurostd::string2tokens(outcarlines.at(ii),timetoken," ") ;
-      if(timetoken.size() > 0) {
-	for (uint jj=0 ; jj<timetoken.size() ; jj++)
-	  { if(timetoken.at(jj) == "(sec):") sec_count+=1 ; }
-      }
-    }
-    if(sec_count != 4) { // first and last line check
-      cerr << "OUTCAR file is probably corrupt" << endl ;
-      exit(0) ;
-    }
-    // OUTCAR is now in memory, now parse the info
-    vector<string> words_line ;
-    vector<string> vec1, vec2, vec3 ;
-    bool  check_digit = false ;
-    uint  refline ;
-    for (uint ii=outcarlines.size()-1 ; ii > 1 ; ii--) { // line contents
-      for (uint jj=0 ; jj < words_line.size() ; jj++) {
-	string search_term = "MACROSCOPIC" ;
-	string test_word = words_line.at(jj) ;
-	if(test_word == search_term) { // start of dielectric tensor
-	  refline = ii + 2 ;
-	  check_digit = true ;
-	}
-      }
-      if(check_digit) { // put the tensor info into the string vectors
-	aurostd::string2tokens(outcarlines.at(refline+0),vec1," ") ;
-	aurostd::string2tokens(outcarlines.at(refline+1),vec2," ") ;
-	aurostd::string2tokens(outcarlines.at(refline+2),vec3," ") ;
-	for (uint jj=1 ; jj <= 3 ; jj++) { // string to double, 3x3 matrix, be careful with array bounds
-	  statdiel(1,jj) = atof(vec1.at(jj-1).c_str()) ;
-	  statdiel(2,jj) = atof(vec2.at(jj-1).c_str()) ;
-	  statdiel(3,jj) = atof(vec3.at(jj-1).c_str()) ;
-	}
+        if(!aurostd::FileExist(outcar)) {
+            cout << "KBIN::GetStatDiel: check filename || file missing" << endl ;
+            exit(0) ;
+        } else {
+            outcarpath = "/" + outcar ;
+            outcarpath = work_dir + outcarpath ;
+            vector<string> outcardata ;
+            aurostd::string2tokens(outcarpath, outcardata, ".") ;
+            if(outcardata.at(outcardata.size()-1) == "bz2") { // compressed option
+                aurostd::execute("bzcat " + outcarpath + " > " + outcarpath_tmp) ;
+                aurostd::file2vectorstring(outcarpath_tmp, outcarlines) ;
+            } else if(outcardata.at(outcardata.size()-1) == "xz") { // compressed option
+                aurostd::execute("xzcat " + outcarpath + " > " + outcarpath_tmp) ;
+                aurostd::file2vectorstring(outcarpath_tmp, outcarlines) ;
+            } else if(outcardata.at(outcardata.size()-1) == "gz") { // compressed option
+                aurostd::execute("gzcat " + outcarpath + " > " + outcarpath_tmp) ;
+                aurostd::file2vectorstring(outcarpath_tmp, outcarlines) ;
+            } else { // plain text option
+                aurostd::execute("cat " + outcarpath + " > " + outcarpath_tmp) ;
+                aurostd::file2vectorstring(outcarpath_tmp, outcarlines) ;
+            }
+        }
+        // check the loaded OUTCAR
+        aurostd::string2tokens(outcarlines.at(0),startline," ");
+        aurostd::string2tokens(startline.at(0),vasptoken,".");
+        aurostd::string2tokens(outcarlines.at(outcarlines.size()-1),endline," ");
+        if(vasptoken.at(0) != "vasp" || endline.at(0) != "Voluntary") { // first and last line check
+            cerr << "OUTCAR file is probably corrupt" << endl ;
+            exit(0) ;
+        }
+        uint sec_count = 0 ;
+        for (uint ii=outcarlines.size()-12 ; ii<outcarlines.size() ; ii++) { // presence timing information check
+            vector<string> timetoken ;
+            aurostd::string2tokens(outcarlines.at(ii),timetoken," ") ;
+            if(timetoken.size() > 0) {
+                for (uint jj=0 ; jj<timetoken.size() ; jj++)
+                { if(timetoken.at(jj) == "(sec):") sec_count+=1 ; }
+            }
+        }
+        if(sec_count != 4) { // first and last line check
+            cerr << "OUTCAR file is probably corrupt" << endl ;
+            exit(0) ;
+        }
+        // OUTCAR is now in memory, now parse the info
+        vector<string> words_line ;
+        vector<string> vec1, vec2, vec3 ;
+        bool  check_digit = false ;
+        uint  refline ;
+        for (uint ii=outcarlines.size()-1 ; ii > 1 ; ii--) { // line contents
+            for (uint jj=0 ; jj < words_line.size() ; jj++) {
+                string search_term = "MACROSCOPIC" ;
+                string test_word = words_line.at(jj) ;
+                if(test_word == search_term) { // start of dielectric tensor
+                    refline = ii + 2 ;
+                    check_digit = true ;
+                }
+            }
+            if(check_digit) { // put the tensor info into the string vectors
+                aurostd::string2tokens(outcarlines.at(refline+0),vec1," ") ;
+                aurostd::string2tokens(outcarlines.at(refline+1),vec2," ") ;
+                aurostd::string2tokens(outcarlines.at(refline+2),vec3," ") ;
+                for (uint jj=1 ; jj <= 3 ; jj++) { // string to double, 3x3 matrix, be careful with array bounds
+                    statdiel(1,jj) = atof(vec1.at(jj-1).c_str()) ;
+                    statdiel(2,jj) = atof(vec2.at(jj-1).c_str()) ;
+                    statdiel(3,jj) = atof(vec3.at(jj-1).c_str()) ;
+                }
 	break ;
       }
     }
