@@ -3586,8 +3586,13 @@ namespace KBIN {
 	aus << "cd " << xvasp.Directory << endl;
 	aus << "echo \"[AFLOW] SELF-MODIFICATION \" >> " << _AFLOWIN_ << " " << endl;
 	aus << "echo \"[AFLOW] Recycling CONTCAR of " << relax << " \" >> " << _AFLOWIN_ << " " << endl;
-	aus << "cat CONTCAR | aflow --aflowin  >> " << _AFLOWIN_ << " " << endl;
 	aurostd::execute(aus);
+    string str_tmp = aurostd::file2string(xvasp.Directory+string("/CONTCAR"));   
+    //KESONG fixes potential aflow command problem, 2018-11-25
+    stringstream ss_tmp; ss_tmp << ""; 
+    ss_tmp << str_tmp << endl;
+    aus <<   pflow::AFLOWIN(ss_tmp)  <<  _AFLOWIN_ << " " << endl;
+	//aus << "cat CONTCAR | aflow --aflowin  >> " << _AFLOWIN_ << " " << endl;
 	aus << "cd " << xvasp.Directory << endl;
 	aus << "cat " << _AFLOWIN_ << " | sed \"s/\\[VASP_FORCE_OPTION\\]VOLUME/#\\[VASP_FORCE_OPTION\\]VOLUME/g\" | sed \"s/##\\[/#\\[/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl; // PRESERVE VOLUME
 	aurostd::execute(aus);

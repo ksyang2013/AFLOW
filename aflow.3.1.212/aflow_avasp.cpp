@@ -551,7 +551,7 @@ string AVASP_Get_PseudoPotential_PAW_PBE(string species) {
   if(species=="Tc") return "Tc_pv"; // STEFANO     [PAW_PBE]
   if(species=="Te") return "Te"; // unique choice...     [PAW_PBE]
   if(species=="Th") return "Th_s"; // STEFANO NEVER USED JUST FOR COMPLETENESS     [PAW_PBE]
-  if(species=="Ti") return "Ti_sv"; // STEFANO     [PAW_PBE]
+  if(species=="Ti") return "Ti_pv"; // STEFANO    //KESONG changes Ti_sv to Ti_pv, 
   if(species=="Tl") return "Tl_d"; // STEFANO     [PAW_PBE]
   //  if(species=="Tm") return "Tm_3"; // WAHYU, frozen f     [PAW_PBE]
   if(species=="Tm") return "Tm";  // WAHYU, with f-states, teragrid project     [PAW_PBE]

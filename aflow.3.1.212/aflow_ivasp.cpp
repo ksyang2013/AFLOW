@@ -3335,8 +3335,6 @@ namespace KBIN {
                     if(svalue=="DEFAULT") {
                         xvasp.INCAR << aurostd::PaddedPOST("ISMEAR=1",_incarpad_) << "# for default (as metal)" << endl;
                         xvasp.INCAR << aurostd::PaddedPOST("SIGMA=0.1",_incarpad_) << "# for default (as metal)" << endl;
-                        //    xvasp.INCAR << aurostd::PaddedPOST("ISMEAR=2",_incarpad_) << "# default" << endl;
-                        //   xvasp.INCAR << aurostd::PaddedPOST("SIGMA=0.2",_incarpad_) << "# default" << endl;
                     }
                     if(svalue=="METAL") {
                         xvasp.INCAR << aurostd::PaddedPOST("ISMEAR=1",_incarpad_) << "# for metal" << endl;
