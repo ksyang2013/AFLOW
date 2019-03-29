@@ -1972,6 +1972,8 @@ namespace KBIN {
           if(aurostd::substring2bool(vfiles.at(i),"aflow.in")){continue;}
           if(aurostd::substring2bool(vfiles.at(i),"agl_aflow.in")){continue;}
           if(aurostd::substring2bool(vfiles.at(i),"ael_aflow.in")){continue;}
+          if(aurostd::substring2bool(vfiles.at(i),"vdw_kernel.bindat")){continue;}
+          if(aurostd::substring2bool(vfiles.at(i),"vdw_kernel.bindat.big_endian")){continue;}
           if(aurostd::substring2bool(vfiles.at(i),DEFAULT_AFLOW_FROZSL_INPUT_OUT)){continue;}
           if(aurostd::IsDirectory(file_path)){                 
             if(aurostd::substring2bool(vfiles.at(i),KBIN_SUBDIRECTORIES)){ // only directories we don't ignore

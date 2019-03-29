@@ -360,7 +360,7 @@ namespace KBIN {
                 aus << "[VASP_INCAR_FILE]ISMEAR=1" << endl;
                 aus << "[VASP_INCAR_FILE]SIGMA=0.2" << endl;
                 aus << "[VASP_INCAR_FILE]IBRION=2" << endl;
-                aus << "[VASP_INCAR_FILE]NSW=51" << endl;
+                aus << "[VASP_INCAR_FILE]NSW=160" << endl;
                 aus << "[VASP_INCAR_FILE]ISIF=3" << endl;
                 aus << "[VASP_INCAR_FILE]ENMAX=333.666" << endl;
                 aus << "[VASP_INCAR_FILE]NBANDS=47" << endl;
@@ -378,7 +378,7 @@ namespace KBIN {
                 aus << "ISMEAR=1" << endl;
                 aus << "SIGMA=0.2" << endl;
                 aus << "IBRION=2" << endl;
-                aus << "NSW=51" << endl;
+                aus << "NSW=160" << endl;
                 aus << "ISIF=3" << endl;
                 aus << "ENMAX=333.666" << endl;
                 aus << "NBANDS=47" << endl;
@@ -2567,7 +2567,7 @@ namespace KBIN {
                 // xvasp.INCAR << endl;
                 if(vflags.KBIN_VASP_INCAR_VERBOSE) xvasp.INCAR << "# Performing RELAX=ENERGY [AFLOW] begin" << endl;
                 xvasp.INCAR << aurostd::PaddedPOST("IBRION=2",_incarpad_) << "# relax with Conjugate Gradient  " << endl;
-                xvasp.INCAR << aurostd::PaddedPOST("NSW=51",_incarpad_) << "# relax for long              " << endl;
+                xvasp.INCAR << aurostd::PaddedPOST("NSW=160",_incarpad_) << "# relax for long              " << endl;
                 xvasp.INCAR << aurostd::PaddedPOST("ISIF="+aurostd::utype2string(isif),_incarpad_) << "# relax appropriately         " << endl;
                 xvasp.INCAR << aurostd::PaddedPOST("LORBIT=10",_incarpad_) << "# get spin decomposition      " << endl; //180130 CO get spinD
                 if(vflags.KBIN_VASP_INCAR_VERBOSE) xvasp.INCAR << "# Performing RELAX=ENERGY [AFLOW] end " << endl;
@@ -2596,7 +2596,7 @@ namespace KBIN {
                 //xvasp.INCAR << aurostd::PaddedPOST("EDIFFG="+aurostd::utype2string(DEFAULT_VASP_PREC_EDIFFG,12),_incarpad_) << "# The final structure has to have zero forces! " << endl;
                 xvasp.INCAR << aurostd::PaddedPOST("EDIFFG=-0.01",_incarpad_) << "# The final structure has to have zero forces! " << endl;
                 xvasp.INCAR << aurostd::PaddedPOST("IBRION=1",_incarpad_) << "# More stable algorithm " << endl;
-                xvasp.INCAR << aurostd::PaddedPOST("NSW=100",_incarpad_) << "# relax for very long " << endl;
+                xvasp.INCAR << aurostd::PaddedPOST("NSW=160",_incarpad_) << "# relax for very long " << endl;
                 // xvasp.INCAR << "ISIF=3         # relax everything " << endl;
                 xvasp.INCAR << aurostd::PaddedPOST("ISIF="+aurostd::utype2string(isif),_incarpad_)     << "# relax appropriately         " << endl;
                 xvasp.INCAR << aurostd::PaddedPOST("LORBIT=10",_incarpad_) << "# get spin decomposition      " << endl; //180130 CO get spinD
