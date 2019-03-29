@@ -6672,7 +6672,10 @@ xmatrix<double> ReciprocalLattice(const xmatrix<double>& rlattice,double scale) 
 // the function does not normalize with number of atoms so the calculation
 // must be done somewhere else
 string KPPRA(int& k1,int& k2,int& k3,const xmatrix<double>& rlattice,const int& NK) {
-  bool LDEBUG=(FALSE || XHOST.DEBUG);
+  //bool LDEBUG=(FALSE || XHOST.DEBUG);
+  bool LDEBUG=(TRUE || XHOST.DEBUG);
+  cout << "NK1 in xatom: " << NK << endl;
+  //exit(0);
   stringstream aus("");
   aus.precision(5);
   xmatrix<double> klattice(3,3);
@@ -6708,6 +6711,7 @@ string KPPRA(int& k1,int& k2,int& k3,const xmatrix<double>& rlattice,const int& 
 	aus << "00000  MESSAGE KPOINTS KPPRA minimizing k=[" << kk1 << "," << kk2 << "," << kk3 << "]=" << kk1*kk2*kk3 << " =[" << aurostd::modulus(db1) << "," << aurostd::modulus(db2) << "," << aurostd::modulus(db3) << "]   dk=" << dk << endl;
 	iverbose=kk1+kk2+kk3;
       }
+      cout << "NK in xatoms: " << NK << endl;
       if(kk1*kk2*kk3>=NK) {
 	k1=kk1;k2=kk2;k3=kk3;
 	found=TRUE;
@@ -6782,8 +6786,10 @@ string KPPRA_LAT(int& k1,int& k2,int& k3,const xmatrix<double>& rlattice,const i
 
 string KPPRA(xstructure& str,const int& _NK) {
   //  cerr << "KPPRA" << endl;
+  cerr << "_NK in xatom : " << _NK << endl;
   int NK=1;
   NK= (int) ((double) _NK/str.atoms.size()+0.5);if(NK<1) NK=1;
+  cerr << "NK in xatom2 : " << NK << endl;
   int k1=1,k2=1,k3=1;
   xmatrix<double> rlattice=str.lattice;
   rlattice=str.scale*rlattice;

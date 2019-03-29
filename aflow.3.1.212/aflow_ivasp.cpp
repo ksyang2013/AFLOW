@@ -1764,6 +1764,10 @@ namespace KBIN {
                     aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
                 }
                 stringKPPRA=KPPRA(xvasp.str,NK);
+                //KESONG
+                //cout << "xvasp.str " << xvasp.str << endl;
+                //cout << "NK " << NK << endl;
+                //exit(0);
                 // VERBOSE on LOCK /SCREEN
                 if(TRUE) FileMESSAGE << stringKPPRA;
                 if(TRUE) {
@@ -1775,6 +1779,7 @@ namespace KBIN {
                         << modulus(xvasp.str.klattice(3)/((double) xvasp.str.kpoints_k3)) << "]   " << endl;
                     aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
                 }
+                //exit(0);
                 // KSHIFT ******************************
                 if(LOCAL_KBIN_VASP_KPOINTS_KSHIFT_isentry==FALSE) {
                     xvasp.str.kpoints_s1=xvasp.str.kpoints_s2=xvasp.str.kpoints_s3=0.0;
