@@ -2688,7 +2688,7 @@ namespace KBIN {
         xvasp.INCAR << "# Performing STATIC [AFLOW]" << endl;
         xvasp.INCAR << aurostd::PaddedPOST("NSW=0",_incarpad_) << "# Performing RELAX_STATIC (zero ionic steps, so no relax, just static)" << endl;
         xvasp.INCAR << aurostd::PaddedPOST("IBRION=-1",_incarpad_) << "# Performing RELAX_STATIC (no relax, just static)" << endl;
-        xvasp.INCAR << aurostd::PaddedPOST("NELM=90",_incarpad_) << "# Performing RELAX_STATIC" << endl;
+        xvasp.INCAR << aurostd::PaddedPOST("NELM=120",_incarpad_) << "# Performing RELAX_STATIC" << endl;
         xvasp.INCAR << aurostd::PaddedPOST("EDIFF=1E-6",_incarpad_) << "# Performing RELAX_STATIC" << endl;
         xvasp.INCAR << aurostd::PaddedPOST("NELMIN=2",_incarpad_) << "# Performing RELAX_STATIC" << endl;
         xvasp.INCAR << aurostd::PaddedPOST("LCHARG=.TRUE.",_incarpad_) << "# Performing RELAX_STATIC" << endl;
