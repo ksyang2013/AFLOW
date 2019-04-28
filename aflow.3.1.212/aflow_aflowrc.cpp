@@ -216,13 +216,13 @@
 // PRECISION // DONE
 #define AFLOWRC_DEFAULT_VASP_PREC_ENMAX_LOW                   1.0
 #define         DEFAULT_VASP_PREC_ENMAX_LOW                   XHOST.adefault.getattachedutype<double>("DEFAULT_VASP_PREC_ENMAX_LOW")
-#define AFLOWRC_DEFAULT_VASP_PREC_ENMAX_MEDIUM                1.3
+#define AFLOWRC_DEFAULT_VASP_PREC_ENMAX_MEDIUM                1.0
 #define         DEFAULT_VASP_PREC_ENMAX_MEDIUM                XHOST.adefault.getattachedutype<double>("DEFAULT_VASP_PREC_ENMAX_MEDIUM")
-#define AFLOWRC_DEFAULT_VASP_PREC_ENMAX_NORMAL                1.3
+#define AFLOWRC_DEFAULT_VASP_PREC_ENMAX_NORMAL                1.0
 #define         DEFAULT_VASP_PREC_ENMAX_NORMAL                XHOST.adefault.getattachedutype<double>("DEFAULT_VASP_PREC_ENMAX_NORMAL")
-#define AFLOWRC_DEFAULT_VASP_PREC_ENMAX_HIGH                  1.4
+#define AFLOWRC_DEFAULT_VASP_PREC_ENMAX_HIGH                  1.0
 #define         DEFAULT_VASP_PREC_ENMAX_HIGH                  XHOST.adefault.getattachedutype<double>("DEFAULT_VASP_PREC_ENMAX_HIGH")
-#define AFLOWRC_DEFAULT_VASP_PREC_ENMAX_ACCURATE              1.4
+#define AFLOWRC_DEFAULT_VASP_PREC_ENMAX_ACCURATE              1.0
 #define         DEFAULT_VASP_PREC_ENMAX_ACCURATE              XHOST.adefault.getattachedutype<double>("DEFAULT_VASP_PREC_ENMAX_ACCURATE")
 #define AFLOWRC_DEFAULT_VASP_SPIN_REMOVE_CUTOFF               0.05
 #define         DEFAULT_VASP_SPIN_REMOVE_CUTOFF               XHOST.adefault.getattachedutype<double>("DEFAULT_VASP_SPIN_REMOVE_CUTOFF")
