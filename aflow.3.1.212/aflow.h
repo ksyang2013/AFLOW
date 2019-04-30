@@ -2450,7 +2450,7 @@ namespace KBIN {
 }
 
 // ----------------------------------------------------------------------------
-// aflow_ivasp.cpp
+// aflow_aims_ivasp.cpp
 namespace KBIN {
   bool VASP_Produce_INPUT(_xvasp& xvasp,const string& AflowIn,ofstream &FileMESSAGE,_aflags &aflags,_kflags &kflags,_vflags &vflags,bool load_POSCAR_from_xvasp=false);
   bool VASP_Modify_INPUT(_xvasp& xvasp,ofstream &FileMESSAGE,_aflags &aflags,_kflags &kflags,_vflags &vflags);
