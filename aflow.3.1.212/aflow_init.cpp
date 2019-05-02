@@ -1487,7 +1487,6 @@ bool AFLOW_BlackList(string h) {
   // if(h=="nietzsche" || h=="nietzsche.mems.duke.edu" || h=="material.duke.edu") return TRUE;
   if(h=="blacklisted_hostname") return TRUE;
   //  if(h=="m6-11-6") return TRUE;
-  //  if(h=="m6-2-2") return TRUE;
   return FALSE;
 }
 

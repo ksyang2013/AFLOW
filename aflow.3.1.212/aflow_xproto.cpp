@@ -351,7 +351,7 @@ namespace aflowlib {
     vector<string> vlabel_ANRL;
     if(aurostd::string2tokens(label,vlabel_ANRL,"_")>=4) {
       if(LDEBUG) { cerr << "aflowlib::PrototypeLibraries: ANRL=" << 1 << endl; }
-      return anrl::PrototypeANRL(oss,label,parameters,vatomX,vvolumeX,volume_in,mode,flip_option);
+//      return anrl::PrototypeANRL(oss,label,parameters,vatomX,vvolumeX,volume_in,mode,flip_option); KESONG
     }
     // done
     

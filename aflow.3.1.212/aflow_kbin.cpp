@@ -230,7 +230,6 @@ namespace KBIN {
   int KBIN_Main(vector<string> argv) {        // AFLOW_FUNCTION_IMPLEMENTATION
     bool LDEBUG=(FALSE || XHOST.DEBUG);
     string GENERIC;
-    //  string Directory;
     int i;
     ostringstream aus;
     ifstream FileAUS;

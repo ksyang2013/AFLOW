@@ -467,8 +467,7 @@ int main(int _argc,char **_argv) {
 int AFLOW_main(vector<string> &argv) {
   if(!XHOST.QUIET) cout << aflow::Banner("INTRODUCTION");// << endl;
   KBIN::KBIN_Main(argv);
-  // if(!XHOST.QUIET) cout << "MMMMM  AFLOW VERSION " << string(AFLOW_VERSION) << "  " << endl;
-  return 0; //1;  // CO 180419 - return 0 is normal
+  return 0; 
 }
 
 // ***************************************************************************

@@ -6711,7 +6711,7 @@ string KPPRA(int& k1,int& k2,int& k3,const xmatrix<double>& rlattice,const int& 
 	aus << "00000  MESSAGE KPOINTS KPPRA minimizing k=[" << kk1 << "," << kk2 << "," << kk3 << "]=" << kk1*kk2*kk3 << " =[" << aurostd::modulus(db1) << "," << aurostd::modulus(db2) << "," << aurostd::modulus(db3) << "]   dk=" << dk << endl;
 	iverbose=kk1+kk2+kk3;
       }
-      cout << "NK in xatoms: " << NK << endl;
+      //cout << "NK in xatoms: " << NK << endl;
       if(kk1*kk2*kk3>=NK) {
 	k1=kk1;k2=kk2;k3=kk3;
 	found=TRUE;

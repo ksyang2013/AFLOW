@@ -181,15 +181,16 @@ CHULL_OBJ              = $(CHULL_FUNCS_SRC:.cpp=.o)
 POCC_OBJ               = $(POCC_FUNCS_SRC:.cpp=.o) #CO 180409
 SQLITE_OBJ             = $(SQLITE_C:.c=.o)	#CO 170614
 
-OBJS_ALL= aflow.o $(AUROSTD_OBJ) $(AFLOW_CLASS_OBJ) $(AFLOW_FUNCS_OBJ) $(PFLOW_FUNCS_OBJ) $(ESTRUCTURE_FUNCS_OBJ) $(POCCUPATION_FUNCS_OBJ) $(APENNSY_FUNCS_OBJ) $(AUROSTD) $(LIBRARIES_FUNCS_OBJ) aflow_mix_experiments.o $(CONTRIB_FUNCS_OBJ) aflowlib_webapp_entry.cpp aflowlib_webapp_bands.cpp $(AFLOWLIB_OBJ) $(AGL_OBJ) $(AEL_OBJ) $(APL_OBJ) $(ANRL_OBJ) ${COMPARE_FUNCS_DH_OBJ} $(CHULL_OBJ) $(POCC_OBJ) $(SQLITE_OBJ)
+OBJS_ALL= aflow.o $(AUROSTD_OBJ) $(AFLOW_CLASS_OBJ) $(AFLOW_FUNCS_OBJ) $(PFLOW_FUNCS_OBJ) $(ESTRUCTURE_FUNCS_OBJ) $(POCCUPATION_FUNCS_OBJ) $(APENNSY_FUNCS_OBJ) $(AUROSTD) $(LIBRARIES_FUNCS_OBJ) aflow_mix_experiments.o $(CONTRIB_FUNCS_OBJ) aflowlib_webapp_entry.cpp aflowlib_webapp_bands.cpp $(AFLOWLIB_OBJ) $(AGL_OBJ) $(AEL_OBJ) $(APL_OBJ) ${COMPARE_FUNCS_DH_OBJ} $(CHULL_OBJ) $(POCC_OBJ) $(SQLITE_OBJ)
+#$(ANRL_OBJ) ${COMPARE_FUNCS_DH_OBJ} $(CHULL_OBJ) $(POCC_OBJ) $(SQLITE_OBJ)
 
 all: aflow aflow_data 
 	$(MAKE) check
 aflow: $(OBJS_ALL) Makefile 
 #	$(MAKE) -C ../AFLOW2_FREE/EXTRA/APL2AGR/ && cd ../../
 	cp -f aflow_apl*.o  aflow_aapl*.o  aflow_qha*.o ./APL/
-	cp -f aflow_anrl*.o ./ANRL/
-	cp sqlite3.o ./SQLITE/
+	#cp -f aflow_anrl*.o ./ANRL/   #KSYANG, 20190501
+	#cp sqlite3.o ./SQLITE/
 #	$(CPP) $(LIBS_AFLOW) -o aflow *.o $(LIB_MKL) $(LIBS_AFLOW)
 	$(CPP) $(LIBS_AFLOW) -o aflow `ls *.o | grep -v aflow_data` $(LIB_MKL) $(LIBS_AFLOW)
 	ln -sf aflow aflowd

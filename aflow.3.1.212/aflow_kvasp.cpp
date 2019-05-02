@@ -840,6 +840,7 @@ namespace KBIN {
     bool VASP_ExtractNGF(string OUTCAR,int &NGXF,int &NGYF,int &NGZF);
 } // namespace KBIN
 
+//KESONG where VASP starts
 namespace KBIN {
     bool VASP_Directory(ofstream &FileMESSAGE,_aflags &aflags,_kflags &kflags) { // AFLOW_FUNCTION_IMPLEMENTATION
         bool LDEBUG=(FALSE || XHOST.DEBUG);
@@ -981,6 +982,7 @@ namespace KBIN {
             // do the flags
             if(LDEBUG) cerr << "KBIN::VASP_Directory: [2]" << xvasp.str << endl;
             vflags.KBIN_VASP_INCAR_VERBOSE=TRUE; // ALWAYS
+            if(vflags.KBIN_VASP_RUN.flag("STATIC")) vflags.KBIN_VASP_INCAR_VERBOSE=FALSE; // TURN OFF VERBOSITY
             if(vflags.KBIN_VASP_RUN.flag("STATIC_BANDS")) vflags.KBIN_VASP_INCAR_VERBOSE=FALSE; // TURN OFF VERBOSITY
             if(vflags.KBIN_VASP_RUN.flag("RELAX_STATIC_BANDS")) vflags.KBIN_VASP_INCAR_VERBOSE=FALSE; // TURN OFF VERBOSITY
             if(vflags.KBIN_VASP_REPEAT.flag("REPEAT_BANDS")) vflags.KBIN_VASP_INCAR_VERBOSE=FALSE; // TURN OFF VERBOSITY
@@ -1003,8 +1005,8 @@ namespace KBIN {
                         //kflags.KBIN_PHONONS_CALCULATION_AGL ||    // CO 180503 - KEEP AEL/AGL stuff running per normal
                         //kflags.KBIN_PHONONS_CALCULATION_AEL ||    // CO 180503 - KEEP AEL/AGL stuff running per normal
                         FALSE)  //identity
-              ) { // CO 180419, do NOT produce POSCAR for POCC
-                if(Krun) Krun=(Krun && KBIN::VASP_Produce_INPUT(xvasp,AflowIn,FileMESSAGE,aflags,kflags,vflags));
+              ) { // CO 180419, do NOT produce POSCAR for POCC //KSYANG
+                if(Krun) Krun=(Krun && KBIN::VASP_Produce_INPUT(xvasp,AflowIn,FileMESSAGE,aflags,kflags,vflags));  //first produce, then modify, then, submit
                 if(Krun) Krun=(Krun && KBIN::VASP_Modify_INPUT(xvasp,FileMESSAGE,aflags,kflags,vflags));
                 if(Krun && kflags.KBIN_QSUB) Krun=(Krun && KBIN::QSUB_Extract(xvasp.xqsub,AflowIn,FileAFLOWIN,FileMESSAGE,aflags,kflags));
                 if(Krun && kflags.KBIN_QSUB_MODE1) Krun=(Krun && KBIN::QSUB_Extract_Mode1(xvasp.xqsub,FileMESSAGE,aflags,kflags));
