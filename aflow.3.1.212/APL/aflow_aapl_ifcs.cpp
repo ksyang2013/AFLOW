@@ -327,9 +327,9 @@ aurostd::xtensor<double>
   int num_iter = 0;
   double max_err;
   _logger << "Begin SCF for anharmonic force constants." << apl::endl;
-  std::cout << setiosflags(std::ios::fixed | std::ios::right);
+  std::cout << std::setiosflags(std::ios::fixed | std::ios::right);
   std::cout << setw(15) << "Iteration";
-  std::cout << setiosflags(std::ios::fixed | std::ios::right);
+  std::cout << std::setiosflags(std::ios::fixed | std::ios::right);
   std::cout << setw(20) << "Abs. max. error" << std::endl;
   do {
     // 1. Symmetrize using linear combinations
@@ -341,9 +341,9 @@ aurostd::xtensor<double>
     // 3. Determine deviations from zero
     calcSums(reduced_clusters, ifcs, dev_from_zero, abssum);
     max_err = aurostd::max(aurostd::abs(dev_from_zero));
-    std::cout << setiosflags(std::ios::fixed | std::ios::right);
+    std::cout << std::setiosflags(std::ios::fixed | std::ios::right);
     std::cout << setw(15) << num_iter;
-    std::cout << setiosflags(std::ios::fixed | std::ios::showpoint | std::ios::right);
+    std::cout << std::setiosflags(std::ios::fixed | std::ios::showpoint | std::ios::right);
     std::cout << setw(20) << max_err << std::endl;
 
     // 4. Correct IFCs
@@ -816,7 +816,7 @@ string AnharmonicIFCs::writeParameters() {
   for (int i = 1; i < 4; i++) {
     parameters << tab << tab << tab << "<v>";
     for (int j = 1; j < 4; j++) {
-      parameters << setiosflags(std::ios::fixed | std::ios::showpoint | std::ios::right);
+      parameters << std::setiosflags(std::ios::fixed | std::ios::showpoint | std::ios::right);
       parameters << setprecision(8);
       parameters << setw(15) << clst.pcell.lattice[i][j];
     }
@@ -828,7 +828,7 @@ string AnharmonicIFCs::writeParameters() {
     int t = clst.pcell.atoms[i].type;
     parameters << tab << tab << tab << "<v species=\"" << clst.pcell.species[t] << "\">";
     for (int j = 1; j < 4; j++) {
-      parameters << setiosflags(std::ios::fixed | std::ios::showpoint | std::ios::right);
+      parameters << std::setiosflags(std::ios::fixed | std::ios::showpoint | std::ios::right);
       parameters << setprecision(8);
       parameters << setw(15) << clst.pcell.atoms[i].fpos[j];
     }
@@ -885,7 +885,7 @@ string AnharmonicIFCs::writeIFCs() {
         for (int i = 0; i < 3; i++) {
           ifcs << tab << tab << tab << tab << "<v>";
           for (int j =0; j < 3; j++) {
-            ifcs << setiosflags(std::ios::fixed | std::ios::showpoint | std::ios::right);
+            ifcs << std::setiosflags(std::ios::fixed | std::ios::showpoint | std::ios::right);
             ifcs << setprecision(precision);
             ifcs << setw(width) << force_constants[a](atoms)(cart_ind)[i][j];
           }

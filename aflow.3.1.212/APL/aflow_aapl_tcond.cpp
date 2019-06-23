@@ -44,7 +44,7 @@ static const double au2THz = 9.648553873170e+02;  // eV/(A amu) -> nm * THz^2
 static const double hbar = PLANCKSCONSTANTEV_hbar;  // hbar in eVs
 static const double hbar_J = E_ELECTRON * 1e12 * hbar;  // hbar in J/THz;
 static const double BEfactor = hbar*1e12/KBOLTZEV;  // hbar/kB in K/THz
-static const double TCONDfactor = 1e24 * hbar_J * hbar_J/KBOLTZ;  // BTE constants in J*K/THz^2
+//static const double TCONDfactor = 1e24 * hbar_J * hbar_J/KBOLTZ;  // BTE constants in J*K/THz^2
 static const aurostd::xcomplex<double> iONE(0.0, 1.0);  // imaginary number
 
 using aurostd::xcombos;
@@ -972,9 +972,9 @@ void TCONDCalculator::calculateThermalConductivity() {
       int num_iter = 1;
       double max_diff;
       _logger << "Begin SCF for the Boltzmann transport equation." << apl::endl;
-      std::cout << setiosflags(std::ios::fixed | std::ios::right);
+      std::cout << std::setiosflags(std::ios::fixed | std::ios::right);
       std::cout << setw(15) << "Iteration";
-      std::cout << setiosflags(std::ios::fixed | std::ios::right);
+      std::cout << std::setiosflags(std::ios::fixed | std::ios::right);
       std::cout << setw(25) << "\%-difference" << std::endl;
       do {
         tcond_prev = tcond;
@@ -987,9 +987,9 @@ void TCONDCalculator::calculateThermalConductivity() {
         // using an absolute convergence criterion would add a lot more
         // unnecessary steps to materials with high thermal conductivity.
         max_diff = abs((aurostd::max(tcond_prev) - aurostd::max(tcond))/aurostd::max(tcond));
-        std::cout << setiosflags(std::ios::fixed | std::ios::right);
+        std::cout << std::setiosflags(std::ios::fixed | std::ios::right);
         std::cout << setw(15) << num_iter;
-        std::cout << setiosflags(std::ios::fixed | std::ios::right);
+        std::cout << std::setiosflags(std::ios::fixed | std::ios::right);
         std::cout << setw(25) << std::dec << (100*max_diff) << std::endl;
         num_iter++;
       } while ((max_diff > 5e-6) && (num_iter <= max_iter));

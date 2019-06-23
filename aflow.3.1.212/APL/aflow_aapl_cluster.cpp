@@ -1280,7 +1280,7 @@ string ClusterSet::writeParameters() {
   for (int i = 1; i < 4; i++) {
     parameters << tab << tab << tab << "<v>";
     for (int j = 1; j < 4; j++) {
-      parameters << setiosflags(std::ios::fixed | std::ios::showpoint | std::ios::right);
+      parameters << std::setiosflags(std::ios::fixed | std::ios::showpoint | std::ios::right);
       parameters << setprecision(8);
       parameters << setw(15) << pcell.lattice[i][j];
     }
@@ -1292,7 +1292,7 @@ string ClusterSet::writeParameters() {
     int t = pcell.atoms[i].type;
     parameters << tab << tab << tab << "<v species=\"" << pcell.species[t] << "\">";
     for (int j = 1; j < 4; j++) {
-      parameters << setiosflags(std::ios::fixed | std::ios::showpoint | std::ios::right);
+      parameters << std::setiosflags(std::ios::fixed | std::ios::showpoint | std::ios::right);
       parameters << setprecision(8);
       parameters << setw(15) << pcell.atoms[i].fpos[j];
     }
