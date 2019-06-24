@@ -2746,9 +2746,9 @@ namespace KBIN {
                 xvasp.INCAR << aurostd::PaddedPOST("ISMEAR=-5",_incarpad_) << "# Performing STATIC" << endl;
                 xvasp.INCAR << aurostd::PaddedPOST("SIGMA=0.05",_incarpad_) << "# Performing STATIC" << endl;
                 xvasp.INCAR << aurostd::PaddedPOST("LORBIT=10",_incarpad_) << "# Performing STATIC" << endl;
-                xvasp.INCAR << aurostd::PaddedPOST("EMIN= -25.0",_incarpad_) << "# Performing STATIC " << endl; 
+                xvasp.INCAR << aurostd::PaddedPOST("EMIN= -45.0",_incarpad_) << "# Performing STATIC " << endl; 
                 xvasp.INCAR << aurostd::PaddedPOST("EMAX=  25.0",_incarpad_) << "# Performing STATIC " << endl;  // was 15
-                xvasp.INCAR << aurostd::PaddedPOST("NEDOS= 5001",_incarpad_) << "# Performing STATIC " << endl;
+                xvasp.INCAR << aurostd::PaddedPOST("NEDOS= 7001",_incarpad_) << "# Performing STATIC " << endl;
                 xvasp.INCAR << "#adjusting ISMEAR,SIGMA,NSW,IBRION, NELM,NELMIN,LORBIT,LCHARG,LWAVE (ks adds it for only static)" << endl;
             }
         }
@@ -2808,9 +2808,9 @@ namespace KBIN {
                 xvasp.INCAR << aurostd::PaddedPOST("SIGMA=0.05",_incarpad_) << "# Performing RELAX_STATIC (so the DOS will not spill too much from band edges)" << endl;
                 if(vflags.KBIN_VASP_FORCE_OPTION_ALGO.preserved==FALSE) xvasp.INCAR << aurostd::PaddedPOST("ALGO=Normal",_incarpad_) << "# Performing RELAX_STATIC (stefano from ICSD)" << endl;
                 xvasp.INCAR << aurostd::PaddedPOST("LORBIT=10",_incarpad_) << "# Performing RELAX_STATIC" << endl;
-                xvasp.INCAR << aurostd::PaddedPOST("EMIN= -25.0",_incarpad_) << "# Performing RELAX_STATIC (aleksey) force search for EMIN; Changed by KESONG YANG" << endl; // was 35
+                xvasp.INCAR << aurostd::PaddedPOST("EMIN= -45.0",_incarpad_) << "# Performing RELAX_STATIC (aleksey) force search for EMIN; Changed by KESONG YANG" << endl; // was 35
                 xvasp.INCAR << aurostd::PaddedPOST("EMAX=  25.0",_incarpad_) << "# Performing RELAX_STATIC (aleksey)" << endl;  // was 35
-                xvasp.INCAR << aurostd::PaddedPOST("NEDOS= 5001",_incarpad_) << "# Performing RELAX_STATIC (aleksey)" << endl;
+                xvasp.INCAR << aurostd::PaddedPOST("NEDOS= 7001",_incarpad_) << "# Performing RELAX_STATIC (aleksey)" << endl;
                 xvasp.INCAR << aurostd::PaddedPOST("LCHARG=.TRUE.",_incarpad_) << "# Performing RELAX_STATIC" << endl;
                 if(vflags.KBIN_VASP_FORCE_OPTION_BADER.isentry && vflags.KBIN_VASP_FORCE_OPTION_BADER.option) xvasp.INCAR << aurostd::PaddedPOST("LAECHG=.TRUE.",_incarpad_) << "# Performing RELAX_STATIC  (Bader ON)" << endl;
                 if(vflags.KBIN_VASP_FORCE_OPTION_BADER.isentry && !vflags.KBIN_VASP_FORCE_OPTION_BADER.option) xvasp.INCAR << aurostd::PaddedPOST("LAECHG=.FALSE.",_incarpad_) << "# Performing RELAX_STATIC  (Bader OFF)" << endl;
@@ -2870,7 +2870,7 @@ namespace KBIN {
                             (aurostd::substring2bool(strline,"LAECHG",TRUE) && vflags.KBIN_VASP_FORCE_OPTION_BADER.isentry) || (aurostd::substring2bool(strline,"#LAECHG",TRUE) && vflags.KBIN_VASP_FORCE_OPTION_BADER.isentry)||
                             (aurostd::substring2bool(strline,"LELF",TRUE) && vflags.KBIN_VASP_FORCE_OPTION_ELF.isentry) || (aurostd::substring2bool(strline,"#LELF",TRUE) && vflags.KBIN_VASP_FORCE_OPTION_ELF.isentry)||
                             aurostd::substring2bool(strline,"LWAVE",TRUE) || aurostd::substring2bool(strline,"#LWAVE",TRUE)) {
-                                if(vflags.KBIN_VASP_INCAR_VERBOSE) xvasp.INCAR << "# " << strline << " # AFLOW REMOVED (KBIN::XVASP_INCAR_Relax_Static_Bands_ON)" << endl;
+                                //if(vflags.KBIN_VASP_INCAR_VERBOSE) xvasp.INCAR << "# " << strline << " # AFLOW REMOVED (KBIN::XVASP_INCAR_Relax_Static_Bands_ON)" << endl;
                             } else {
                                 if(!vflags.KBIN_VASP_INCAR_VERBOSE && strline.length()) xvasp.INCAR << strline << endl;
                                 if(vflags.KBIN_VASP_INCAR_VERBOSE) xvasp.INCAR << strline << endl;
@@ -2895,18 +2895,8 @@ namespace KBIN {
                 if(vflags.KBIN_VASP_FORCE_OPTION_ELF.isentry && vflags.KBIN_VASP_FORCE_OPTION_ELF.option) xvasp.INCAR << aurostd::PaddedPOST("LELF=.TRUE.",_incarpad_) << "# Performing RELAX_STATIC_BANDS (Elf ON)" << endl;
                 if(vflags.KBIN_VASP_FORCE_OPTION_ELF.isentry && !vflags.KBIN_VASP_FORCE_OPTION_ELF.option) xvasp.INCAR << aurostd::PaddedPOST("LELF=.FALSE.",_incarpad_) << "# Performing RELAX_STATIC_BANDS (Elf OFF)" << endl;
 
-                // if(vflags.KBIN_VASP_RUN_DIELECTRIC_STATIC || vflags.KBIN_VASP_RUN_DIELECTRIC_DYNAMIC) {
-                //   xvasp.INCAR << aurostd::PaddedPOST("LWAVE=.TRUE.",_incarpad_) << "# Performing RELAX_STATIC_BANDS (forced TRUE by DIELECTRIC)" << endl;
-                // } else {
-                //   xvasp.INCAR << aurostd::PaddedPOST("LWAVE=.FALSE.",_incarpad_) << "# Performing RELAX_STATIC_BANDS " << endl;
-                // }
                 xvasp.INCAR << aurostd::PaddedPOST("LWAVE=.FALSE.",_incarpad_) << "# Performing RELAX_STATIC_BANDS " << endl;
-                //cerr << "here2" << endl;
                 if(vflags.KBIN_VASP_INCAR_VERBOSE) xvasp.INCAR << "#adjusting ISMEAR,SIGMA,ISIF,IBRION,NSW,NELM,NELMIN,ICHARG,LCHARG,LAECHG,LWAVE" << endl;
-                //cerr << "here2" << endl;
-                //exit(0);
-                // cerr << "FIX KBIN::XVASP_INCAR_Relax_Static_Bands_Bands_ON(_xvasp& xvasp,bool vflags.KBIN_VASP_INCAR_VERBOSE)" << endl;
-                // exit(0);
 
                 // check for LDA/GGA
                 // check for LDA/GGA
