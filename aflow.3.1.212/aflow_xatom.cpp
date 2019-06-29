@@ -6672,8 +6672,8 @@ xmatrix<double> ReciprocalLattice(const xmatrix<double>& rlattice,double scale) 
 // the function does not normalize with number of atoms so the calculation
 // must be done somewhere else
 string KPPRA(int& k1,int& k2,int& k3,const xmatrix<double>& rlattice,const int& NK) {
-  //bool LDEBUG=(FALSE || XHOST.DEBUG);
-  bool LDEBUG=(TRUE || XHOST.DEBUG);
+  bool LDEBUG=(FALSE || XHOST.DEBUG);
+  //bool LDEBUG=(TRUE || XHOST.DEBUG);
   cout << "NK1 in xatom: " << NK << endl;
   //exit(0);
   stringstream aus("");

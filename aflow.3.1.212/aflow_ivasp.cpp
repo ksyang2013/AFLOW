@@ -464,7 +464,6 @@ namespace KBIN {
         xvasp.INCAR << " " <<  endl ;
         xvasp.INCAR << "#INCAR modified by aflow:" << endl;
         xvasp.aopts.flag("FLAG::XVASP_INCAR_generated",TRUE);
-        cout << "here1" << endl;
         return Krun;
     };  
 }
@@ -3533,7 +3532,7 @@ namespace KBIN {
                                     xvasp.INCAR << strline << endl;
                             }
                         }
-                        cerr << xvasp.INCAR.str() << endl;
+                        //cerr << xvasp.INCAR.str() << endl;
                         if (!doesKeywordExist(xvasp.INCAR.str(), "MAGMOM")) {
                             if(OPTION==ON) {
                                 xvasp.INCAR << "MAGMOM= ";
