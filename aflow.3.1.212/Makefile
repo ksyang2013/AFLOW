@@ -820,6 +820,9 @@ install: all
 	cp -f aflow_data $(BIN)/
 	cp -f $(BIN)/aflow.$(VERSNUMBER) $(BIN)/aflow
 	ls -las $(BIN)/aflow*
+	unlink $(BIN)/aflow 
+	ln -s $(BIN)/aflow.$(VERSNUMBER) $(BIN)/aflow
+	ln -s $(BIN)/aflow $(BIN)/aconvasp
 	$(MAKE) check
 install_auro: install_user
 	./aflow --version | grep AFLOW >> $(BIN)/etc_aflow_status.txt
