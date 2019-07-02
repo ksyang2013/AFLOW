@@ -823,6 +823,7 @@ install: all
 	ln -s $(BIN)/aflow.$(VERSNUMBER).$(DAY)	 $(BIN)/aflow
 	rm -f $(BIN)/aconvasp 
 	ln -s $(BIN)/aflow  $(BIN)/aconvasp
+	ls -las $(BIN)/aconvasp
 	$(MAKE) check
 #Add by Kesong, 2019-07-01
 install_mac: mac        
@@ -833,6 +834,7 @@ install_mac: mac
 	ln -s $(BIN)/aflow.$(VERSNUMBER).$(DAY)	 $(BIN)/aflow
 	rm -f $(BIN)/aconvasp 
 	ln -s $(BIN)/aflow  $(BIN)/aconvasp
+	ls -las $(BIN)/aconvasp
 	$(MAKE) check
 install_auro: install_user
 	./aflow --version | grep AFLOW >> $(BIN)/etc_aflow_status.txt
