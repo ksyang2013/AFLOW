@@ -816,13 +816,22 @@ APL/aflow_scqha_T_freqs.o: APL/aflow_scqha_T_freqs.cpp $(AFLOW_HPP) $(AUROSTD_HP
 
 ################################################################################################
 install: all
-	cp -f aflow $(BIN)/aflow.$(VERSNUMBER)
-	cp -f aflow_data $(BIN)/
-	cp -f $(BIN)/aflow.$(VERSNUMBER) $(BIN)/aflow
+	cp -f aflow $(BIN)/aflow.$(VERSNUMBER).$(DAY)
+	cp -f aflow_data  $(BIN)/
 	ls -las $(BIN)/aflow*
 	unlink $(BIN)/aflow 
-	ln -s $(BIN)/aflow.$(VERSNUMBER) $(BIN)/aflow
-	ln -s $(BIN)/aflow $(BIN)/aconvasp
+	ln -s $(BIN)/aflow.$(VERSNUMBER).$(DAY)	 $(BIN)/aflow
+	unlink $(BIN)/aconvasp 
+	ln -s $(BIN)/aflow  $(BIN)/aconvasp
+	$(MAKE) check
+install_mac: mac
+	cp -f aflow $(BIN)/aflow.$(VERSNUMBER).$(DAY)
+	cp -f aflow_data  $(BIN)/
+	ls -las $(BIN)/aflow*
+	unlink $(BIN)/aflow 
+	ln -s $(BIN)/aflow.$(VERSNUMBER).$(DAY)	 $(BIN)/aflow
+	unlink $(BIN)/aconvasp 
+	ln -s $(BIN)/aflow  $(BIN)/aconvasp
 	$(MAKE) check
 install_auro: install_user
 	./aflow --version | grep AFLOW >> $(BIN)/etc_aflow_status.txt
