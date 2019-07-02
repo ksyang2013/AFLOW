@@ -819,18 +819,19 @@ install: all
 	cp -f aflow $(BIN)/aflow.$(VERSNUMBER).$(DAY)
 	cp -f aflow_data  $(BIN)/
 	ls -las $(BIN)/aflow*
-	unlink $(BIN)/aflow 
+	rm -f $(BIN)/aflow 
 	ln -s $(BIN)/aflow.$(VERSNUMBER).$(DAY)	 $(BIN)/aflow
-	unlink $(BIN)/aconvasp 
+	rm -f $(BIN)/aconvasp 
 	ln -s $(BIN)/aflow  $(BIN)/aconvasp
 	$(MAKE) check
-install_mac: mac
+#Add by Kesong, 2019-07-01
+install_mac: mac        
 	cp -f aflow $(BIN)/aflow.$(VERSNUMBER).$(DAY)
 	cp -f aflow_data  $(BIN)/
 	ls -las $(BIN)/aflow*
-	unlink $(BIN)/aflow 
+	rm -f $(BIN)/aflow 
 	ln -s $(BIN)/aflow.$(VERSNUMBER).$(DAY)	 $(BIN)/aflow
-	unlink $(BIN)/aconvasp 
+	rm -f $(BIN)/aconvasp 
 	ln -s $(BIN)/aflow  $(BIN)/aconvasp
 	$(MAKE) check
 install_auro: install_user
