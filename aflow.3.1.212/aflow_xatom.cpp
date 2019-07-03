@@ -2025,9 +2025,6 @@ ostream& operator<<(ostream& oss,const xstructure& a) { // operator<<
   bool LDEBUG=(FALSE || XHOST.DEBUG);
   string soliloquy="XSTRUCTURE::operator<<():";
   int a_iomode=a.iomode;
-  //  DEBUG=TRUE;
-  // ----------------------------------------------------------------------
-  // PUT DEFAULT
   if(a_iomode==IOAFLOW_AUTO) a_iomode=IOVASP_AUTO; // some default
   // ----------------------------------------------------------------------
   // VASP OUTPUT
@@ -2059,10 +2056,14 @@ ostream& operator<<(ostream& oss,const xstructure& a) { // operator<<
     }
     oss.precision(_precision_);  // STEFANO to cut/paste from matlab in format long
     // CO 170630, add pocc tol to make truly pocc readable by aflow
+    //cout << "a.partial_occupation_flag : " << a.partial_occupation_flag << endl;
     if(a.partial_occupation_flag==TRUE) {
+      //cout << "i am here1" << endl;
       oss.unsetf(ios_base::floatfield);
       oss << " "; //<< std::defaultfloat;
-      if(a.neg_scale_second){oss << (-1)*a.partial_occupation_HNF;}
+      if(a.neg_scale_second){oss << (-1)*a.partial_occupation_HNF;
+          //cout << (-1)*a.partial_occupation_HNF << endl;
+      }
       else{oss << a.partial_occupation_site_tol;}
       if(a.scale_third.isentry){  // CO 170803 - stoich tol
         oss << " "; 
@@ -3078,13 +3079,10 @@ istream& operator>>(istream& cinput, xstructure& a) {
     aurostd::StringSubst(stmp,"\t"," ");aurostd::StringSubst(stmp,"  "," ");aurostd::StringSubst(stmp,"  "," ");
     aurostd::string2tokens(stmp,tokens);
     if(tokens.size()==0) {cerr << "ERROR: Xstructure operator>> missing second line in poscar" << endl; exit(0);}
-    // cerr << tokens.size() <<  " = " << tokens.at(0) << endl;exit(0);
     a.scale=0.0;
     if(tokens.size()>0) {a.scale=aurostd::string2utype<double>(tokens.at(0));}
     if(tokens.size()>1) {/*a.neg_scale_second=TRUE;*/a.scale_second=aurostd::string2utype<double>(tokens.at(1));a.neg_scale_second=std::signbit(a.scale_second);} // CO 180409
     if(tokens.size()>2) {a.scale_third.isentry=TRUE;a.scale_third.content_double=aurostd::string2utype<double>(tokens.at(2));}  // CO 170803 - site tol
-    //  cerr << a.scale << endl;
-    // if(a.neg_scale_second) cerr << a.scale_second << endl; // CO 180409
     // if(scale_third_flag) cerr << scale_third_value << endl;
     // cerr << sstring << endl;
     // -------------- UNIT CELL
@@ -3179,34 +3177,27 @@ istream& operator>>(istream& cinput, xstructure& a) {
       a.is_vasp4_poscar_format=FALSE;
       a.is_vasp5_poscar_format=TRUE;
     }
-    a.partial_occupation_flag=FALSE;
+    //KESONG FIXES THE BUG 2019-07-02
+    if (a.is_vasp4_poscar_format) stmp=vinput.at(6);
+    if (a.is_vasp5_poscar_format) stmp=vinput.at(7);
+    aurostd::StringSubst(stmp,"\t"," ");aurostd::StringSubst(stmp,"  "," ");aurostd::StringSubst(stmp,"  "," ");
+    aurostd::string2tokens(stmp,tokens);
 
-    for(uint j=1;j<tokens.size();j++) if(tokens.at(j)[0]=='P' || tokens.at(j)[0]=='P') a.partial_occupation_flag=TRUE;
-    //if(a.scale_second==0.0) { // CO 180409
+    a.partial_occupation_flag=FALSE;
+    for(uint j=1;j<tokens.size();j++) {
+        cout << "tokens.at(j): " << tokens.at(j) << endl;
+        if(tokens.at(j)[0]=='P' || tokens.at(j)[0]=='P') a.partial_occupation_flag=TRUE;
+    }
     a.partial_occupation_HNF=0; // nothing defined // CO 180409
     a.partial_occupation_site_tol=DEFAULT_PARTIAL_OCCUPATION_TOLERANCE; // nothing defined  // CO 170803 - site tol
     a.partial_occupation_stoich_tol=DEFAULT_PARTIAL_OCCUPATION_TOLERANCE; // nothing defined // CO 180409
-    //}
     if(a.partial_occupation_flag){ //&& a.neg_scale_second) { // CO 180409
-      if(LDEBUG){cerr << soliloquy << " a.neg_scale_second=" << a.neg_scale_second << ", a.scale_second=" << a.scale_second << endl;}
-      if(a.neg_scale_second){a.partial_occupation_HNF=(int) (-a.scale_second);} // CO 180409
+      if(a.neg_scale_second){a.partial_occupation_HNF=(int) (-a.scale_second);}
       else{
         a.partial_occupation_site_tol=a.partial_occupation_stoich_tol=a.scale_second; // CO 180409
         if(a.scale_third.isentry){a.partial_occupation_stoich_tol=a.scale_third.content_double;} // CO 170803 - site tol
       }
-      if(LDEBUG){
-        cerr << soliloquy << " a.partial_occupation_HNF=" << a.partial_occupation_HNF << endl;
-        cerr << soliloquy << " a.partial_occupation_site_tol=" << a.partial_occupation_site_tol << endl;
-        cerr << soliloquy << " a.partial_occupation_stoich_tol=" << a.partial_occupation_stoich_tol << endl;
-      }
-      //if(a.scale_second==0.0) {// CO 180409
-      //  a.partial_occupation_stoich_tol=DEFAULT_PARTIAL_OCCUPATION_TOLERANCE; // nothing defined
-      //  a.partial_occupation_site_tol=DEFAULT_PARTIAL_OCCUPATION_TOLERANCE; // nothing defined  // CO 170803 - site tol
-      //}
-      //     if(abs(a.partial_occupation_stoich_tol)>1e-12) cerr << "a.partial_occupation_stoich_tol=" << a.partial_occupation_stoich_tol << endl; // CO 180409
-      //   if(abs(a.partial_occupation_HNF)>0.0) cerr << "a.partial_occupation_HNF=" << a.partial_occupation_HNF << endl;
     }
-    //if(a.partial_occupation_flag && a.scale_third.isentry){a.partial_occupation_site_tol=a.scale_third.content_double;} // CO 170803 - site tol
 
     if(a.is_vasp5_poscar_format) {
       if(vinput.size()-1<iline){cerr << "ERROR: Xstructure operator>> missing line[" << iline << "]" << endl; exit(0);}  // CO 180420 - check for missing lines
