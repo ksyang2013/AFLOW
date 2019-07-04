@@ -814,6 +814,7 @@ APL/aflow_scqha_T_freqs.o: APL/aflow_scqha_T_freqs.cpp $(AFLOW_HPP) $(AUROSTD_HP
 #	${CPP} $(VERS) $(INCLUDE) $(CCFLAGS_GSA) APL/aflow_apl_gsa.cpp -c
 #	touch $@
 
+BIN_tscc = /projects/kyang-group/bin
 ################################################################################################
 install: all
 	cp -f aflow $(BIN)/aflow.$(VERSNUMBER).$(DAY)
@@ -826,6 +827,16 @@ install: all
 	ls -las $(BIN)/aconvasp
 	$(MAKE) check
 #Add by Kesong, 2019-07-01
+install_tscc: all
+	cp -f aflow $(BIN_tscc)/aflow.$(VERSNUMBER).$(DAY)
+	cp -f aflow_data  $(BIN_tscc)/
+	ls -las $(BIN_tscc)/aflow*
+	rm -f $(BIN_tscc)/aflow 
+	ln -s $(BIN_tscc)/aflow.$(VERSNUMBER).$(DAY)	 $(BIN_tscc)/aflow
+	rm -f $(BIN_tscc)/aconvasp 
+	ln -s $(BIN_tscc)/aflow  $(BIN_tscc)/aconvasp
+	ls -las $(BIN_tscc)/aconvasp
+	$(MAKE) check
 install_mac: mac        
 	cp -f aflow $(BIN)/aflow.$(VERSNUMBER).$(DAY)
 	cp -f aflow_data  $(BIN)/
