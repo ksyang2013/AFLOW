@@ -1166,10 +1166,6 @@ namespace KBIN {
                         if(vflags.KBIN_VASP_RUN.flag("STATIC")) {  // RUN STATIC ------------------------
                             aus << "00000  MESSAGE Performing Static RUN " << Message(aflags,"user,host,time") << endl;
                             aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
-                            //	if(vflags.KBIN_VASP_KPOINTS_KMODE_isentry==TRUE || vflags.KBIN_VASP_KPOINTS_KSCHEME_isentry==TRUE || vflags.KBIN_VASP_KPOINTS_KPPRA_isentry==TRUE || vflags.KBIN_VASP_KPOINTS_KSHIFT_isentry) {
-                            //	  aus << "00000  MESSAGE Patching KPOINT for the Static RUN " << Message(aflags,"user,host,time") << endl;
-                            //	  aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
-                            //	}
                             xvasp.NRELAX=-1;
                         }
                         if(vflags.KBIN_VASP_RUN.flag("KPOINTS")) {  // RUN KPOINTS ------------------------
@@ -1185,7 +1181,6 @@ namespace KBIN {
                                 Krun=FALSE;	   //	  FileINPUT.clear();FileINPUT.close();FileMESSAGE.clear();FileMESSAGE.close();
                                 xvasp.NRELAX=0;
                             }
-                            //	if(xvasp.NRELAX>1 && xvasp.NRELAX!=2)
                             {
                                 aus << "00000  MESSAGE RELAX_STATIC_BANDS Running [nrelax=" << xvasp.NRELAX << "]  " << Message(aflags,"user,host,time") << endl;
                                 aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);    
@@ -1199,17 +1194,13 @@ namespace KBIN {
                                 Krun=FALSE;	   //	  FileINPUT.clear();FileINPUT.close();FileMESSAGE.clear();FileMESSAGE.close();
                                 xvasp.NRELAX=0;
                             }
-                            //	if(xvasp.NRELAX>1 && xvasp.NRELAX!=2)
-                            {
-                                aus << "00000  MESSAGE RELAX_STATIC Running [nrelax=" << xvasp.NRELAX << "]  " << Message(aflags,"user,host,time") << endl;
-                                aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);    
-                            }
+                            aus << "00000  MESSAGE RELAX_STATIC Running [nrelax=" << xvasp.NRELAX << "]  " << Message(aflags,"user,host,time") << endl;
+                            aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);    
                         }
                         if(vflags.KBIN_VASP_RUN.flag("STATIC_BANDS")) { // RUN STATIC_BANDS ------------------------
                             xvasp.NRELAX=-1;	
                             aus << "00000  MESSAGE STATIC_BANDS Running  " << Message(aflags,"user,host,time") << endl;
                             aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);    
-                            //	  xvasp.NRELAX=0;//nrelax;	
                         }
                         if(vflags.KBIN_VASP_RUN.flag("RELAX")) { // RUN RELAX ------------------------
                             if(!(aurostd::substring2bool(AflowIn,"[VASP_RUN_RELAX=") || aurostd::substring2bool(AflowIn,"[VASP_RUN]RELAX="))) {
@@ -1254,33 +1245,8 @@ namespace KBIN {
                         // ***************************************************************************
                         // FIX BLANC SPECIES
                         if(xvasp.str.species.size()>0) {
-                            //[OBSOLETE] corey, fixing for RHT routines, FIXED INSIDE RHT
-                            //      if(xvasp.str.species.at(0)=="A") {
-                            //	      for(uint itype=0;itype<xvasp.str.species.size();itype++) {
-                            //    xvasp.str.species.at(itype)="";
-                            //  }
-                            //}
-                            //corey, fixing for RHT routines
                             if(xvasp.str.species.at(0)=="") {
                                 pflow::fixEmptyAtomNames(xvasp.str);  //corey moved to pflow
-                                //  for(uint itype=0;itype<xvasp.str.species.size();itype++) {
-                                //    if(xvasp.str.species.size()==xvasp.str.species_pp.size()) {
-                                //      if((xvasp.str.species.at(itype)=="") && xvasp.str.species_pp.at(itype)!="") 
-                                //        xvasp.str.species.at(itype)=KBIN::VASP_PseudoPotential_CleanName(xvasp.str.species_pp.at(itype));
-                                //    }
-                                //  }  // cormac I`ll write a short pflow for this stuff
-                                //  int iatom=0;
-                                //  for(uint itype=0;itype<xvasp.str.num_each_type.size();itype++) {
-                                //    string species=string(xvasp.str.species.at(itype));
-                                //    xvasp.str.species.at(itype)=species;
-                                //    for(int j=0;j<xvasp.str.num_each_type.at(itype);j++) {
-                                //      xvasp.str.atoms.at(iatom).name=species;    // CONVASP_MODE
-                                //      xvasp.str.atoms.at(iatom).CleanName();
-                                //      xvasp.str.atoms.at(iatom).CleanSpin();
-                                //      xvasp.str.atoms.at(iatom).name_is_given=TRUE;
-                                //      iatom++;
-                                //    }
-                                //  }
                             }
                         }
                         // ***************************************************************************
@@ -1296,16 +1262,6 @@ namespace KBIN {
                         else if(kflags.KBIN_PHONONS_CALCULATION_AEL==TRUE) {KBIN::VASP_RunPhonons_AEL(xvasp,AflowIn,aflags,kflags,vflags,FileMESSAGE);}
                         else if(kflags.KBIN_PHONONS_CALCULATION_FROZSL) {KBIN::VASP_RunPhonons_FROZSL(xvasp,AflowIn,aflags,kflags,vflags,FileMESSAGE);}
                         else{
-                            if(LDEBUG) cerr << "KBIN::VASP_Directory: [5] xvasp.str.species.size()=" << xvasp.str.species.size() << endl;
-                            if(LDEBUG) for(uint i=0;i<xvasp.str.species.size();i++) cerr << "KBIN::VASP_Directory: [5] xvasp.str.species.at(i)=[" << xvasp.str.species.at(i) << "]" << endl;
-                            if(LDEBUG) cerr << "KBIN::VASP_Directory: [5] xvasp.str.species_pp.size()=" << xvasp.str.species_pp.size() << endl;
-                            if(LDEBUG) for(uint i=0;i<xvasp.str.species_pp.size();i++) cerr << "KBIN::VASP_Directory: [5] xvasp.str.species_pp.at(i)=[" << xvasp.str.species_pp.at(i) << "]" << endl;
-                            //	    KBIN::VASP_Write_INPUT(xvasp,vflags); // VASP VASP WRITE
-                            //	    cerr << xvasp.POTCAR.str() << endl;
-                            if(LDEBUG) cerr << "KBIN::VASP_Directory: [6]" << xvasp.str << endl;
-                            // --------------------------------------------------------------------------------------------------------------------
-                            // --------------------------------------------------------------------------------------------------------------------
-                            // --------------------------------------------------------------------------------------------------------------------
                             // --------------------------------------------------------------------------------------------------------------------
                             // STATIC STATIC STATIC
                             if(vflags.KBIN_VASP_RUN.flag("STATIC")) {    // xvasp.RELAX=-1
@@ -1315,12 +1271,9 @@ namespace KBIN {
                                 aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
                                 Krun=KBIN::VASP_Run(xvasp,aflags,kflags,vflags,FileMESSAGE);
                                 if(!Krun) {KBIN::VASP_Error(xvasp,FileMESSAGE,"EEEEE  runtime error [STATIC] ");return Krun;}
-                                //	    if(_VASP_CONTCAR_SAVE_) KBIN::VASP_CONTCAR_Save(xvasp,string("static"));
                                 bool qmwrite=TRUE;
                                 KBIN::VASP_Backup(xvasp,qmwrite,string("static"));
                             }		
-                            // --------------------------------------------------------------------------------------------------------------------
-                            // --------------------------------------------------------------------------------------------------------------------
                             // --------------------------------------------------------------------------------------------------------------------
                             // RELAX RELAX RELAX
                             if(vflags.KBIN_VASP_RUN.flag("RELAX")) {    // xvasp.RELAX>0
@@ -1357,11 +1310,6 @@ namespace KBIN {
                                         xvasp.NRELAXING++;
                                         aus << 11111*xvasp.NRELAXING << "  END        - " <<  xvasp.Directory << " - K=[" << xvasp.str.kpoints_k1 << " " << xvasp.str.kpoints_k2 << " " << xvasp.str.kpoints_k3 << "]" << " - " << kflags.KBIN_BIN << " - " << Message("user,host,time") << endl;
                                         aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET); 
-
-                                        // if((vflags.KBIN_VASP_FORCE_OPTION_LDAU0.isentry || vflags.KBIN_VASP_FORCE_OPTION_LDAU1.isentry || vflags.KBIN_VASP_FORCE_OPTION_LDAU2.isentry) && vflags.KBIN_VASP_FORCE_OPTION_LDAU_CUTOFF.isentry) {
-                                        //   aus << 11111*xvasp.NRELAXING << "  EXTRA vflags.KBIN_VASP_FORCE_OPTION_LDAU_CUTOFF" << endl;
-                                        //   aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET); 
-                                        // }
                                     }
                                 }
                             }
@@ -2612,10 +2560,6 @@ namespace KBIN {
                     if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [4]" << endl;
 
                     int NBANDS_OUTCAR=0;
-                    // [OBSOLETE] vector<string> nbands_tokens;
-                    // [OBSOLETE] aurostd::string2tokensAdd(aurostd::execute2string("cat "+xvasp.Directory+"/OUTCAR | grep NBANDS="),nbands_tokens,"=");
-                    // [OBSOLETE] for(uint i=0;i<nbands_tokens.size();i++) if(i<nbands_tokens.size()-1 && aurostd::substring2bool(nbands_tokens.at(i),"NBANDS")) NBANDS_OUTCAR=aurostd::string2utype<int>(nbands_tokens.at(i+1));
-                    //	XHOST.DEBUG=TRUE;
                     xOUTCAR OUTCAR_NBANDS(xvasp.Directory+"/OUTCAR");
                     NBANDS_OUTCAR=OUTCAR_NBANDS.NBANDS;
 

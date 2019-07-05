@@ -45,16 +45,6 @@
 // #include <linux/kd.h>
 //   0x00004B2F   KIOCSOUND     int
 
-// CO 180729 - OBSOLETE - use xerror
-//[OBSOLETE]// CO 180419 - global exception handling - START
-//[OBSOLETE]AFLOWRuntimeError::AFLOWRuntimeError(const std::string& function,const std::string& message) : std::runtime_error(message),f_name(function) {}  // I/O or computer type errors (no entries loaded)
-//[OBSOLETE]AFLOWRuntimeError::AFLOWRuntimeError(const std::string& function,std::stringstream& message) : std::runtime_error(message.str()),f_name(function) {message.str("");}  // I/O or computer type errors (no entries loaded)
-//[OBSOLETE]string AFLOWRuntimeError::where(){return f_name;}
-//[OBSOLETE]AFLOWLogicError::AFLOWLogicError(const std::string& function,const std::string& message) : std::logic_error(message),f_name(function) {}    //errors in logic, unintended (and insurmountable) use of functionality
-//[OBSOLETE]AFLOWLogicError::AFLOWLogicError(const std::string& function,std::stringstream& message) : std::logic_error(message.str()),f_name(function) {message.str("");}    //errors in logic, unintended (and insurmountable) use of functionality
-//[OBSOLETE]string AFLOWLogicError::where(){return f_name;}
-//[OBSOLETE]// CO 180419 - global exception handling - STOP
-
 namespace aflowlib {
   bool aflowlib2stream(const aflowlib::_aflowlib_entry& data,const string& file,stringstream& stream,bool VERBOSE) {
     return aurostd::url2stringstream(data.aurl+"/"+file,stream,VERBOSE);
@@ -81,16 +71,7 @@ int main(int _argc,char **_argv) {
   std::vector<string> cmds;  
   // MACHINE
   init::InitMachine(FALSE,argv,cmds,cerr);    
-  if(LDEBUG || XHOST.DEBUG) cerr << "AFLOW-MAIN [3]" << endl;
 
-  // aurostd::TmpDirectoryCreate("test");
-  // cerr << args2flag(argv,"--aaa|--bbb |--ccc") << endl; exit(0);
-  // CHECK USERS MACHINES - DEBUG
-  
-  // initialize_templates_never_call_this_procedure(1);
-
-  // INITIALIZE ***************************************************
-  // INIT LOOK UP TABLES
   atoms_initialize();
   // spacegroup::SpaceGroupInitialize(); only if necessary
   // INFORMATION **************************************************
@@ -98,6 +79,7 @@ int main(int _argc,char **_argv) {
  
   bool Arun=FALSE;
   if(!Arun && aurostd::args2flag(argv,cmds,"--prx|--prx="))  {Arun=TRUE;PERFORM_PRX(cout);}
+  //only for test, aflow --test
   if(!Arun && aurostd::args2flag(argv,cmds,"--test_stefano")) {
     uint y=2017,m=11;
     m+=1;
@@ -117,6 +99,7 @@ int main(int _argc,char **_argv) {
       //exit(0);
       return 0; // CO 180419
    }
+  /*
   if(!Arun && aurostd::args2flag(argv,cmds,"--test")) {
     deque<string> vext; aurostd::string2tokens(".bz2,.xz,.gz",vext,",");vext.push_front("");
     deque<string> vcat; aurostd::string2tokens("cat,bzcat,xzcat,gzcat",vcat,",");
@@ -138,11 +121,6 @@ int main(int _argc,char **_argv) {
     cout << "mi=" << endl << mi << endl;
     cout << "mi*m=" << endl << det(mi*m) << endl; 
      
-      // CO how to create 64bit string from binary file
-      //string b64String;
-      //aurostd::bin2base64("aflow_logo.pdf",b64String);
-      //cout << b64String << endl;
-
     string test="2.730747137  -2.730747137-12.397646334";
     vector<string> _tokens;
     aurostd::string2tokens(test,_tokens,"-");
@@ -224,6 +202,7 @@ int main(int _argc,char **_argv) {
     //exit(0);
     return 0; // CO 180419
   }
+  */
   
   if(!Arun && aurostd::args2attachedflag(argv,"--bin2base64=")) {
     string b64String;
@@ -417,8 +396,6 @@ int main(int _argc,char **_argv) {
     if(!Arun && VVERSION)  {Arun=TRUE; cout << aflow::Banner("AFLOW_VERSION");/*exit(0)*/return 0;} // look for version IMMEDIATELY // CO 180419
     if(!Arun && XHOST.TEST) { Arun=TRUE;cerr << "test" << endl; /*exit(0)*/return 0;} // CO 180419
   
-  // [OBSOLETE]  if(!Arun && (aurostd::substring2bool(XHOST.Progname,"aflow1") || aurostd::substring2bool(XHOST.Progname,"aflowd1"))) {
-  // [OBSOLETE]  Arun=TRUE;AFLOW_main1(argv,cmds);}
   if(!Arun && XHOST.argv.size()==1 && (aurostd::substring2bool(XHOST.Progname,"aflow")  || aurostd::substring2bool(XHOST.Progname,"aflowd"))) {   
     //   Arun=TRUE;AFLOW_main(argv);
     Arun=TRUE;

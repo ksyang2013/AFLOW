@@ -524,19 +524,6 @@ namespace KBIN {
 	if(aurostd::substring2bool(vDirectory.at(ii),_AFLOWIN_))
 	  aurostd::StringSubst(vDirectory.at(ii),_AFLOWIN_,"");
     
-      // if(aflags.AFLOW_PERFORM_ORDER_SORT) {   // SORT do something
-      //   aus << "MMMMM  Requested SORT [aflags.AFLOW_PERFORM_ORDER_SORT=1] - " << Message(aflags,"user,host,time") << endl;aurostd::PrintMessageStream(aus,XHOST.QUIET);
-      //   aurostd::sort(vDirectory);}
-      // if(aflags.AFLOW_PERFORM_ORDER_REVERSE) { // REVERSE do something
-      //   aus << "MMMMM  Requested REVERSE_SORT [aflags.AFLOW_PERFORM_ORDER_REVERSE=1] - " << Message(aflags,"user,host,time") << endl;aurostd::PrintMessageStream(aus,XHOST.QUIET);
-      //   aurostd::rsort(vDirectory);}
-      // if(aflags.AFLOW_PERFORM_ORDER_RANDOM) { // RANDOM do something
-      //   aus << "MMMMM  Requested RANDOM [aflags.AFLOW_PERFORM_ORDER_RANDOM=1] - " << Message(aflags,"user,host,time") << endl;aurostd::PrintMessageStream(aus,XHOST.QUIET);
-      //   aurostd::random_shuffle(vDirectory);}  // uses the std library but the seed is initialized in xrandom too
-    
-      // aurostd::random_shuffle(vDirectory);
-      // std::random_shuffle(vDirectory.begin(),vDirectory.end());
-    
       for(uint idir=0;idir<vDirectory.size();idir++) {
 	bool krun=TRUE;
 	aflags.Directory=vDirectory.at(idir);
