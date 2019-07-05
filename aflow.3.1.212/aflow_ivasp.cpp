@@ -2641,10 +2641,7 @@ namespace KBIN {
                     xvasp.INCAR << aurostd::PaddedPOST("NELMIN=4",_incarpad_) << endl;
                     xvasp.INCAR << aurostd::PaddedPOST("ADDGRID=.TRUE.",_incarpad_) << endl;
                 }
-
-                if (!(doesKeywordExist(xvasp.INCAR.str(), "EDIFF=")))  
-                    xvasp.INCAR << aurostd::PaddedPOST("EDIFF=1E-4",_incarpad_) << endl;
-               
+                xvasp.INCAR << aurostd::PaddedPOST("EDIFF=1E-4",_incarpad_) << endl;  //good enough for relax
                 // done now write if necessary
                 if(vflags.KBIN_VASP_FORCE_OPTION_RELAX_TYPE.flag("IONS_CELL_VOLUME") && number>1) {  // whatever is the number
                     xvasp.aopts.flag("FLAG::XVASP_INCAR_changed",FALSE);
@@ -2949,14 +2946,6 @@ namespace KBIN {
             }
         }
 
-
-        // double round(double x,double eps) {
-        // double out=x;
-        // out=out/eps;
-        // out=round(out)*eps;
-        // return out;
-        // }
-
         // ***************************************************************************
         // KBIN::XVASP_INCAR_Precision
         namespace KBIN {
@@ -2984,6 +2973,7 @@ namespace KBIN {
                         if(((aurostd::substring2bool(strline,"PREC",TRUE) && !aurostd::substring2bool(strline,"SYMPREC",TRUE)) || aurostd::substring2bool(strline,"#PREC",TRUE) ||  // CO 171003 - don't confuse PREC and SYMPREC
                                     aurostd::substring2bool(strline,"ENMAX",TRUE) || aurostd::substring2bool(strline,"#ENMAX",TRUE) ||
                                     aurostd::substring2bool(strline,"ENCUT",TRUE) || aurostd::substring2bool(strline,"#ENCUT",TRUE) ||
+                                    aurostd::substring2bool(strline,"EDIFF",TRUE) || aurostd::substring2bool(strline,"#EDIFF",TRUE) ||
                                     aurostd::substring2bool(strline,"LREAL",TRUE) || aurostd::substring2bool(strline,"#LREAL",TRUE) ||
                                     aurostd::substring2bool(strline,"ALGO",TRUE) || aurostd::substring2bool(strline,"#ALGO",TRUE) ||
                                     aurostd::substring2bool(strline,"IALGO",TRUE)  || aurostd::substring2bool(strline,"#IALGO",TRUE)) 
@@ -3047,6 +3037,7 @@ namespace KBIN {
                 if(vflags.KBIN_VASP_FORCE_OPTION_PREC.xscheme=="HIGH") {
                     xvasp.INCAR << aurostd::PaddedPOST("PREC=High",_incarpad_) << endl;
                     xvasp.INCAR << aurostd::PaddedPOST("ENCUT="+aurostd::utype2string(int(xvasp.POTCAR_ENMAX)), _incarpad_) << endl;
+                    xvasp.INCAR << aurostd::PaddedPOST("EDIFF=1E-6",_incarpad_) << endl;
                     xvasp.INCAR << aurostd::PaddedPOST("LREAL=.FALSE.",_incarpad_) << endl;
                     xvasp.INCAR << aurostd::PaddedPOST("ALGO=Fast",_incarpad_) << endl;
                 }
