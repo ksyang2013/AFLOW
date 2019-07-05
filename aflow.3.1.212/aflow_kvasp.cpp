@@ -2042,32 +2042,22 @@ namespace KBIN {
             aus << "DDDDD  SLURM_CPUS_ON_NODE=" << XHOST.SLURM_CPUS_ON_NODE << "  SLURM_NNODES=" << XHOST.SLURM_NNODES << " - " << Message(aflags,"user,host,time") << endl;
             aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
             if(aflags.AFLOW_MACHINE_LOCAL.flag("MACHINE::DUKE_BETA_MPICH")) { 	//corey
-                //kflags.KBIN_MPI_NCPUS=XHOST.PBS_NUM_PPN; 
                 if(kflags.KBIN_MPI_NCPUS==0) kflags.KBIN_MPI_NCPUS=XHOST.PBS_NUM_PPN;}
             if(aflags.AFLOW_MACHINE_LOCAL.flag("MACHINE::DUKE_BETA_OPENMPI")) {kflags.KBIN_MPI_NCPUS=XHOST.PBS_NUM_PPN; if(kflags.KBIN_MPI_NCPUS==0) kflags.KBIN_MPI_NCPUS=XHOST.CPU_Cores;}
             if(aflags.AFLOW_MACHINE_LOCAL.flag("MACHINE::DUKE_QRATS_MPICH")) {	//corey
-                //kflags.KBIN_MPI_NCPUS=XHOST.PBS_NUM_PPN; 
                 if(kflags.KBIN_MPI_NCPUS==0) kflags.KBIN_MPI_NCPUS=XHOST.PBS_NUM_PPN;}
             if(aflags.AFLOW_MACHINE_LOCAL.flag("MACHINE::DUKE_QFLOW_OPENMPI")) {	//corey
-                //kflags.KBIN_MPI_NCPUS=XHOST.PBS_NUM_PPN; 
                 if(kflags.KBIN_MPI_NCPUS==0) kflags.KBIN_MPI_NCPUS=XHOST.PBS_NUM_PPN;}
             if(aflags.AFLOW_MACHINE_LOCAL.flag("MACHINE::MPCDF_EOS")) {	//corey
-                //kflags.KBIN_MPI_NCPUS=XHOST.PBS_NUM_PPN; 
                 if(kflags.KBIN_MPI_NCPUS==0) kflags.KBIN_MPI_NCPUS=XHOST.SLURM_CPUS_ON_NODE;}
             if(aflags.AFLOW_MACHINE_LOCAL.flag("MACHINE::MPCDF_DRACO")) {	//corey
-                //kflags.KBIN_MPI_NCPUS=XHOST.PBS_NUM_PPN; 
                 if(kflags.KBIN_MPI_NCPUS==0) kflags.KBIN_MPI_NCPUS=XHOST.SLURM_CPUS_ON_NODE;}
             if(aflags.AFLOW_MACHINE_LOCAL.flag("MACHINE::MPCDF_COBRA")) {	//corey
-                //kflags.KBIN_MPI_NCPUS=XHOST.PBS_NUM_PPN; 
                 if(kflags.KBIN_MPI_NCPUS==0) kflags.KBIN_MPI_NCPUS=XHOST.SLURM_CPUS_ON_NODE;}
             if(aflags.AFLOW_MACHINE_LOCAL.flag("MACHINE::MPCDF_HYDRA")) {	//corey
-                //kflags.KBIN_MPI_NCPUS=XHOST.PBS_NUM_PPN; 
                 if(kflags.KBIN_MPI_NCPUS==0) kflags.KBIN_MPI_NCPUS=XHOST.SLURM_CPUS_ON_NODE;}
-            //DX 5/2/18 - DoD CONRAD - START
             if(aflags.AFLOW_MACHINE_LOCAL.flag("MACHINE::DOD_CONRAD")) {
-                //kflags.KBIN_MPI_NCPUS=XHOST.PBS_NUM_PPN; 
                 if(kflags.KBIN_MPI_NCPUS==0) kflags.KBIN_MPI_NCPUS=XHOST.PBS_NUM_PPN;}
-            //DX 5/2/18 - DoD CONRAD - END
             if(aflags.AFLOW_MACHINE_LOCAL.flag("MACHINE::TERAGRID_RANGER")) {kflags.KBIN_MPI_NCPUS=XHOST.PBS_NNODES; if(kflags.KBIN_MPI_NCPUS==0) kflags.KBIN_MPI_NCPUS=XHOST.CPU_Cores;}
             if(aflags.AFLOW_MACHINE_LOCAL.flag("MACHINE::TERAGRID_KRAKEN")) {kflags.KBIN_MPI_NCPUS=XHOST.PBS_NNODES; if(kflags.KBIN_MPI_NCPUS==0) kflags.KBIN_MPI_NCPUS=XHOST.CPU_Cores;}
 
@@ -2557,91 +2547,22 @@ namespace KBIN {
                                 aurostd::substring_present_file_FAST(xvasp.Directory+"/INCAR","LEPSILON") ||
                                 aurostd::substring_present_file_FAST(xvasp.Directory+"/INCAR","LOPTICS"))) xwarning.flag("NPARN",FALSE);  // dont touch NPARN if LRPA or LEPSILON or LOPTICS necessary
 
-                    if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [4]" << endl;
-
                     int NBANDS_OUTCAR=0;
                     xOUTCAR OUTCAR_NBANDS(xvasp.Directory+"/OUTCAR");
                     NBANDS_OUTCAR=OUTCAR_NBANDS.NBANDS;
-
                     if(xwarning.flag("NBANDS") && NBANDS_OUTCAR>1000) xwarning.flag("NBANDS",FALSE); // for safety
                     if(xwarning.flag("NBANDS") && aurostd::substring_present_file_FAST(xvasp.Directory+"/INCAR","DIELECTRIC_STATIC") && NBANDS_OUTCAR>1000) xwarning.flag("NBANDS",FALSE); // for safety
                     if(xwarning.flag("NBANDS") && aurostd::substring_present_file_FAST(xvasp.Directory+"/INCAR","DIELECTRIC_DYNAMIC") && NBANDS_OUTCAR>1000) xwarning.flag("NBANDS",FALSE); // for safety
                     if(xwarning.flag("NBANDS") && aurostd::substring_present_file_FAST(xvasp.Directory+"/INCAR","DSCF") && NBANDS_OUTCAR>1000) xwarning.flag("NBANDS",FALSE); // for safety
 
-                    if(1) {
-                        bool wdebug=FALSE;//TRUE;
-                        if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  printing warnings" << endl;
-                        if(LDEBUG) wdebug=TRUE;
-                        if(wdebug || xmessage.flag("REACHED_ACCURACY")) aus << "MMMMM  MESSAGE xmessage.flag(\"REACHED_ACCURACY\")=" << xmessage.flag("REACHED_ACCURACY") << endl;
-                        if(wdebug) aus << "MMMMM  MESSAGE VASP_release=" << xwarning.getattachedscheme("SVERSION") << endl;
-                        if(wdebug) aus << "MMMMM  MESSAGE VASP_version=" << xwarning.getattachedscheme("DVERSION") << endl;
-                        if(wdebug) aus << "MMMMM  MESSAGE AFLOW_version=" << AFLOW_VERSION << endl;
-                        if(wdebug || xwarning.flag("BRMIX")) aus << "MMMMM  MESSAGE xwarning.flag(\"BRMIX\")=" << xwarning.flag("BRMIX") << endl;
-                        if(wdebug || xwarning.flag("CSLOSHING")) aus << "MMMMM  MESSAGE xwarning.flag(\"CSLOSHING\")=" << xwarning.flag("CSLOSHING") << endl;
-                        if(wdebug || xwarning.flag("DAV")) aus << "MMMMM  MESSAGE xwarning.flag(\"DAV\")=" << xwarning.flag("DAV") << endl;
-                        if(wdebug || xwarning.flag("DENTET")) aus << "MMMMM  MESSAGE xwarning.flag(\"DENTET\")=" << xwarning.flag("DENTET") << endl;
-                        if(wdebug || xwarning.flag("EDDDAV")) aus << "MMMMM  MESSAGE xwarning.flag(\"EDDDAV\")=" << xwarning.flag("EDDDAV") << endl;
-                        if(wdebug || xwarning.flag("EDDRMM")) aus << "MMMMM  MESSAGE xwarning.flag(\"EDDRMM\")=" << xwarning.flag("EDDRMM") << endl;
-                        if(wdebug || xwarning.flag("EFIELD_PEAD")) aus << "MMMMM  MESSAGE xwarning.flag(\"EFIELD_PEAD\")=" << xwarning.flag("EFIELD_PEAD") << endl;
-                        if(wdebug || xwarning.flag("EXCCOR")) aus << "MMMMM  MESSAGE xwarning.flag(\"EXCCOR\")=" << xwarning.flag("EXCCOR") << endl;
-                        if(wdebug || xwarning.flag("GAMMA_SHIFT")) aus << "MMMMM  MESSAGE xwarning.flag(\"GAMMA_SHIFT\")=" << xwarning.flag("GAMMA_SHIFT") << endl;
-                        if(wdebug || xwarning.flag("IBZKPT")) aus << "MMMMM  MESSAGE xwarning.flag(\"IBZKPT\")=" << xwarning.flag("IBZKPT") << endl;
-                        if(wdebug || xwarning.flag("INVGRP")) aus << "MMMMM  MESSAGE xwarning.flag(\"INVGRP\")=" << xwarning.flag("INVGRP") << endl;
-                        if(wdebug || xwarning.flag("KKSYM")) aus << "MMMMM  MESSAGE xwarning.flag(\"KKSYM\")=" << xwarning.flag("KKSYM") << endl;
-                        if(wdebug || xwarning.flag("LRF_COMMUTATOR")) aus << "MMMMM  MESSAGE xwarning.flag(\"LRF_COMMUTATOR\")=" << xwarning.flag("LRF_COMMUTATOR") << endl;
-                        if(wdebug || xwarning.flag("MEMORY")) aus << "MMMMM  MESSAGE xwarning.flag(\"MEMORY\")=" << xwarning.flag("MEMORY") << endl;
-                        if(wdebug || xwarning.flag("MPICH11")) aus << "MMMMM  MESSAGE xwarning.flag(\"MPICH11\")=" << xwarning.flag("MPICH11") << endl;
-                        if(wdebug || xwarning.flag("MPICH139")) aus << "MMMMM  MESSAGE xwarning.flag(\"MPICH139\")=" << xwarning.flag("MPICH139") << endl;
-                        if(wdebug || xwarning.flag("NATOMS")) aus << "MMMMM  MESSAGE xwarning.flag(\"NATOMS\")=" << xwarning.flag("NATOMS") << endl;
-                        if(wdebug || xwarning.flag("NBANDS")) aus << "MMMMM  MESSAGE xwarning.flag(\"NBANDS\")=" << xwarning.flag("NBANDS") << endl;
-                        if(wdebug || xwarning.flag("NELM")) aus << "MMMMM  MESSAGE xwarning.flag(\"NELM\")=" << xwarning.flag("NELM") << endl;
-                        if(wdebug || xwarning.flag("NIRMAT")) aus << "MMMMM  MESSAGE xwarning.flag(\"NIRMAT\")=" << xwarning.flag("NIRMAT") << endl;
-                        if(wdebug || xwarning.flag("NKXYZ_IKPTD")) aus << "MMMMM  MESSAGE xwarning.flag(\"NKXYZ_IKPTD\")=" << xwarning.flag("NKXYZ_IKPTD") << endl;
-                        if(wdebug || xwarning.flag("NPAR")) aus << "MMMMM  MESSAGE xwarning.flag(\"NPAR\")=" << xwarning.flag("NPAR") << endl;
-                        if(wdebug || xwarning.flag("NPARC")) aus << "MMMMM  MESSAGE xwarning.flag(\"NPARC\")=" << xwarning.flag("NPARC") << endl;
-                        if(wdebug || xwarning.flag("NPARN")) aus << "MMMMM  MESSAGE xwarning.flag(\"NPARN\")=" << xwarning.flag("NPARN") << endl;
-                        if(wdebug || xwarning.flag("NPAR_REMOVE")) aus << "MMMMM  MESSAGE xwarning.flag(\"NPAR_REMOVE\")=" << xwarning.flag("NPAR_REMOVE") << endl;
-                        if(wdebug || xwarning.flag("PSMAXN")) aus << "MMMMM  MESSAGE xwarning.flag(\"PSMAXN\")=" << xwarning.flag("PSMAXN") << endl;
-                        if(wdebug || xwarning.flag("REAL_OPT")) aus << "MMMMM  MESSAGE xwarning.flag(\"REAL_OPT\")=" << xwarning.flag("REAL_OPT") << endl;
-                        if(wdebug || xwarning.flag("REAL_OPTLAY_1")) aus << "MMMMM  MESSAGE xwarning.flag(\"REAL_OPTLAY_1\")=" << xwarning.flag("REAL_OPTLAY_1") << endl;
-                        if(wdebug || xwarning.flag("SGRCON")) aus << "MMMMM  MESSAGE xwarning.flag(\"SGRCON\")=" << xwarning.flag("SGRCON") << endl;
-                        if(wdebug || xwarning.flag("SYMPREC")) aus << "MMMMM  MESSAGE xwarning.flag(\"SYMPREC\")=" << xwarning.flag("SYMPREC") << endl;
-                        if(wdebug || xwarning.flag("ZPOTRF")) aus << "MMMMM  MESSAGE xwarning.flag(\"ZPOTRF\")=" << xwarning.flag("ZPOTRF") << endl;
-                        if(wdebug) aus << "MMMMM  MESSAGE NBANDS_OUTCAR=" << NBANDS_OUTCAR << endl;
-                        aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
-                    }
-
-                    if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [5]" << endl;
-
                     // fix troubles
                     if(xmessage.flag("REACHED_ACCURACY") && xwarning.flag("IBZKPT")) xwarning.flag("IBZKPT",FALSE);  // priority
                     if(xwarning.flag("NKXYZ_IKPTD")) xwarning.flag("IBZKPT",FALSE); // priority
-                    //      if(xwarning.flag("NIRMAT") && xwarning.flag("SGRCON")) xwarning.flag("SGRCON",FALSE); // try NIRMAT first
-
-                    // if(xwarning.flag("EDDRMM")) xwarning.flag("ZPOTRF",FALSE);// no must fix the LATTICE
-
-                    // code to get xwarning.flag("NELM")
-                    if(0) {
-                        stringstream command,aus;
-                        uint NELM=0,NSTEPS=0;
-                        command << "cat " << xvasp.Directory << "/OUTCAR | grep NELM | sed \"s/;/\\n/g\" | head -1 | sed \"s/ //g\" | sed \"s/NELM=//g\"" << endl;
-                        aus.str(std::string());aus.clear();aus << aurostd::execute2string(command);
-                        aus >> NELM;
-                        command << "cat " << xvasp.Directory << "/OSZICAR | grep \":\" | sed \"s/:/\\n/g\" | tail -n 1" << endl;
-                        aus.str(std::string());aus.clear();aus << aurostd::execute2string(command);
-                        aus >> NSTEPS;
-                        if(NSTEPS>=NELM) { xwarning.flag("NELM",TRUE); } else { xwarning.flag("NELM",FALSE); }
-                        cerr << "NELM=" << NELM << "  " << "NSTEPS=" << NSTEPS << "  " << "xwarning.flag(\"NELM\")=" << xwarning.flag("NELM") << endl;
-                        exit(0);
-                    }
 
                     xfixed.flag("ALL",FALSE);
                     xfixed.flag("MPICH11",FALSE); // all the items that must be restarted until they work
                     xfixed.flag("MPICH139",FALSE); // all the items that must be restarted until they work
                     vasp_start=FALSE;
-
-
-                    if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [6]" << endl;
 
                     // ********* CHECK NBANDS PROBLEMS ******************
                     if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [CHECK NBANDS PROBLEMS]" << endl;
@@ -2652,7 +2573,6 @@ namespace KBIN {
                             xfixed.flag("NBANDS",TRUE);xfixed.flag("ALL",TRUE);
                             aus << "WWWWW  FIX NBANDS = [" << nbands << "] - " << Message(aflags,"user,host,time") << endl;
                             aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
-                            // cerr << "nbands=" << nbands << endl;
                         }
                     }
                     // ********* CHECK LRF_COMMUTATOR PROBLEMS ******************
@@ -3090,7 +3010,6 @@ namespace KBIN {
 
                     return Krun;
                     // ********* FINISH
-                    //  return 1;
                 }
             } // namespace KBIN
 
@@ -3099,7 +3018,6 @@ namespace KBIN {
                     bool Krun=TRUE;
                     Krun=KBIN::VASP_Run(xvasp,aflags,kflags,vflags,FileMESSAGE);
                     if(!Krun) {KBIN::VASP_Error(xvasp,"EEEEE  Error in  \"KBIN::VASP_Run(_xvasp &xvasp,_aflags &aflags,_kflags &kflags,_vflags &vflags,string relax,bool qmwrite,ofstream &FileMESSAGE)\"");}
-                    //  if(!Krun) return Krun;
                     if(_VASP_CONTCAR_SAVE_) KBIN::VASP_CONTCAR_Save(xvasp,string(relax));
                     KBIN::VASP_Backup(xvasp,qmwrite,relax);
                     return Krun;
