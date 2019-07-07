@@ -460,6 +460,11 @@ namespace KBIN {
         // INCAR DONE **************************************************
         xvasp.INCAR_orig << xvasp.INCAR.str();
         xvasp.aopts.flag("FLAG::XVASP_INCAR_generated",TRUE);
+        //General Setting 
+        double max_latt = max(xvasp.str.a, xvasp.str.b, xvasp.str.c);
+        if (max_latt >= 50)
+            xvasp.INCAR << aurostd::PaddedPOST("AMIN=0.01", _incarpad_) <<  "# if c > 50 Angstrom, set 0.01" <<  endl;
+
         return Krun;
     };  
 }
@@ -2592,8 +2597,8 @@ namespace KBIN {
                         strline=aurostd::GetLineString(FileContent,i);
                         if(aurostd::substring2bool(strline,"IBRION",TRUE) || 
                                 aurostd::substring2bool(strline,"NSW",TRUE)    || 
-                                aurostd::substring2bool(strline,"ISIF",TRUE) ||
-                                aurostd::substring2bool(strline,"EDIFFG",TRUE) 
+                                aurostd::substring2bool(strline,"ISIF",TRUE) 
+                                //aurostd::substring2bool(strline,"EDIFFG",TRUE)    //No remove in case users set it 
                           )   
                         {
                             xvasp.INCAR << "";
@@ -2605,10 +2610,13 @@ namespace KBIN {
                     xvasp.INCAR << aurostd::PaddedPOST("IBRION=2",_incarpad_) << endl;
                     xvasp.INCAR << aurostd::PaddedPOST("NSW=160",_incarpad_)  << endl;
                     xvasp.INCAR << aurostd::PaddedPOST("ISIF="+aurostd::utype2string(isif),_incarpad_) << endl;
-                    if(!doesKeywordExist(xvasp.INCAR.str(), "EDIFFG")) {
+                    if(!doesKeywordExist(FileContent, "EDIFFG")) {
                         stringstream stmp;
                         stmp << setprecision(2)  << 1E-5*xvasp.str.atoms.size()*0.9;
                         xvasp.INCAR << aurostd::PaddedPOST(("EDIFFG=" + stmp.str()), _incarpad_) << "# 0.01meV/atom " << endl;
+                    }
+                    if(!doesKeywordExist(FileContent, "EDIFF=")) {
+                        xvasp.INCAR << aurostd::PaddedPOST("EDIFF=1E-4",_incarpad_) << endl;  //good enough for relax
                     }
                 }
                 // RELAX=MODE=FORCES mode
@@ -2618,9 +2626,9 @@ namespace KBIN {
                         if(aurostd::substring2bool(strline,"IBRION",TRUE) || 
                                 aurostd::substring2bool(strline,"NELMIN",TRUE)    || 
                                 aurostd::substring2bool(strline,"ADDGRID",TRUE)    || 
-                                aurostd::substring2bool(strline,"EDIFFG",TRUE)    || 
                                 aurostd::substring2bool(strline,"NSW",TRUE)    || 
                                 aurostd::substring2bool(strline,"ISIF",TRUE)   
+                                //aurostd::substring2bool(strline,"EDIFFG",TRUE)    || 
                           ) {
                             xvasp.INCAR << "";
                         } else {
@@ -2629,6 +2637,11 @@ namespace KBIN {
                     }
                     xvasp.INCAR << aurostd::PaddedPOST("IBRION=1",_incarpad_) << endl;
                     xvasp.INCAR << aurostd::PaddedPOST("NSW=160",_incarpad_)  << endl;
+                    xvasp.INCAR << aurostd::PaddedPOST("ISIF="+aurostd::utype2string(isif),_incarpad_)     << endl;
+                    xvasp.INCAR << aurostd::PaddedPOST("NELMIN=4",_incarpad_) << endl;
+                    xvasp.INCAR << aurostd::PaddedPOST("ADDGRID=.TRUE.",_incarpad_) << endl;
+                }
+                if(!doesKeywordExist(FileContent, "EDIFFG")) {
                     string strEDIFFG;
                     if (xvasp.str.atoms.size() <=20)
                         strEDIFFG = "-0.01";
@@ -2637,11 +2650,10 @@ namespace KBIN {
                     else 
                         strEDIFFG = "-0.05";
                     xvasp.INCAR << aurostd::PaddedPOST(("EDIFFG=" + strEDIFFG), _incarpad_) << "# -0.01 for NIONS <=20, -0.03 for NIONS <=80, -0.05 for larger cell" << endl;
-                    xvasp.INCAR << aurostd::PaddedPOST("ISIF="+aurostd::utype2string(isif),_incarpad_)     << endl;
-                    xvasp.INCAR << aurostd::PaddedPOST("NELMIN=4",_incarpad_) << endl;
-                    xvasp.INCAR << aurostd::PaddedPOST("ADDGRID=.TRUE.",_incarpad_) << endl;
                 }
-                xvasp.INCAR << aurostd::PaddedPOST("EDIFF=1E-4",_incarpad_) << endl;  //good enough for relax
+                if(!doesKeywordExist(FileContent, "EDIFF=")) {
+                    xvasp.INCAR << aurostd::PaddedPOST("EDIFF=1E-4",_incarpad_) << endl;  //good enough for relax
+                }
                 // done now write if necessary
                 if(vflags.KBIN_VASP_FORCE_OPTION_RELAX_TYPE.flag("IONS_CELL_VOLUME") && number>1) {  // whatever is the number
                     xvasp.aopts.flag("FLAG::XVASP_INCAR_changed",FALSE);
