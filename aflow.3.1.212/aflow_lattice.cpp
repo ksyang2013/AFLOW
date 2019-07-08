@@ -691,24 +691,25 @@ namespace LATTICE {
 }
 
 namespace LATTICE {
-  // transformation to standardization
-  bool Standard_Lattice_Structure_20170718(const xstructure& str_in,xstructure& str_sp,xstructure& str_sc,bool full_sym) {//**************************JUNKAI EDITED*****************
-    bool LDEBUG=(FALSE || XHOST.DEBUG);
+    // transformation to standardization
+    bool Standard_Lattice_Structure_20170718(const xstructure& str_in,xstructure& str_sp,xstructure& str_sc,bool full_sym) 
+    {//**************************JUNKAI EDITED*****************
+        bool LDEBUG=(FALSE || XHOST.DEBUG);
 
-    double eps = 0.001;
-    if(str_in.sym_eps!=AUROSTD_NAN){ //Tolerance came from user or was calculated
-      eps=str_in.sym_eps;
-    }
+        double eps = 0.001;
+        if(str_in.sym_eps!=AUROSTD_NAN){ //Tolerance came from user or was calculated
+            eps=str_in.sym_eps;
+        }
 
-    bool is_deg = true; // DX
-    if(LDEBUG) cerr << "LATTICE::Standard_Lattice_Structure: BEGIN" << endl;
-    // cerr << "eps=" << eps << " " << "epsang=" << epsang << endl;
-    //  LDEBUG=TRUE;
-    // starting from a str_in (whatever lattices) this routine returns a standard primitive (str_sp)
-    // and a standard conventional (str_sc) following the ideas of stefano and wahyu
-    if(str_in.Standard_Lattice_avoid==TRUE) return FALSE; // if you do not want to calculate
-    // preparation
-    str_sp=str_in; // copy it
+        bool is_deg = true; // DX
+        if(LDEBUG) cerr << "LATTICE::Standard_Lattice_Structure: BEGIN" << endl;
+        // cerr << "eps=" << eps << " " << "epsang=" << epsang << endl;
+        //  LDEBUG=TRUE;
+        // starting from a str_in (whatever lattices) this routine returns a standard primitive (str_sp)
+        // and a standard conventional (str_sc) following the ideas of stefano and wahyu
+        if(str_in.Standard_Lattice_avoid==TRUE) return FALSE; // if you do not want to calculate
+        // preparation
+        str_sp=str_in; // copy it
     if(LDEBUG) cerr << "LATTICE::Standard_Lattice_Structure: [1]" << endl;
     str_sp.GetPrimitive(0.005);
     if(LDEBUG) cerr << "LATTICE::Standard_Lattice_Structure: [2]" << endl;
