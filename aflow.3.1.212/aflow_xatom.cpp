@@ -3185,7 +3185,6 @@ istream& operator>>(istream& cinput, xstructure& a) {
 
     a.partial_occupation_flag=FALSE;
     for(uint j=1;j<tokens.size();j++) {
-        cout << "tokens.at(j): " << tokens.at(j) << endl;
         if(tokens.at(j)[0]=='P' || tokens.at(j)[0]=='P') a.partial_occupation_flag=TRUE;
     }
     a.partial_occupation_HNF=0; // nothing defined // CO 180409
