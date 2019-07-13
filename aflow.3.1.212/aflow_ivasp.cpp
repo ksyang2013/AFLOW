@@ -1771,10 +1771,6 @@ namespace KBIN {
                         aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
                     }
                     stringKPPRA=KPPRA(xvasp.str,NK);
-                    //KESONG
-                    //cout << "xvasp.str " << xvasp.str << endl;
-                    //cout << "NK " << NK << endl;
-                    //exit(0);
                     // VERBOSE on LOCK /SCREEN
                     if(TRUE) FileMESSAGE << stringKPPRA;
                     if(TRUE) {
@@ -2840,7 +2836,6 @@ namespace KBIN {
                 FileContent=xvasp.INCAR.str();
                 xvasp.INCAR.str(std::string());
                 xvasp.aopts.flag("FLAG::XVASP_INCAR_changed",TRUE);
-                cout << FileContent << endl;
                 int imax=aurostd::GetNLinesString(FileContent);
                 for(int i=1;i<=imax;i++) {
                     strline=aurostd::GetLineString(FileContent,i); 
