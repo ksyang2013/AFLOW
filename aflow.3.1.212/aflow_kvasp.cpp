@@ -2525,7 +2525,7 @@ namespace KBIN {
                     xwarning.flag("REAL_OPT",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","REAL_OPT: internal ERROR"));
                     xwarning.flag("SYMPREC",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","inverse of rotation matrix was not found (increase SYMPREC)"));
                     xwarning.flag("SYMPREC",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","VERY BAD NEWS! internal error in subroutine PRICEL"));
-                    xwarning.flag("SYMPREC2",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Sorry, number of cells and number of vectors did not agree"));
+                    xwarning.flag("SYMPREC2",(aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","VERY BAD NEWS! internal error in subroutine PRICEL") &&  aurostd::FileExist(xvasp.Directory+"/aflow.error.symprec")));
                     xwarning.flag("INVGRP",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","VERY BAD NEWS! internal error in subroutine INVGRP")); //KESONG, 2018-11-26
                     xwarning.flag("NPAR",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","please rerun with NPAR=")); // not only npar==1
                     xwarning.flag("NPARC",(aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","NPAR = 4") &&

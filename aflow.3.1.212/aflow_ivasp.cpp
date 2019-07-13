@@ -4580,20 +4580,28 @@ namespace KBIN {
                     //aus_exec << "echo \"# Performing XVASP_Afix_GENERIC (" << mode << ") [AFLOW] end\" >> INCAR " << endl;
                     //aurostd::execute(aus_exec);
 
-                    if(mode=="SYMPREC" || mode=="SGRCON" || mode=="INVGRP" || mode =="SYMPREC2") {
+                    if(mode=="SYMPREC" || mode=="SGRCON" || mode=="INVGRP") { 
                         file_error="aflow.error.symprec";
                         reload_incar=TRUE;
                         aus_exec << "cd " << xvasp.Directory << endl;
-                        aus_exec << "cat INCAR | sed \"s/SYMPREC/#SYMPREC/g\" > aflow.tmp && mv aflow.tmp INCAR" << endl; // remove SYMPREC
-                        if(vflags.KBIN_VASP_INCAR_VERBOSE) aus_exec << "echo \"# Performing KBIN::XVASP_Afix (" << mode << ") [AFLOW] begin\" >> INCAR " << endl;
-                        aus_exec << "echo \"SYMPREC=1E-8                       # (fix=" << mode << "\" >> INCAR " << endl;
-                        if (mode=="SYMPREC2") {
-                            aus_exec << "cat INCAR | sed \"s/ISYM/#ISYM/g\" > aflow.tmp && mv aflow.tmp INCAR" << endl; // remove ISYM
-                            aus_exec << "echo \"ISYM = 0                       # (fix=" << mode << "\" >> INCAR " << endl;
-                        }
-                        //if(vflags.KBIN_VASP_INCAR_VERBOSE) aus_exec << "echo \"# Performing KBIN::XVASP_Afix (" << mode << ") [AFLOW] end\" >> INCAR " << endl;
-                        //aurostd::execute(aus_exec);
+                        aus_exec << "cat INCAR | grep -v 'SYMPREC' > aflow.tmp && mv aflow.tmp INCAR" << endl; // remove SYMPREC
+                        aus_exec << "echo \"SYMPREC=1E-7                                    # (fix=" << mode << "\" >> INCAR " << endl;
+                        aurostd::execute(aus_exec);
                     }
+
+                    if(mode=="SYMPREC2") { 
+                        file_error="aflow.error.symprec2";
+                        reload_incar=TRUE;
+                        aus_exec << "cd " << xvasp.Directory << endl;
+                        aus_exec << "cp INCAR INCAR.fix1.symprec" << endl;
+                        aus_exec << "cat INCAR | grep -v 'SYMPREC' > aflow.tmp && mv aflow.tmp INCAR" << endl; // remove SYMPREC
+                        aus_exec << "cat INCAR | grep -v 'ISYM' > aflow.tmp && mv aflow.tmp INCAR" << endl; // remove ISYM
+                        aus_exec << "echo \"SYMPREC=1E-7                                    # (fix=" << mode << "\" >> INCAR " << endl;
+                        aus_exec << "echo \"ISYM = 0                                        # (fix=" << mode << "\" >> INCAR " << endl;
+                        aurostd::execute(aus_exec);
+                    }
+
+
                     if(mode=="READ_KPOINTS_RD_SYM") {
                         file_error="aflow.error.read_kpoints_rd_sym";
                         reload_incar=TRUE;
