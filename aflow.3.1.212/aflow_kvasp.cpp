@@ -2622,6 +2622,8 @@ namespace KBIN {
                                     // if(nrun<maxrun) vasp_start=TRUE;
                                 }
                             } else { // JAN 2012
+                                /*
+                                //NOT WORKING
                                 KBIN::VASP_Error(xvasp,"WWWWW  ERROR KBIN::VASP_Run: "+Message("time")+"  \"Reciprocal lattice and k-lattice belong to different class of lattices\" problem");
                                 aus << "WWWWW  FIX K1=K2=K3=KMAX - " << Message(aflags,"user,host,time") << endl;
                                 aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
@@ -2630,6 +2632,7 @@ namespace KBIN {
                                 xvasp.str.kpoints_k3=kpoints_k3;xvasp.str.kpoints_s3=kpoints_s3;
                                 KBIN::XVASP_Afix_ROTMAT(xvasp,3,!XHOST.QUIET,aflags,FileMESSAGE);
                                 xfixed.flag("KKSYM",TRUE);xfixed.flag("ALL",TRUE);
+                                */
                             }
                         }
                     }
