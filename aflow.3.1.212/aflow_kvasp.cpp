@@ -2487,6 +2487,25 @@ namespace KBIN {
                 if(vtokens.size()>1) DVERSION+=aurostd::string2utype<double>(vtokens.at(1))/10.0;
                 xwarning.push_attached("DVERSION",aurostd::utype2string((double) DVERSION));
 
+                //check OUTCAR converged?
+                string stmp_toten = aurostd::execute2string("grep 'TOTEN' "+xvasp.Directory+"/OUTCAR");
+                vector<string> tokens, vlines, vdata;
+                tokens.clear(), vlines.clear(), vdata.clear();
+                aurostd::string2tokens(stmp_toten, vlines, "\n");
+                vector<double> vtoten; vtoten.clear();
+                string line; line ="";
+                for(uint i=0;i<vlines.size();i++){
+                    line = vlines.at(i);
+                    aurostd::string2tokens(line, vdata);
+                    double toten = aurostd::string2utype<double>(vdata.at(4));
+                    vtoten.push_back(toten);
+                }
+                int n = vtoten.size();
+                double ediff = abs(vtoten.at(n-1) - vtoten.at(n-2));
+                bool isCONVERGED = FALSE;
+                if (ediff < 1.01E-4) {
+                    isCONVERGED = TRUE;
+                }
 
                 if(nrun<maxrun) {  
                     if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  checking warnings" << endl;
@@ -2558,6 +2577,7 @@ namespace KBIN {
                     // fix troubles
                     if(xmessage.flag("REACHED_ACCURACY") && xwarning.flag("IBZKPT")) xwarning.flag("IBZKPT",FALSE);  // priority
                     if(xwarning.flag("NKXYZ_IKPTD")) xwarning.flag("IBZKPT",FALSE); // priority
+                    if (isCONVERGED && xwarning.flag("IBZKPT")) xwarning.flag("IBZKPT",FALSE);
 
                     xfixed.flag("ALL",FALSE);
                     xfixed.flag("MPICH11",FALSE); // all the items that must be restarted until they work
