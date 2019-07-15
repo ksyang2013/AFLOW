@@ -568,7 +568,6 @@ namespace KBIN {
             if(vflags.KBIN_VASP_FORCE_OPTION_SPIN.isentry) {
                 aus << "00000  MESSAGE-OPTION  [VASP_FORCE_OPTION]SPIN=" << (vflags.KBIN_VASP_FORCE_OPTION_SPIN.option?"ON":"OFF") << " - " << Message(aflags,"user,host,time") << endl;
             } else {
-                //      aus << "00000  MESSAGE-DEFAULT SPIN=" << (DEFAULT_VASP_FORCE_OPTION_SPIN?"ON":"OFF") << " - " << Message(aflags,"user,host,time") << endl;
                 aus << "00000  MESSAGE-DEFAULT SPIN=" << "NEGLECT" << " - " << Message(aflags,"user,host,time") << endl;
             }
             aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
@@ -2594,7 +2593,6 @@ namespace KBIN {
                         if(aurostd::substring2bool(strline,"IBRION",TRUE) || 
                                 aurostd::substring2bool(strline,"NSW",TRUE)    || 
                                 aurostd::substring2bool(strline,"ISIF",TRUE) 
-                                //aurostd::substring2bool(strline,"EDIFFG",TRUE)    //No remove in case users set it 
                           )   
                         {
                             xvasp.INCAR << "";
@@ -2609,7 +2607,7 @@ namespace KBIN {
                     if(!doesKeywordExist(FileContent, "EDIFFG")) {
                         stringstream stmp;
                         double dvalue_EDIFFG = 1E-5*xvasp.str.atoms.size()*0.9;
-                        stmp << std::scientific << std::setprecision(2) << dvalue_EDIFFG;
+                        stmp << std::scientific << std::setprecision(2) << std::uppercase << dvalue_EDIFFG;
                         xvasp.INCAR << aurostd::PaddedPOST("EDIFFG=" + stmp.str(), _incarpad_) << "# 0.01meV/atom " << endl;
                     }
                     if(!doesKeywordExist(FileContent, "EDIFF=")) {

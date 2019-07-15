@@ -257,16 +257,6 @@ namespace KBIN {
         if(aurostd::substring2bool(AflowIn,_STROPT_+"RELAX_IONS_CELL_VOLUME",TRUE) || aurostd::substring2bool(AflowIn,_STROPT_+"RELAX_IONS_VOLUME",TRUE)) vflags.KBIN_VASP_FORCE_OPTION_RELAX_TYPE.push("IONS_CELL_VOLUME");
         if(vflags.KBIN_VASP_FORCE_OPTION_RELAX_TYPE.xscheme!="") vflags.KBIN_VASP_FORCE_OPTION_RELAX_TYPE.isentry=TRUE;
 
-        // [OBSOLETE] vflags.KBIN_VASP_FORCE_OPTION_STATIC=aurostd::substring2bool(AflowIn,_STROPT_+"STATIC",TRUE);
-        // [OBSOLETE] cerr<< "vflags.KBIN_VASP_FORCE_OPTION_STATIC= " << vflags.KBIN_VASP_FORCE_OPTION_STATIC << endl;
-        // [OBSOLETE] vflags.KBIN_VASP_FORCE_OPTION_RELAX_ALL = aurostd::substring2bool(AflowIn,_STROPT_+"RELAX",TRUE) || aurostd::substring2bool(AflowIn,_STROPT_+"RELAX_ALL",TRUE);
-        // [OBSOLETE] vflags.KBIN_VASP_FORCE_OPTION_RELAX_IONS = aurostd::substring2bool(AflowIn,_STROPT_+"RELAX_IONS",TRUE);
-        // [OBSOLETE] vvflags.KBIN_VASP_FORCE_OPTION_RELAX_CELL_SHAPE = aurostd::substring2bool(AflowIn,_STROPT_+"RELAX_CELL_SHAPE",TRUE) || aurostd::substring2bool(AflowIn,_STROPT_+"RELAX_SHAPE",TRUE);
-        // [OBSOLETE] vvflags.KBIN_VASP_FORCE_OPTION_RELAX_CELL_VOLUME = aurostd::substring2bool(AflowIn,_STROPT_+"RELAX_CELL_VOLUME",TRUE) || aurostd::substring2bool(AflowIn,_STROPT_+"RELAX_VOLUME",TRUE);
-        // [OBSOLETE] vvflags.KBIN_VASP_FORCE_OPTION_RELAX_IONS_CELL_VOLUME = aurostd::substring2bool(AflowIn,_STROPT_+"RELAX_IONS_CELL_VOLUME",TRUE) || aurostd::substring2bool(AflowIn,_STROPT_+"RELAX_IONS_VOLUME",TRUE);
-        // [OBSOLETE] if(vflags.KBIN_VASP_FORCE_OPTION_RELAX_IONS_CELL_VOLUME) vflags.KBIN_VASP_FORCE_OPTION_RELAX_IONS=FALSE;
-        // [OBSOLETE] if(vflags.KBIN_VASP_FORCE_OPTION_RELAX_ALL && (vflags.KBIN_VASP_FORCE_OPTION_RELAX_IONS || vflags.KBIN_VASP_FORCE_OPTION_RELAX_CELL_SHAPE ||
-        // [OBSOLETE]  vflags.KBIN_VASP_FORCE_OPTION_RELAX_CELL_VOLUME || vflags.KBIN_VASP_FORCE_OPTION_RELAX_IONS_CELL_VOLUME)) vflags.KBIN_VASP_FORCE_OPTION_RELAX_ALL=FALSE;
 
         if(vflags.KBIN_VASP_FORCE_OPTION_RELAX_TYPE.flag("IONS_CELL_VOLUME"))
             vflags.KBIN_VASP_FORCE_OPTION_RELAX_TYPE.flag("IONS",FALSE);
@@ -279,7 +269,8 @@ namespace KBIN {
             vflags.KBIN_VASP_FORCE_OPTION_RELAX_TYPE.push("STATIC");
             vflags.KBIN_VASP_FORCE_OPTION_RELAX_TYPE.isentry=TRUE;}
 
-        // cerr << "KBIN::VASP_Get_Vflags_from_AflowIN:  vflags.KBIN_VASP_FORCE_OPTION_RELAX_TYPE.xscheme="  <<  vflags.KBIN_VASP_FORCE_OPTION_RELAX_TYPE.xscheme << endl; exit(0);
+        //cerr << AflowIn << endl; //KESONG
+        //cerr << "KBIN::VASP_Get_Vflags_from_AflowIN:  vflags.KBIN_VASP_FORCE_OPTION_RELAX_TYPE.xscheme="  <<  vflags.KBIN_VASP_FORCE_OPTION_RELAX_TYPE.xscheme << endl; exit(0);
 
         // PRECISION AND PRIORITIES // (LOW | MEDIUM | NORMAL | HIGH | ACCURATE), PRESERVED
         vflags.KBIN_VASP_FORCE_OPTION_PREC.options2entry(AflowIn,_STROPT_+"PREC=",FALSE,DEFAULT_VASP_FORCE_OPTION_PREC_SCHEME);
@@ -395,6 +386,8 @@ namespace KBIN {
         if(aurostd::substring2bool(vflags.KBIN_VASP_FORCE_OPTION_SPIN.content_string,"REMOVE_RELAX_2")) vflags.KBIN_VASP_FORCE_OPTION_SPIN_REMOVE_RELAX_2=TRUE;
         if(!vflags.KBIN_VASP_FORCE_OPTION_SPIN.option) vflags.KBIN_VASP_FORCE_OPTION_SPIN_REMOVE_RELAX_1=FALSE; // nothing to remove
         if(!vflags.KBIN_VASP_FORCE_OPTION_SPIN.option) vflags.KBIN_VASP_FORCE_OPTION_SPIN_REMOVE_RELAX_2=FALSE; // nothing to remove
+        //cerr << "vflags.KBIN_VASP_FORCE_OPTION_SPIN.option: " <<  vflags.KBIN_VASP_FORCE_OPTION_SPIN.option << endl;
+        //exit(0);
 
         // BADER AND PRIORITIES // ON | OFF
         vflags.KBIN_VASP_FORCE_OPTION_BADER.options2entry(AflowIn,_STROPT_+"BADER=",DEFAULT_VASP_FORCE_OPTION_BADER);
