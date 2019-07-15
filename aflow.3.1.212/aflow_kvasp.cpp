@@ -3457,6 +3457,7 @@ namespace KBIN {
                         if(aurostd::FileExist(xvasp.Directory+"/POSCAR")) aurostd::execute("mv "+xvasp.Directory+"/POSCAR "+xvasp.Directory+"/POSCAR"+"."+relax);
                         if(aurostd::FileExist(xvasp.Directory+"/POTCAR")) aurostd::execute("mv "+xvasp.Directory+"/POTCAR "+xvasp.Directory+"/POTCAR"+"."+relax);
                         if(aurostd::FileExist(xvasp.Directory+"/PROCAR")) aurostd::execute("mv "+xvasp.Directory+"/PROCAR "+xvasp.Directory+"/PROCAR"+"."+relax);
+                        if(aurostd::FileExist(xvasp.Directory+"/LOCPOT")) aurostd::execute("mv "+xvasp.Directory+"/LOCPOT "+xvasp.Directory+"/LOCPOT"+"."+relax);
                         if(aurostd::FileExist(xvasp.Directory+"/XDATCAR")) aurostd::execute("mv "+xvasp.Directory+"/XDATCAR "+xvasp.Directory+"/XDATCAR"+"."+relax);
                         if(xvasp.aopts.flag("FLAG::WAVECAR_PRESERVED") && aurostd::FileExist(xvasp.Directory+"/WAVECAR")) aurostd::execute("mv "+xvasp.Directory+"/WAVECAR "+xvasp.Directory+"/WAVECAR"+"."+relax);
                         if(xvasp.aopts.flag("FLAG::WAVEDER_PRESERVED") && aurostd::FileExist(xvasp.Directory+"/WAVEDER")) aurostd::execute("mv "+xvasp.Directory+"/WAVEDER "+xvasp.Directory+"/WAVEDER"+"."+relax);
