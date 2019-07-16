@@ -31,7 +31,6 @@ using aurostd::sign;
 using aurostd::ran0;
 
 #define COMMENT_NEGLECT_1 string("#")
-//#define COMMENT_NEGLECT_2 string("// ")
 #define COMMENT_NEGLECT_2 string("//")
 #define COMMENT_NEGLECT_3 string("!")
 
@@ -961,14 +960,6 @@ namespace aurostd {
       //COMMENT_NEGLECT_3
       loc=vstrout.at(i).find(COMMENT_NEGLECT_3);  //CO 180409
       vstrout.at(i)=vstrout.at(i).substr(0,loc);  //no NEED TO ask if()..., it will be set to npos anyway
-
-      //[OBSOLETE]if(vstrout.at(i).find(COMMENT_NEGLECT_1)!=string::npos) 
-      //[OBSOLETE]  vstrout.at(i)=vstrout.at(i).substr(0,vstrout.at(i).find(COMMENT_NEGLECT_1));  
-      //[OBSOLETE]if(vstrout.at(i).find(COMMENT_NEGLECT_2)!=string::npos && vstrout.at(i).find(":"+COMMENT_NEGLECT_2)==string::npos)  // look for // but dont touch ://
-      //[OBSOLETE]  vstrout.at(i)=vstrout.at(i).substr(0,vstrout.at(i).find(COMMENT_NEGLECT_2));
-      //[OBSOLETE]if(vstrout.at(i).find(COMMENT_NEGLECT_3)!=string::npos)
-      //[OBSOLETE]  vstrout.at(i)=vstrout.at(i).substr(0,vstrout.at(i).find(COMMENT_NEGLECT_3));
-      //[OBSOLETE]  if(!vstrout.at(i).empty()) cout << vstrout.at(i) << endl;
       if(!vstrout.at(i).empty()) strout+=vstrout.at(i)+"\n";
     }  
     return strout;
