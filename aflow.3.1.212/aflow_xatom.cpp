@@ -6775,11 +6775,8 @@ string KPPRA_LAT(int& k1,int& k2,int& k3,const xmatrix<double>& rlattice,const i
 
 
 string KPPRA(xstructure& str,const int& _NK) {
-  //  cerr << "KPPRA" << endl;
-  cerr << "_NK in xatom : " << _NK << endl;
   int NK=1;
   NK= (int) ((double) _NK/str.atoms.size()+0.5);if(NK<1) NK=1;
-  cerr << "NK in xatom2 : " << NK << endl;
   int k1=1,k2=1,k3=1;
   xmatrix<double> rlattice=str.lattice;
   rlattice=str.scale*rlattice;

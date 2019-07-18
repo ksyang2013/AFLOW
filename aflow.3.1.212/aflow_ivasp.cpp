@@ -2698,8 +2698,10 @@ namespace KBIN {
                 ss_INCAR << aurostd::PaddedPOST("EMAX=  25.0",_incarpad_)     <<  notes  << endl;
                 ss_INCAR << aurostd::PaddedPOST("NEDOS= 7001",_incarpad_)     <<  notes  << endl;
                 ss_INCAR << aurostd::PaddedPOST("LCHARG=.TRUE.",_incarpad_)   <<  notes  << endl;
-                ss_INCAR << aurostd::PaddedPOST("LOPTICS=.TRUE.",_incarpad_)   <<  notes  << endl;
-                ss_INCAR << aurostd::PaddedPOST("LVTOT=.TRUE.",_incarpad_)   <<  notes  << endl;
+                if (RunType == "STATIC"){
+                    ss_INCAR << aurostd::PaddedPOST("LOPTICS=.TRUE.",_incarpad_)   <<  notes  << endl;
+                    ss_INCAR << aurostd::PaddedPOST("LVTOT=.TRUE.",_incarpad_)   <<  notes  << endl;
+                }
                 ss_INCAR << aurostd::PaddedPOST("LWAVE=.FALSE.",_incarpad_)   <<  notes << endl;
 
                 if(vflags.KBIN_VASP_FORCE_OPTION_BADER.isentry && vflags.KBIN_VASP_FORCE_OPTION_BADER.option) 
