@@ -4565,10 +4565,11 @@ namespace KBIN {
                         aus_exec << "cd " << xvasp.Directory << endl;
                         aus_exec << "cat INCAR | sed \"s/ISYM/#ISYM/g\" > aflow.tmp && mv aflow.tmp INCAR" << endl; // remove SYMPREC
                         //if(vflags.KBIN_VASP_INCAR_VERBOSE) aus_exec << "echo \"# Performing KBIN::XVASP_Afix (" << mode << ") [AFLOW] begin\" >> INCAR " << endl;
-                        aus_exec << "echo \"ISYM=0                      # (fix=" << mode << "\" >> INCAR " << endl;
+                        aus_exec << "echo \"ISYM=0                      #FIX=" << mode << "\" >> INCAR " << endl;
                         //if(vflags.KBIN_VASP_INCAR_VERBOSE) aus_exec << "echo \"# Performing KBIN::XVASP_Afix (" << mode << ") [AFLOW] end\" >> INCAR " << endl;
                         aurostd::execute(aus_exec);
                     }
+
                     if(mode=="IBZKPT") {
                         file_error="aflow.error.ibzkpt";
                         reload_kpoints=TRUE;
@@ -4579,6 +4580,19 @@ namespace KBIN {
                         xvasp.str.kpoints_s1=0.0;xvasp.str.kpoints_s2=0.0;xvasp.str.kpoints_s3=0.0;
                         rewrite_kpoints=TRUE;
                     }
+
+                    if(mode=="IBZKPT_KNPT") {
+                        file_error="aflow.error.ibzkpt_knpt";
+                        reload_incar=TRUE;
+                        aus_exec << "cd " << xvasp.Directory << endl;
+                        aus_exec << "cp INCAR INCAR.ibzkpt_knpt" << endl;
+                        aus_exec << "cat INCAR | grep -v 'ISMEAR' > aflow.tmp && mv aflow.tmp INCAR" << endl; // remove SYMPREC
+                        aus_exec << "cat INCAR | grep -v 'SIGMA' > aflow.tmp && mv aflow.tmp INCAR" << endl; // remove ISYM
+                        aus_exec << "echo \"ISMEAR=0                                    #FIX=" << mode << "\" >> INCAR " << endl;
+                        aus_exec << "echo \"SIGMA=0.05                                        #FIX=" << mode << ")\" >> INCAR " << endl;
+                        aurostd::execute(aus_exec);
+                    }
+
                     if(mode=="GAMMA_SHIFT") {
                         file_error="aflow.error.gamma_shift";
                         reload_kpoints=TRUE;
