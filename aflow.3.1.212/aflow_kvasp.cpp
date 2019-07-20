@@ -2529,9 +2529,7 @@ namespace KBIN {
                     xwarning.flag("NPAR_REMOVE",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Please remove the tag NPAR from the INCAR file and restart the"));
                     xwarning.flag("GAMMA_SHIFT",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","shift your grid to Gamma"));
                     xwarning.flag("CSLOSHING",KBIN::VASP_CheckUnconvergedOSZICAR(xvasp.Directory)); // check from OSZICAR
-                    xwarning.flag("NKXYZ_IKPTD",(aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","NKX>IKPTD") ||
-                                aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","NKY>IKPTD") ||
-                                aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","NKZ>IKPTD")) );
+                    xwarning.flag("NKXYZ_IKPTD",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","NKX>IKPTD"));
                     xwarning.flag("DENTET",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING: DENTET: can't reach specified precision")); // not only npar==1
                     xwarning.flag("EFIELD_PEAD",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","EFIELD_PEAD is too large")); // EFIELD_PEAD
                     xwarning.flag("READ_KPOINTS_RD_SYM",(aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","ERROR in RE_READ_KPOINTS_RD") &&

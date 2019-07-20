@@ -2680,7 +2680,6 @@ namespace KBIN {
                     ss_INCAR << aurostd::PaddedPOST("ENCUT="+aurostd::utype2string(int(xvasp.POTCAR_ENMAX)), _incarpad_) << endl;
                 if (!doesKeywordExist(xvasp.INCAR.str(), "EDIFF"))
                     ss_INCAR << aurostd::PaddedPOST("EDIFF=1E-4",_incarpad_) << endl;
-                //ss_INCAR << "#AFLOW_STATIC" << endl;
                 if(vflags.KBIN_VASP_FORCE_OPTION_PREC.preserved==FALSE) 
                     ss_INCAR << aurostd::PaddedPOST("PREC=ACCURATE",_incarpad_) << endl;
                 ss_INCAR << aurostd::PaddedPOST("IBRION=-1",_incarpad_)       <<  notes  << endl;
@@ -2735,6 +2734,7 @@ namespace KBIN {
                             aurostd::substring2bool(strline,"ISIF",TRUE) || 
                             aurostd::substring2bool(strline,"NELM",TRUE) ||
                             aurostd::substring2bool(strline,"NELMIN",TRUE) || 
+                            aurostd::substring2bool(strline,"LREAL",TRUE)  || 
                             aurostd::substring2bool(strline,"ISMEAR",TRUE) || 
                             aurostd::substring2bool(strline,"SIGMA",TRUE) ||
                             aurostd::substring2bool(strline,"LORBIT",TRUE) || 
@@ -2744,19 +2744,15 @@ namespace KBIN {
                             aurostd::substring2bool(strline,"LCHARG",TRUE) || 
                             aurostd::substring2bool(strline,"LWAVE",TRUE) ||
                             aurostd::substring2bool(strline,"LELF",TRUE) ||
-                            aurostd::substring2bool(strline,"PREC",TRUE) ||
-                            aurostd::substring2bool(strline,"LREAL",TRUE) 
-                      ){
-                        if (aurostd::substring2bool(strline,"PREC",TRUE) && vflags.KBIN_VASP_FORCE_OPTION_PREC.preserved==FALSE)
-                            xvasp.INCAR << "";
-                        else
-                            xvasp.INCAR << "";
+                            aurostd::substring2bool(strline,"PREC",TRUE))
+                    {
+                        xvasp.INCAR << "";
                     }
                     else { 
                         xvasp.INCAR << strline << endl;
                     }
                 }
-                //xvasp.INCAR << endl;
+
                 xvasp.INCAR << XVASP_WRITE_INCAR_Static(xvasp, vflags, "STATIC", "# Performing STATIC") << endl; 
                 // check for LDA/GGA
                 if(xvasp.POTCAR_TYPE=="LDA" || xvasp.POTCAR_TYPE=="GGA") {
@@ -2783,6 +2779,7 @@ namespace KBIN {
                             aurostd::substring2bool(strline,"ISIF",TRUE) || 
                             aurostd::substring2bool(strline,"NELM",TRUE) ||
                             aurostd::substring2bool(strline,"NELMIN",TRUE) || 
+                            aurostd::substring2bool(strline,"LREAL",TRUE) ||
                             aurostd::substring2bool(strline,"ISMEAR",TRUE) || 
                             aurostd::substring2bool(strline,"SIGMA",TRUE) ||
                             aurostd::substring2bool(strline,"LORBIT",TRUE) || 
@@ -2792,20 +2789,16 @@ namespace KBIN {
                             aurostd::substring2bool(strline,"LCHARG",TRUE) || 
                             aurostd::substring2bool(strline,"LWAVE",TRUE) ||
                             aurostd::substring2bool(strline,"LELF",TRUE) ||
-                            aurostd::substring2bool(strline,"PREC",TRUE) ||
-                            aurostd::substring2bool(strline,"LREAL",TRUE) 
-                            //aurostd::substring2bool(strline,"ALGO",TRUE) ||
-                      ){
-                        if (aurostd::substring2bool(strline,"PREC",TRUE) && vflags.KBIN_VASP_FORCE_OPTION_PREC.preserved==FALSE)
-                            xvasp.INCAR << "";
-                        else
-                            xvasp.INCAR << "";
+                            aurostd::substring2bool(strline,"PREC",TRUE))
+                    {
+                        xvasp.INCAR << "";
                     }
                     else { 
                         xvasp.INCAR << strline << endl;
                     }
                 }
                 xvasp.INCAR << XVASP_WRITE_INCAR_Static(xvasp, vflags, "STATIC", "# Performing RELAX_STATIC") << endl; 
+                
                 // check for LDA/GGA
                 if(xvasp.POTCAR_TYPE=="LDA" || xvasp.POTCAR_TYPE=="GGA") {
                     xvasp.INCAR << "#Fixing RWIGS/LORBIG for LDA/GGA" << endl;
@@ -2830,6 +2823,7 @@ namespace KBIN {
                             aurostd::substring2bool(strline,"ISIF",TRUE) || 
                             aurostd::substring2bool(strline,"NELM",TRUE) ||
                             aurostd::substring2bool(strline,"NELMIN",TRUE) || 
+                            aurostd::substring2bool(strline,"LREAL",TRUE) || 
                             aurostd::substring2bool(strline,"ISMEAR",TRUE) || 
                             aurostd::substring2bool(strline,"SIGMA",TRUE) ||
                             aurostd::substring2bool(strline,"LORBIT",TRUE) || 
@@ -2838,18 +2832,17 @@ namespace KBIN {
                             aurostd::substring2bool(strline,"NEDOS",TRUE) ||
                             aurostd::substring2bool(strline,"LCHARG",TRUE) || 
                             aurostd::substring2bool(strline,"LWAVE",TRUE) ||
+                            aurostd::substring2bool(strline,"LAECHG",TRUE) ||
                             aurostd::substring2bool(strline,"LELF",TRUE) ||
-                            aurostd::substring2bool(strline,"PREC",TRUE) 
-                      ){
-                        if (aurostd::substring2bool(strline,"PREC",TRUE) && vflags.KBIN_VASP_FORCE_OPTION_PREC.preserved==FALSE)
-                            xvasp.INCAR << "";
-                        else
+                            aurostd::substring2bool(strline,"PREC",TRUE))
+                    {
                             xvasp.INCAR << "";
                     }
                     else { 
                         xvasp.INCAR << strline << endl;
                     }
                 }
+
                 xvasp.INCAR << XVASP_WRITE_INCAR_Static(xvasp, vflags, "BANDS", "# Performing RELAX_STATIC_BANDS") << endl; 
 
                 // check for LDA/GGA
@@ -4820,13 +4813,15 @@ namespace KBIN {
                             aurostd::execute(aus_exec);
                         }
                         if (param_int > 1) {
-                            xvasp.aopts.flag("FLAG::CHGCAR_PRESERVED", TRUE);
-                            reload_incar=TRUE;
-                            aus_exec << "cd " << xvasp.Directory << endl;
-                            aus_exec << "cp INCAR INCAR.csloshing" << endl;
-                            aus_exec << "cat INCAR | grep -v 'ICHARG' > aflow.tmp && mv aflow.tmp INCAR" << endl; // remove SYMPREC
-                            aus_exec << "echo \"ICHARG=1                                          #FIX=" << mode << "\" >> INCAR " << endl;
-                            aurostd::execute(aus_exec);
+                            if (xvasp.AVASP_flag_RUN_RELAX_STATIC) {
+                                xvasp.aopts.flag("FLAG::CHGCAR_PRESERVED", TRUE);
+                                reload_incar=TRUE;
+                                aus_exec << "cd " << xvasp.Directory << endl;
+                                aus_exec << "cp INCAR INCAR.csloshing" << endl;
+                                aus_exec << "cat INCAR | grep -v 'ICHARG' > aflow.tmp && mv aflow.tmp INCAR" << endl; // remove SYMPREC
+                                aus_exec << "echo \"ICHARG=1                                          #FIX=" << mode << "\" >> INCAR " << endl;
+                                aurostd::execute(aus_exec);
+                            }
                         }
                     }
 
