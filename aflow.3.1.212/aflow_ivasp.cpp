@@ -3006,15 +3006,24 @@ namespace KBIN {
                     xvasp.INCAR << aurostd::PaddedPOST("ENCUT="+aurostd::utype2string(int(xvasp.POTCAR_ENMAX)), _incarpad_) << endl;
                     xvasp.INCAR << aurostd::PaddedPOST("EDIFF=1E-6",_incarpad_) << endl;
                     xvasp.INCAR << aurostd::PaddedPOST("LREAL=.FALSE.",_incarpad_) << endl;
-                    xvasp.INCAR << aurostd::PaddedPOST("ALGO=Fast",_incarpad_) << endl;
+                    xvasp.INCAR << aurostd::PaddedPOST("ALGO=Normal",_incarpad_) << endl;
                 }
                 if(vflags.KBIN_VASP_FORCE_OPTION_PREC.xscheme=="ACCURATE") {
                     xvasp.INCAR << aurostd::PaddedPOST("PREC=Accurate",_incarpad_) << endl;
                     xvasp.INCAR << aurostd::PaddedPOST("ENCUT="+aurostd::utype2string(xvasp.POTCAR_ENMAX*DEFAULT_VASP_PREC_ENMAX_ACCURATE,_IVASP_DOUBLE2STRING_PRECISION_),_incarpad_) << "# " << DEFAULT_VASP_PREC_ENMAX_ACCURATE << "*ENCUT (" << xvasp.POTCAR_ENMAX << ") of pseudopotentials " << endl;
                     xvasp.INCAR << aurostd::PaddedPOST("EDIFF=1E-6",_incarpad_) << endl;
-                    xvasp.INCAR << aurostd::PaddedPOST("EDIFFG=-1E-2",_incarpad_) << endl;
+                    if(vflags.KBIN_VASP_FORCE_OPTION_RELAX_MODE.xscheme=="ENERGY"){
+                        //will put it into a single function in future
+                        stringstream stmp;
+                        double dvalue_EDIFFG = 1E-6*xvasp.str.atoms.size()*0.9;
+                        stmp << std::scientific << std::setprecision(2) << std::uppercase << dvalue_EDIFFG;
+                        xvasp.INCAR << aurostd::PaddedPOST("EDIFFG=" + stmp.str(), _incarpad_) << "# 0.001meV/atom [PREC=ACCURATE] " << endl;
+                    }
+                    if(vflags.KBIN_VASP_FORCE_OPTION_RELAX_MODE.xscheme=="FORCES") {
+                        xvasp.INCAR << aurostd::PaddedPOST("EDIFFG=-1E-3",_incarpad_) <<  "#-1E-3 eV/AA [PREC=ACCURATE] " << endl;
+                    }
                     xvasp.INCAR << aurostd::PaddedPOST("LREAL=.FALSE.",_incarpad_) << endl;
-                    xvasp.INCAR << aurostd::PaddedPOST("ALGO=Fast",_incarpad_) << endl;
+                    xvasp.INCAR << aurostd::PaddedPOST("ALGO=Normal",_incarpad_) << endl;
                 };
                 // BEGIN JJPR
                 if(vflags.KBIN_VASP_FORCE_OPTION_PREC.xscheme=="PHONONS") { 
