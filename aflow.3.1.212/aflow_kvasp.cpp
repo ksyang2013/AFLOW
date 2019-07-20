@@ -2480,12 +2480,10 @@ namespace KBIN {
                 if(vtokens.size()>1) DVERSION+=aurostd::string2utype<double>(vtokens.at(1))/10.0;
                 xwarning.push_attached("DVERSION",aurostd::utype2string((double) DVERSION));
 
-                //check OUTCAR converged? KESONG 2019-07-13
-               // **************************************** 
-                bool isConverged = FALSE, isStatic = FALSE;
+                //check OUTCAR converged? KESONG 2019-07-13 // **************************************** 
+                bool isConverged = FALSE;
                 xOUTCAR outcar(xvasp.Directory+"/OUTCAR");
-                if (! outcar.NSW) isStatic = TRUE;
-                if (isStatic && abs(outcar.total_energy_change) < outcar.EDIFF) {
+                if (abs(outcar.total_energy_change) < outcar.EDIFF) {
                     isConverged = TRUE;
                 }
                // **************************************** 
@@ -2976,7 +2974,20 @@ namespace KBIN {
                                     xfixed.flag("NPAR_REMOVE",TRUE);xfixed.flag("ALL",TRUE);
                                 }
                             }
+                            //
                             // ********* CHECK CSLOSHING PROBLEMS ******************
+                            if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [CHECK CSLOSHING PROBLEMS]" << endl;
+                            if(!vflags.KBIN_VASP_FORCE_OPTION_IGNORE_AFIX.flag("CSLOSHING") && !xfixed.flag("ALL")) { // check CSLOSHING
+                                if(xwarning.flag("CSLOSHING")) {  //Check multiple times
+                                    KBIN::VASP_Error(xvasp,"WWWWW  ERROR KBIN::VASP_Run: "+Message("time")+"  CSLOSHING problems ");
+                                    aus << "WWWWW  FIX CSLOSHING - " << nrun << ":" <<  Message(aflags,"user,host,time") << endl;
+                                    aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
+                                    KBIN::XVASP_Afix_GENERIC("CSLOSHING",xvasp,kflags,vflags, 0.0, nrun-1);
+                                    xfixed.flag("CSLOSHING",TRUE);xfixed.flag("ALL",TRUE);
+                                }
+                            }
+
+                            /* ********* CHECK CSLOSHING PROBLEMS ******************
                             if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [CHECK CSLOSHING PROBLEMS]" << endl;
                             if(!vflags.KBIN_VASP_FORCE_OPTION_IGNORE_AFIX.flag("CSLOSHING") && !xfixed.flag("ALL")) { // check CSLOSHING
                                 if(xwarning.flag("CSLOSHING") && !xfixed.flag("CSLOSHING")) { // Apply only ONCE
@@ -2984,10 +2995,11 @@ namespace KBIN {
                                     aus << "WWWWW  FIX CSLOSHING - " << Message(aflags,"user,host,time") << endl;
                                     aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
                                     KBIN::XVASP_Afix_GENERIC("CSLOSHING",xvasp,kflags,vflags);
-                                    //	  KBIN_XVASP_Afix_CSLOSHING(xvasp,kflags,vflags);
                                     xfixed.flag("CSLOSHING",TRUE);xfixed.flag("ALL",TRUE);
                                 }
                             }
+                            */
+
                             // ********* CHECK DENTET PROBLEMS ******************
                             if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [CHECK DENTET PROBLEMS]" << endl;
                             if(!vflags.KBIN_VASP_FORCE_OPTION_IGNORE_AFIX.flag("DENTET") && !xfixed.flag("ALL")) { // CHECK FOR DENTET
@@ -3577,8 +3589,27 @@ namespace KBIN {
                     }
                 } // namespace KBIN
 
+                //KESONG //KESONG 2019-07-13 // **************************************** 
+
+                namespace KBIN {
+                    bool VASP_CheckConvergedOSZICAR(string dir) {
+                        bool isConverged = FALSE; 
+                        xOUTCAR outcar(dir+"/OUTCAR");
+                        if (abs(outcar.total_energy_change) < outcar.EDIFF) {
+                            isConverged = TRUE;
+                        }
+                        return (isConverged);
+                    }
+                } // namespace KBIN
+
                 namespace KBIN {
                     bool VASP_CheckUnconvergedOSZICAR(string dir) {
+                        return (not VASP_CheckConvergedOSZICAR(dir));
+                    }
+                } // namespace KBIN
+
+                namespace KBIN {
+                    bool VASP_CheckUnconvergedOSZICAR2(string dir) {
                         uint ielectrons=0,issues=0,cutoff=3;
                         vector<string> vlines,vrelax,tokens;
                         aurostd::file2vectorstring(dir+"/OSZICAR",vlines);

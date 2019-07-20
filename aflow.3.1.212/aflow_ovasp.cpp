@@ -45,9 +45,9 @@ xOUTCAR::xOUTCAR() {
   Pulay_stress=0.0;             // for aflowlib_libraries.cpp
   vforces.clear();              // for aflowlib_libraries.cpp
   vpositions_cartesian.clear(); // for aflowlib_libraries.cpp
-  ENCUT=0.0;EDIFF=0.0;EDIFFG=0.0;POTIM=0.0;TEIN=0.0;TEBEG=0.0;TEEND=0.0;SMASS=0.0;NPACO=0.0;APACO=0.0;PSTRESS=0.0;     // 
+  ENCUT=0.0;EDIFF=1E-4;EDIFFG=0.0;POTIM=0.0;TEIN=0.0;TEBEG=0.0;TEEND=0.0;SMASS=0.0;NPACO=0.0;APACO=0.0;PSTRESS=0.0;     // 
   NBANDS=0;NKPTS=0;NSW=0;NBLOCK=0;KBLOCK=0;IBRION=0;NFREE=0;ISIF=0;IWAVPR=0;ISYM=0;ISPIN=0; //
-  total_energy_change=0.0;
+  total_energy_change=999;  //KESONG
   // DOS related values:
   EMIN=0.0;EMAX=0.0;SIGMA=0.0;ISMEAR=0;  // for aflowlib_libraries.cpp 
   //  Electronic relaxation
@@ -820,9 +820,9 @@ bool xOUTCAR::GetProperties(const stringstream& stringstreamIN,bool QUIET) {
   if(LVERBOSE) cerr << "xOUTCAR::GetProperties: ---------------------------------" << endl;
   if(LVERBOSE) cerr << "xOUTCAR::GetProperties: LOAD \"Electronic convergence/Ionic relaxation\" DATA" << endl;
   vline.clear();
-  ENCUT=0.0;EDIFF=0.0;EDIFFG=0.0;POTIM=0.0;TEIN=0.0;TEBEG=0.0;TEEND=0.0;SMASS=0.0;NPACO=0.0;APACO=0.0;PSTRESS=0.0;pressure=0.0;     // 
+  ENCUT=0.0;EDIFF=1E-4;EDIFFG=0.0;POTIM=0.0;TEIN=0.0;TEBEG=0.0;TEEND=0.0;SMASS=0.0;NPACO=0.0;APACO=0.0;PSTRESS=0.0;pressure=0.0;     // 
   NBANDS=0;NKPTS=0;NSW=0;NBLOCK=0;KBLOCK=0;IBRION=0;NFREE=0;ISIF=0;IWAVPR=0;ISYM=0;TEIN=0;TEBEG=0;ISPIN=0; //
-  total_energy_change=0.0;
+  total_energy_change=999;
   //for(uint iline=vcontent.size()-1;iline>0;iline--) {
   for(uint iline=0;iline<vcontent.size();iline++) {
     if(aurostd::substring2bool(vcontent.at(iline),"ENCUT") && aurostd::substring2bool(vcontent.at(iline),"eV")) vline.push_back(vcontent.at(iline));
@@ -883,7 +883,7 @@ bool xOUTCAR::GetProperties(const stringstream& stringstreamIN,bool QUIET) {
       if(tokens.at(k)=="NBANDS" && k+1<tokens.size()) NBANDS=aurostd::string2utype<int>(tokens.at(k+1));
       if(tokens.at(k)=="NKPTS" && k+1<tokens.size()) NKPTS=aurostd::string2utype<int>(tokens.at(k+1));
       if(tokens.at(k)=="ISPIN" && k+1<tokens.size()) ISPIN=aurostd::string2utype<int>(tokens.at(k+1));
-      if(tokens.at(k)=="order)" && k+1<tokens.size()) total_energy_change=aurostd::string2utype<double>(tokens.at(k+1));
+      if(tokens.at(k)=="order)" && k+1<tokens.size()) total_energy_change=aurostd::string2utype<double>(tokens.at(k+1)); //pick last item
     }
   }
   if(vline.size()){ // CO

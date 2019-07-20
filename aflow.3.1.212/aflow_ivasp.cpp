@@ -2698,10 +2698,11 @@ namespace KBIN {
                 ss_INCAR << aurostd::PaddedPOST("EMAX=  25.0",_incarpad_)     <<  notes  << endl;
                 ss_INCAR << aurostd::PaddedPOST("NEDOS= 7001",_incarpad_)     <<  notes  << endl;
                 ss_INCAR << aurostd::PaddedPOST("LCHARG=.TRUE.",_incarpad_)   <<  notes  << endl;
-                if (RunType == "STATIC"){
-                    ss_INCAR << aurostd::PaddedPOST("LOPTICS=.TRUE.",_incarpad_)   <<  notes  << endl;
-                    ss_INCAR << aurostd::PaddedPOST("LVTOT=.TRUE.",_incarpad_)   <<  notes  << endl;
-                }
+                //better to let user set it in "aflow.in" by themselves
+                //if (RunType == "STATIC"){
+                //    ss_INCAR << aurostd::PaddedPOST("LOPTICS=.TRUE.",_incarpad_)   <<  notes  << endl;
+                //    ss_INCAR << aurostd::PaddedPOST("LVTOT=.TRUE.",_incarpad_)   <<  notes  << endl;
+                //}
                 ss_INCAR << aurostd::PaddedPOST("LWAVE=.FALSE.",_incarpad_)   <<  notes << endl;
 
                 if(vflags.KBIN_VASP_FORCE_OPTION_BADER.isentry && vflags.KBIN_VASP_FORCE_OPTION_BADER.option) 
@@ -4522,6 +4523,21 @@ namespace KBIN {
                     xvasp.INCAR.str(std::string()); xvasp.INCAR << aurostd::file2string(xvasp.Directory+"/INCAR");
                 }
             }
+            
+            //KESONG 2019-07-19
+            namespace KBIN {
+                bool RecyclePOSCARfromCONTCAR(_xvasp& xvasp){
+                    ostringstream aus;
+                    aus << "cd " << xvasp.Directory << endl;
+                    if (aurostd::FileExist(xvasp.Directory+string("/CONTCAR")) && 
+                            not (aurostd::FileEmpty(xvasp.Directory+string("/CONTCAR")))) {
+                        aus << "rm POSCAR" << endl;
+                        aus << "cp CONTCAR POSCAR" << endl;
+                    }
+                    aurostd::execute(aus);
+                    return TRUE;
+                }
+            }
 
             namespace KBIN {
                 double XVASP_Afix_GENERIC(string mode,_xvasp& xvasp,_kflags& kflags,_vflags& vflags,double param_double,int param_int) {
@@ -4778,8 +4794,9 @@ namespace KBIN {
                         //if(vflags.KBIN_VASP_INCAR_VERBOSE) aus_exec << "echo \"# Performing KBIN::XVASP_Afix (" << mode << ") [AFLOW] end\" >> INCAR " << endl;
                         aurostd::execute(aus_exec);
                     }
+
                     if(mode=="CSLOSHING") {
-                        file_error="aflow.error.csloshing";
+                        file_error="aflow.error.csloshing" + aurostd::utype2string(param_int);
                         reload_incar=TRUE;
                         vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme="VERYFAST";
                         vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme="NORMAL";
@@ -4787,11 +4804,23 @@ namespace KBIN {
                         // [OBSOLETE] KBIN::XVASP_INCAR_ALGO(xvasp,vflags);
                         aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));
                         // fix aflowlin
-                        aus_exec << "cd " << xvasp.Directory << endl;
-                        aus_exec << "cat " << _AFLOWIN_ << " | sed \"s/\\[VASP_FORCE_OPTION\\]ALGO/#\\[VASP_FORCE_OPTION\\]ALGO/g\" | sed \"s/##\\[/#\\[/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl;
-                        aus_exec << "echo \"[VASP_FORCE_OPTION]ALGO=NORMAL      // Self Correction\"" << " >> " << _AFLOWIN_ << " " << endl;
-                        aurostd::execute(aus_exec);
+                        if (param_int == 1) {
+                            aus_exec << "cd " << xvasp.Directory << endl;
+                            aus_exec << "cat " << _AFLOWIN_ << " | sed \"s/\\[VASP_FORCE_OPTION\\]ALGO/#\\[VASP_FORCE_OPTION\\]ALGO/g\" | sed \"s/##\\[/#\\[/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl;
+                            aus_exec << "echo \"[VASP_FORCE_OPTION]ALGO=NORMAL      // Self Correction\"" << " >> " << _AFLOWIN_ << " " << endl;
+                            aurostd::execute(aus_exec);
+                        }
+                        if (param_int > 1) {
+                            xvasp.aopts.flag("FLAG::CHGCAR_PRESERVED", TRUE);
+                            reload_incar=TRUE;
+                            aus_exec << "cd " << xvasp.Directory << endl;
+                            aus_exec << "cp INCAR INCAR.csloshing" << endl;
+                            aus_exec << "cat INCAR | grep -v 'ICHARG' > aflow.tmp && mv aflow.tmp INCAR" << endl; // remove SYMPREC
+                            aus_exec << "echo \"ICHARG=1                                          #FIX=" << mode << "\" >> INCAR " << endl;
+                            aurostd::execute(aus_exec);
+                        }
                     }
+
                     if(mode=="DENTET") {
                         file_error="aflow.error.dentet";
                         reload_incar=TRUE;
@@ -4803,21 +4832,7 @@ namespace KBIN {
                     }
                     // rewrite to restart ---------------------------------
                     if(rewrite_incar) {aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));}
-                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    //KESONG ADDS THIS, recycle CONTCAR, no waste time in relaxation; 2016-12-10
-                    if(aurostd::FileExist(xvasp.Directory+string("/CONTCAR")) && !aurostd::FileEmpty(xvasp.Directory+string("/CONTCAR"))) {
-                        ostringstream aus;
-                        aus << "cd " << xvasp.Directory << endl;
-                        if (aurostd::FileExist(xvasp.Directory+string("/CONTCAR"))) 
-                            aus << "cp POSCAR  POSCAR.errorFix" << endl;
-                        aus << "rm POSCAR" << endl;
-                        aus << "cp CONTCAR POSCAR" << endl;
-                        aurostd::execute(aus);
-                    }
-                    else {
-                        if(rewrite_poscar) {aurostd::stringstream2file(xvasp.POSCAR,string(xvasp.Directory+"/POSCAR"));}
-                    }
-                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    if(rewrite_poscar) {aurostd::stringstream2file(xvasp.POSCAR,string(xvasp.Directory+"/POSCAR"));}
                     if(rewrite_kpoints) {aurostd::stringstream2file(xvasp.KPOINTS,string(xvasp.Directory+"/KPOINTS"));}
                     // reload to restart ---------------------------------
                     if(reload_incar) {
@@ -4832,6 +4847,8 @@ namespace KBIN {
                         xvasp.KPOINTS_orig.str(std::string()); xvasp.KPOINTS_orig << xvasp.KPOINTS.str();
                         xvasp.KPOINTS.str(std::string()); xvasp.KPOINTS << aurostd::file2string(xvasp.Directory+"/KPOINTS");
                     }
+                    //KESONG ADDS THIS, recycle CONTCAR, no waste time in relaxation; 2019-07-19
+                    if(xvasp.AVASP_flag_RUN_RELAX) RecyclePOSCARfromCONTCAR(xvasp);
 
                     // clean to restart ----------------------------------
                     if(file_error!="") KBIN::XVASP_Afix_Clean(xvasp,file_error);
@@ -4842,7 +4859,6 @@ namespace KBIN {
                     return 0.0;
                 }
             }
-            // ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
             // ***************************************************************************//
             // KBIN::GetMostRelaxedStructure
