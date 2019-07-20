@@ -2511,7 +2511,10 @@ namespace KBIN {
                     // xwarning.flag("PSMAXN",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING: PSMAXN for non-local potential too small")); // look for problem for distance
                     xwarning.flag("PSMAXN",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","REAL_OPT: internal ERROR"));
                     xwarning.flag("IBZKPT",(!xmessage.flag("REACHED_ACCURACY") &&
-                                aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","VERY BAD NEWS! internal error in subroutine IBZKPT")) );
+                                aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","VERY BAD NEWS! internal error in subroutine IBZKPT") && 
+                                (!aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Tetrahedron method fails for NKPT<4."))
+                                ));
+                    xwarning.flag("IBZKPT_KNPT", aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Tetrahedron method fails for NKPT<4."));
                     xwarning.flag("EDDRMM",(!xmessage.flag("REACHED_ACCURACY") &&
                                 aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING in EDDRMM: call to ZHEGV failed, returncode")) ); // && !xwarning.flag("ZPOTRF");
                     xwarning.flag("REAL_OPTLAY_1",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","REAL_OPTLAY: internal error (1)"));
@@ -2700,6 +2703,20 @@ namespace KBIN {
                             // if(nrun<maxrun) vasp_start=TRUE;
                         }
                     }
+
+                    // ********* CHECK IBZKPT_KNPT PROBLEMS ******************
+                    if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [CHECK IBZKPT_KNPT PROBLEMS]" << endl;
+                    if(!vflags.KBIN_VASP_FORCE_OPTION_IGNORE_AFIX.flag("IBZKPT_KNPT") && !xfixed.flag("ALL")) { // OPTIONS FOR SYMMETRY
+                        if(xwarning.flag("IBZKPT_KNPT") && !xfixed.flag("IBZKPT_KNPT")) {
+                            KBIN::VASP_Error(xvasp,"WWWWW  ERROR KBIN::VASP_Run: "+Message("time")+"  IBZKPT_KNPT problems ");
+                            aus << "WWWWW  FIX IBZKPT_KNPT - " << Message(aflags,"user,host,time") << endl;
+                            aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
+                            KBIN::XVASP_Afix_GENERIC("IBZKPT_KNPT",xvasp,kflags,vflags);
+                            xfixed.flag("IBZKPT_KNPT",TRUE);xfixed.flag("ALL",TRUE);
+                            // if(nrun<maxrun) vasp_start=TRUE;
+                        }
+                    }
+
                     // ********* CHECK NKXYZ_IKPTD PROBLEMS ******************
                     if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [CHECK NKXYZ_IKPTD PROBLEMS]" << endl;
                     if(!vflags.KBIN_VASP_FORCE_OPTION_IGNORE_AFIX.flag("NKXYZ_IKPTD") && !xfixed.flag("ALL")) { // OPTIONS FOR SYMMETRY
