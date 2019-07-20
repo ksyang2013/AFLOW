@@ -4588,7 +4588,7 @@ namespace KBIN {
                         aus_exec << "cp INCAR INCAR.ibzkpt_knpt" << endl;
                         aus_exec << "cat INCAR | grep -v 'ISMEAR' > aflow.tmp && mv aflow.tmp INCAR" << endl; // remove SYMPREC
                         aus_exec << "cat INCAR | grep -v 'SIGMA' > aflow.tmp && mv aflow.tmp INCAR" << endl; // remove ISYM
-                        aus_exec << "echo \"ISMEAR=0                                    #FIX=" << mode << "\" >> INCAR " << endl;
+                        aus_exec << "echo \"ISMEAR=0                                          #FIX=" << mode << "\" >> INCAR " << endl;
                         aus_exec << "echo \"SIGMA=0.05                                        #FIX=" << mode << ")\" >> INCAR " << endl;
                         aurostd::execute(aus_exec);
                     }
@@ -4600,13 +4600,14 @@ namespace KBIN {
                         if(vflags.KBIN_VASP_INCAR_VERBOSE) aus_exec << "KBIN::XVASP_Afix_GENERIC MAKING (" << mode << ") BEGIN" << endl;
                         KBIN::XVASP_KPOINTS_OPERATION(xvasp,"Gamma");
                         if(vflags.KBIN_VASP_INCAR_VERBOSE) aus_exec << "KBIN::XVASP_Afix_GENERIC MAKING (" << mode << ") END" << endl;
-                        //    xvasp.str.kpoints_s1=0.0;xvasp.str.kpoints_s2=0.0;xvasp.str.kpoints_s3=0.0;
                         rewrite_kpoints=TRUE;
                     }
+
                     if(mode=="MPICH11") {
                         file_error="aflow.error.mpich11";
                         kflags.KBIN_MPI_OPTIONS=string("ulimit -s unlimited ");//+string(" && ")+kflags.KBIN_MPI_OPTIONS;
                     }
+
                     if(mode=="MPICH139") {
                         file_error="aflow.error.mpich139";
                         reload_kpoints=TRUE;
