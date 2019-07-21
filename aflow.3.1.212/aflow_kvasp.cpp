@@ -2528,7 +2528,8 @@ namespace KBIN {
                                 aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","NPAR=number of nodes")) ); // fix with NPAR=nodes in MPI
                     xwarning.flag("NPAR_REMOVE",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Please remove the tag NPAR from the INCAR file and restart the"));
                     xwarning.flag("GAMMA_SHIFT",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","shift your grid to Gamma"));
-                    xwarning.flag("CSLOSHING",KBIN::VASP_CheckUnconvergedOSZICAR(xvasp.Directory)); // check from OSZICAR
+                    xwarning.flag("REACH_NSW", ( !xmessage.flag("REACHED_ACCURACY") && KBIN::VASP_isRelaxOUTCAR(xvasp.Directory) && KBIN::VASP_CheckRelaxReachNSW(xvasp.Directory)) ); // check relax (reach NSW)
+                    xwarning.flag("CSLOSHING",KBIN::VASP_CheckUnconvergedOUTCAR(xvasp.Directory)); // check converged (static & relaxed)
                     xwarning.flag("NKXYZ_IKPTD",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","NKX>IKPTD"));
                     xwarning.flag("DENTET",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING: DENTET: can't reach specified precision")); // not only npar==1
                     xwarning.flag("EFIELD_PEAD",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","EFIELD_PEAD is too large")); // EFIELD_PEAD
@@ -2972,7 +2973,19 @@ namespace KBIN {
                                     xfixed.flag("NPAR_REMOVE",TRUE);xfixed.flag("ALL",TRUE);
                                 }
                             }
-                            //
+                            
+                            // ********* CHECK REACH_NSW PROBLEMS ******************
+                            if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [CHECK REACH_NSW PROBLEMS]" << endl;
+                            if(!vflags.KBIN_VASP_FORCE_OPTION_IGNORE_AFIX.flag("REACH_NSW") && !xfixed.flag("ALL")) { // check REACH_NSW
+                                if(xwarning.flag("REACH_NSW")) {  //Check multiple times
+                                    KBIN::VASP_Error(xvasp,"WWWWW  ERROR KBIN::VASP_Run: "+Message("time")+"  REACH_NSW (Relax Unfinished) problems ");
+                                    aus << "WWWWW  FIX REACH_NSW - " << nrun << ":" <<  Message(aflags,"user,host,time") << endl;
+                                    aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
+                                    KBIN::XVASP_Afix_GENERIC("REACH_NSW",xvasp,kflags,vflags, 0.0, nrun);
+                                    xfixed.flag("REACH_NSW",TRUE);xfixed.flag("ALL",TRUE);
+                                }
+                            }
+
                             // ********* CHECK CSLOSHING PROBLEMS ******************
                             if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [CHECK CSLOSHING PROBLEMS]" << endl;
                             if(!vflags.KBIN_VASP_FORCE_OPTION_IGNORE_AFIX.flag("CSLOSHING") && !xfixed.flag("ALL")) { // check CSLOSHING
@@ -2980,7 +2993,7 @@ namespace KBIN {
                                     KBIN::VASP_Error(xvasp,"WWWWW  ERROR KBIN::VASP_Run: "+Message("time")+"  CSLOSHING problems ");
                                     aus << "WWWWW  FIX CSLOSHING - " << nrun << ":" <<  Message(aflags,"user,host,time") << endl;
                                     aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
-                                    KBIN::XVASP_Afix_GENERIC("CSLOSHING",xvasp,kflags,vflags, 0.0, nrun-1);
+                                    KBIN::XVASP_Afix_GENERIC("CSLOSHING",xvasp,kflags,vflags, 0.0, nrun);
                                     xfixed.flag("CSLOSHING",TRUE);xfixed.flag("ALL",TRUE);
                                 }
                             }
@@ -3590,7 +3603,7 @@ namespace KBIN {
                 //KESONG //KESONG 2019-07-13 // **************************************** 
 
                 namespace KBIN {
-                    bool VASP_CheckConvergedOSZICAR(string dir) {
+                    bool VASP_CheckConvergedOUTCAR(string dir) {
                         bool isConverged = FALSE; 
                         xOUTCAR outcar(dir+"/OUTCAR");
                         if (abs(outcar.total_energy_change) < outcar.EDIFF) {
@@ -3601,13 +3614,39 @@ namespace KBIN {
                 } // namespace KBIN
 
                 namespace KBIN {
-                    bool VASP_CheckUnconvergedOSZICAR(string dir) {
-                        return (not VASP_CheckConvergedOSZICAR(dir));
+                    bool VASP_CheckUnconvergedOUTCAR(string dir) {
+                        return (not VASP_CheckConvergedOUTCAR(dir));
                     }
                 } // namespace KBIN
 
+                namespace KBIN{
+                    bool VASP_isRelaxOUTCAR(string dir) {
+                        bool isRelax = FALSE;
+                        xOUTCAR outcar(dir+"/OUTCAR");
+                        if (outcar.NSW > 0 ) isRelax = TRUE;
+                        return (isRelax);
+                    }
+                }
+
+                namespace KBIN{
+                    bool VASP_CheckRelaxReachNSW(string dir) {
+                        bool doesReachNSW = FALSE;
+                        vector<string> vlines,vrelax;
+                        aurostd::file2vectorstring(dir+"/OSZICAR",vlines);
+                        for(uint i=0;i<vlines.size();i++)
+                            if(aurostd::substring2bool(vlines.at(i),"F="))
+                                vrelax.push_back(vlines.at(i-1));
+                        xOUTCAR outcar(dir+"/OUTCAR");
+                        int step_num = vrelax.size();
+                        if (outcar.NSW == step_num) doesReachNSW = TRUE;
+                        return (doesReachNSW);
+                    }
+                }
+
+
+
                 namespace KBIN {
-                    bool VASP_CheckUnconvergedOSZICAR2(string dir) {
+                    bool VASP_CheckUnconvergedOSZICAR(string dir) {
                         uint ielectrons=0,issues=0,cutoff=3;
                         vector<string> vlines,vrelax,tokens;
                         aurostd::file2vectorstring(dir+"/OSZICAR",vlines);
