@@ -4797,6 +4797,13 @@ namespace KBIN {
                         aurostd::execute(aus_exec);
                     }
 
+                    if(mode=="REACH_NSW") {
+                        file_error="aflow.error.reach_nsw" + aurostd::utype2string(param_int);
+                        reload_incar=TRUE;
+                        RecyclePOSCARfromCONTCAR(xvasp);
+                    }
+
+
                     if(mode=="CSLOSHING") {
                         file_error="aflow.error.csloshing" + aurostd::utype2string(param_int);
                         reload_incar=TRUE;
