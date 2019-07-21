@@ -2545,7 +2545,7 @@ namespace KBIN {
                             aurostd::substring2bool(strline,"PROTOTYPE",TRUE) || aurostd::substring2bool(strline,"#PROTOTYPE",TRUE)) {
                         xvasp.INCAR << "" << endl;
                     } else {
-                        if(!strline.length()) xvasp.INCAR << strline << endl;
+                        if(strline.length()) xvasp.INCAR << strline << endl;
                     }
                 }
                 FileContent=xvasp.INCAR.str();
@@ -2749,7 +2749,7 @@ namespace KBIN {
                         xvasp.INCAR << "";
                     }
                     else { 
-                        xvasp.INCAR << strline << endl;
+                        if (strline.length()) xvasp.INCAR << strline << endl;
                     }
                 }
 
@@ -2794,7 +2794,7 @@ namespace KBIN {
                         xvasp.INCAR << "";
                     }
                     else { 
-                        xvasp.INCAR << strline << endl;
+                        if (strline.length()) xvasp.INCAR << strline << endl;
                     }
                 }
                 xvasp.INCAR << XVASP_WRITE_INCAR_Static(xvasp, vflags, "STATIC", "# Performing RELAX_STATIC") << endl; 
@@ -2839,7 +2839,7 @@ namespace KBIN {
                             xvasp.INCAR << "";
                     }
                     else { 
-                        xvasp.INCAR << strline << endl;
+                        if (strline.length()) xvasp.INCAR << strline << endl;
                     }
                 }
 
