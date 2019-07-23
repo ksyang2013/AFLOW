@@ -37,6 +37,74 @@ pthread_mutex_t mutex_KVASP=PTHREAD_MUTEX_INITIALIZER;
 #define DUKE_BETA_VASP5_CORES_DIELECTRIC 16
 
 
+// ***************************************************************************
+//KESONG //KESONG 2019-07-13 // **************************************** 
+// ***************************************************************************
+namespace KBIN {
+    bool VASP_CheckConvergedOUTCAR(string dir) {
+        bool isConverged = FALSE; 
+        xOUTCAR outcar(dir+"/OUTCAR");
+        if (abs(outcar.total_energy_change) < outcar.EDIFF) {
+            isConverged = TRUE;
+        }
+        return (isConverged);
+    }
+} 
+
+// ***************************************************************************
+namespace KBIN {
+    bool VASP_CheckUnconvergedOUTCAR(string dir) {
+        return (not VASP_CheckConvergedOUTCAR(dir));
+    }
+} 
+
+// ***************************************************************************
+namespace KBIN{
+    bool VASP_isSpinOUTCAR(string dir) {
+        bool isSpin = FALSE;
+        xOUTCAR outcar(dir+"/OUTCAR");
+        if (outcar.ISPIN == 2 ) isSpin = TRUE;
+        return (isSpin);
+    }
+}
+//
+// ***************************************************************************
+namespace KBIN{
+    bool VASP_isRelaxOUTCAR(string dir) {
+        bool isRelax = FALSE;
+        xOUTCAR outcar(dir+"/OUTCAR");
+        if (outcar.NSW > 0 ) isRelax = TRUE;
+        return (isRelax);
+    }
+}
+
+// ***************************************************************************
+namespace KBIN{
+    bool VASP_isStaticOUTCAR(string dir) {
+        bool isStatic = FALSE;
+        xOUTCAR outcar(dir+"/OUTCAR");
+        if (outcar.NSW < 0.1 ) isStatic = TRUE;
+        return (isStatic);
+    }
+}
+
+// ***************************************************************************
+namespace KBIN{
+    bool VASP_CheckRelaxReachNSW(string dir) {
+        bool doesReachNSW = FALSE;
+        vector<string> vlines,vrelax;
+        aurostd::file2vectorstring(dir+"/OSZICAR",vlines);
+        for(uint i=0;i<vlines.size();i++)
+            if(aurostd::substring2bool(vlines.at(i),"F="))
+                vrelax.push_back(vlines.at(i-1));
+        xOUTCAR outcar(dir+"/OUTCAR");
+        int step_num = vrelax.size();
+        if (outcar.NSW == step_num) doesReachNSW = TRUE;
+        return (doesReachNSW);
+    }
+}
+
+
 // ******************************************************************************************************************************************************
 // ******************************************************************************************************************************************************
 
@@ -1982,7 +2050,7 @@ namespace KBIN {
         bool vasp_start=TRUE;
         aurostd::StringstreamClean(aus_exec);
         aurostd::StringstreamClean(aus);
-        int nrun=0,maxrun=15, SCF_maxrun=8, Relax_maxrun = 6;
+        int nrun=0,maxrun=15, SCF_maxrun=12, Relax_maxrun = 8;
         int num_CSLOSHING = 0, num_ReachNSW = 0;
         int fix_NIRMAT=0;
         int kpoints_k1=xvasp.str.kpoints_k1; double kpoints_s1=xvasp.str.kpoints_s1;
@@ -2451,6 +2519,8 @@ namespace KBIN {
             if(nrun<maxrun) {  
                 if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  checking warnings" << endl;
                 xmessage.flag("REACHED_ACCURACY",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","reached required accuracy"));
+                xwarning.flag("REACH_NSW", ( !xmessage.flag("REACHED_ACCURACY") && KBIN::VASP_isRelaxOUTCAR(xvasp.Directory) && KBIN::VASP_CheckRelaxReachNSW(xvasp.Directory)) ); // check relax (reach NSW)
+                xwarning.flag("CSLOSHING",KBIN::VASP_CheckUnconvergedOUTCAR(xvasp.Directory)); // check converged (static & relaxed)
                 xwarning.flag("KKSYM",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Reciprocal lattice and k-lattice belong to different class of lattices"));
                 xwarning.flag("SGRCON",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","VERY BAD NEWS! internal error in subroutine SGRCON"));
                 xwarning.flag("NIRMAT",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Found some non-integer element in rotation matrix"));
@@ -2505,9 +2575,6 @@ namespace KBIN {
                 if(xwarning.flag("NPARN") && (aurostd::substring_present_file_FAST(xvasp.Directory+"/INCAR","LRPA") ||
                             aurostd::substring_present_file_FAST(xvasp.Directory+"/INCAR","LEPSILON") ||
                             aurostd::substring_present_file_FAST(xvasp.Directory+"/INCAR","LOPTICS"))) xwarning.flag("NPARN",FALSE);  // dont touch NPARN if LRPA or LEPSILON or LOPTICS necessary
-                //last checking
-                xwarning.flag("REACH_NSW", ( !xmessage.flag("REACHED_ACCURACY") && KBIN::VASP_isRelaxOUTCAR(xvasp.Directory) && KBIN::VASP_CheckRelaxReachNSW(xvasp.Directory)) ); // check relax (reach NSW)
-                xwarning.flag("CSLOSHING",KBIN::VASP_CheckUnconvergedOUTCAR(xvasp.Directory)); // check converged (static & relaxed)
 
                 int NBANDS_OUTCAR=0;
                 xOUTCAR OUTCAR_NBANDS(xvasp.Directory+"/OUTCAR");
@@ -2930,6 +2997,20 @@ namespace KBIN {
                     }
                 }
 
+                /*
+                // ********* CHECK DENTET PROBLEMS ******************
+                if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [CHECK DENTET PROBLEMS]" << endl;
+                if(!vflags.KBIN_VASP_FORCE_OPTION_IGNORE_AFIX.flag("DENTET") && !xfixed.flag("ALL")) { // CHECK FOR DENTET
+                if(xwarning.flag("DENTET") && !xfixed.flag("DENTET")) {  // Apply only ONCE
+                KBIN::VASP_Error(xvasp,"WWWWW  ERROR KBIN::VASP_Run: "+Message("time")+"  DENTET problems ");
+                aus << "WWWWW  FIX DENTET - " << Message(aflags,"user,host,time") << endl;
+                aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
+                KBIN::XVASP_Afix_GENERIC("DENTET",xvasp,kflags,vflags);
+                xfixed.flag("DENTET",TRUE);xfixed.flag("ALL",TRUE);
+                }
+                }
+                */
+
                 // ********* CHECK REACH_NSW PROBLEMS ******************
                 if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [CHECK REACH_NSW PROBLEMS]" << endl;
                 if(!vflags.KBIN_VASP_FORCE_OPTION_IGNORE_AFIX.flag("REACH_NSW") && !xfixed.flag("ALL")) { // check REACH_NSW
@@ -2943,7 +3024,7 @@ namespace KBIN {
                     }
                 }
 
-                // ********* CHECK CSLOSHING PROBLEMS ******************
+                // ********* CHECK CSLOSHING PROBLEMS ******************; LAST Operation will cover all previous
                 if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [CHECK CSLOSHING PROBLEMS]" << endl;
                 if(!vflags.KBIN_VASP_FORCE_OPTION_IGNORE_AFIX.flag("CSLOSHING") && !xfixed.flag("ALL")) { // check CSLOSHING
                     if(xwarning.flag("CSLOSHING") && num_CSLOSHING < SCF_maxrun) {  //Check multiple times until SCF_maxrun
@@ -2956,30 +3037,6 @@ namespace KBIN {
                     }
                 }
 
-                /* ********* CHECK CSLOSHING PROBLEMS ******************
-                   if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [CHECK CSLOSHING PROBLEMS]" << endl;
-                   if(!vflags.KBIN_VASP_FORCE_OPTION_IGNORE_AFIX.flag("CSLOSHING") && !xfixed.flag("ALL")) { // check CSLOSHING
-                   if(xwarning.flag("CSLOSHING") && !xfixed.flag("CSLOSHING")) { // Apply only ONCE
-                   KBIN::VASP_Error(xvasp,"WWWWW  ERROR KBIN::VASP_Run: "+Message("time")+"  CSLOSHING problems ");
-                   aus << "WWWWW  FIX CSLOSHING - " << Message(aflags,"user,host,time") << endl;
-                   aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
-                   KBIN::XVASP_Afix_GENERIC("CSLOSHING",xvasp,kflags,vflags);
-                   xfixed.flag("CSLOSHING",TRUE);xfixed.flag("ALL",TRUE);
-                   }
-                   }
-                   */
-
-                // ********* CHECK DENTET PROBLEMS ******************
-                if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [CHECK DENTET PROBLEMS]" << endl;
-                if(!vflags.KBIN_VASP_FORCE_OPTION_IGNORE_AFIX.flag("DENTET") && !xfixed.flag("ALL")) { // CHECK FOR DENTET
-                    if(xwarning.flag("DENTET") && !xfixed.flag("DENTET")) {  // Apply only ONCE
-                        KBIN::VASP_Error(xvasp,"WWWWW  ERROR KBIN::VASP_Run: "+Message("time")+"  DENTET problems ");
-                        aus << "WWWWW  FIX DENTET - " << Message(aflags,"user,host,time") << endl;
-                        aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
-                        KBIN::XVASP_Afix_GENERIC("DENTET",xvasp,kflags,vflags);
-                        xfixed.flag("DENTET",TRUE);xfixed.flag("ALL",TRUE);
-                    }
-                }
                 // ********* VASP TO BE RESTARTED *********
                 if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [DONE WIHT CHECKS]" << endl;
                 if(xfixed.flag("ALL")) vasp_start=TRUE;
@@ -3557,59 +3614,6 @@ namespace KBIN {
         aurostd::execute(aus);
     }
 } // namespace KBIN
-
-//KESONG //KESONG 2019-07-13 // **************************************** 
-
-namespace KBIN {
-    bool VASP_CheckConvergedOUTCAR(string dir) {
-        bool isConverged = FALSE; 
-        xOUTCAR outcar(dir+"/OUTCAR");
-        if (abs(outcar.total_energy_change) < outcar.EDIFF) {
-            isConverged = TRUE;
-        }
-        return (isConverged);
-    }
-} // namespace KBIN
-
-namespace KBIN {
-    bool VASP_CheckUnconvergedOUTCAR(string dir) {
-        return (not VASP_CheckConvergedOUTCAR(dir));
-    }
-} // namespace KBIN
-
-namespace KBIN{
-    bool VASP_isRelaxOUTCAR(string dir) {
-        bool isRelax = FALSE;
-        xOUTCAR outcar(dir+"/OUTCAR");
-        if (outcar.NSW > 0 ) isRelax = TRUE;
-        return (isRelax);
-    }
-}
-
-namespace KBIN{
-    bool VASP_isStaticOUTCAR(string dir) {
-        bool isStatic = FALSE;
-        xOUTCAR outcar(dir+"/OUTCAR");
-        if (outcar.NSW < 0.1 ) isStatic = TRUE;
-        return (isStatic);
-    }
-}
-
-namespace KBIN{
-    bool VASP_CheckRelaxReachNSW(string dir) {
-        bool doesReachNSW = FALSE;
-        vector<string> vlines,vrelax;
-        aurostd::file2vectorstring(dir+"/OSZICAR",vlines);
-        for(uint i=0;i<vlines.size();i++)
-            if(aurostd::substring2bool(vlines.at(i),"F="))
-                vrelax.push_back(vlines.at(i-1));
-        xOUTCAR outcar(dir+"/OUTCAR");
-        int step_num = vrelax.size();
-        if (outcar.NSW == step_num) doesReachNSW = TRUE;
-        return (doesReachNSW);
-    }
-}
-
 
 
 namespace KBIN {
