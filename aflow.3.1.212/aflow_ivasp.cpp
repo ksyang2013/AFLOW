@@ -2667,10 +2667,8 @@ namespace KBIN {
         ss_INCAR << aurostd::PaddedPOST("NEDOS= 7001",_incarpad_)     <<  notes  << endl;
         if (RunType == "STATIC")
             ss_INCAR << aurostd::PaddedPOST("LCHARG=.TRUE.",_incarpad_)   <<  notes << endl;
-        if (RunType == "BANDS"){
-            ss_INCAR << aurostd::PaddedPOST("ICHARG=11",_incarpad_)   <<  notes  << endl;
+        if (RunType == "BANDS")
             ss_INCAR << aurostd::PaddedPOST("LCHARG=.FALSE.",_incarpad_)   <<  notes << endl;
-        }
         ss_INCAR << aurostd::PaddedPOST("LWAVE=.FALSE.",_incarpad_)   <<  notes << endl;
 
         if(vflags.KBIN_VASP_FORCE_OPTION_BADER.isentry && vflags.KBIN_VASP_FORCE_OPTION_BADER.option) 
@@ -2681,6 +2679,9 @@ namespace KBIN {
             ss_INCAR << aurostd::PaddedPOST("LELF=.TRUE.",_incarpad_) << notes << endl;
         if(vflags.KBIN_VASP_FORCE_OPTION_ELF.isentry && !vflags.KBIN_VASP_FORCE_OPTION_ELF.option) 
             ss_INCAR << aurostd::PaddedPOST("LELF=.FALSE.",_incarpad_) << notes << endl;
+        if (RunType == "BANDS")
+            ss_INCAR << aurostd::PaddedPOST("ICHARG=11",_incarpad_)   <<  notes  << endl;
+
         return ss_INCAR.str();
     }
 }
@@ -4793,16 +4794,30 @@ namespace KBIN {
                     aus_exec << "cd " << xvasp.Directory << endl;
                     aus_exec << "cp INCAR INCAR.csloshing" << endl;
                     aus_exec << "cat INCAR | grep -v 'ICHARG' > incar.tmp && mv incar.tmp INCAR" << endl; 
-                    aus_exec << "echo \"ICHARG=1                                          #FIX=" << mode << "\" >> INCAR " << endl;
+                    aus_exec << "echo \"ICHARG=1                                         #FIX=" << mode << "\" >> INCAR " << endl;
                     aurostd::execute(aus_exec);
                 }
             }
-            if (param_int >=3) {
+            if (param_int ==3 || param_int ==4) { //also turn on spin
+                reload_incar=TRUE;
+                aus_exec << "cd " << xvasp.Directory << endl;
+                aus_exec << "cp INCAR INCAR.csloshing" << endl;
+                aus_exec << "cat " << _AFLOWIN_ << " | sed \"s/#\\[VASP_FORCE_OPTION\\]SPIN=ON/\\[VASP_FORCE_OPTION\\]SPIN=ON/g\" | sed \"s/##\\[/#\\[/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl;
+                aus_exec << "cat " << _AFLOWIN_ << " | sed \"s/\\[VASP_FORCE_OPTION\\]SPIN=OFF/\\[VASP_FORCE_OPTION\\]SPIN=ON/g\" | sed \"s/##\\[/#\\[/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl;
+                aus_exec << "cat INCAR | grep -v 'AMIX' > incar.tmp && mv incar.tmp INCAR" << endl; 
+                aus_exec << "cat INCAR | grep -v 'BMIX' > incar.tmp && mv incar.tmp INCAR" << endl; 
+                aus_exec << "echo \"AMIX=0.1                                         #FIX=" << mode << "\" >> INCAR " << endl;
+                aus_exec << "echo \"BMIX=0.01                                       #FIX=" << mode << "\" >> INCAR " << endl;
+                aurostd::execute(aus_exec);
+            }
+            if (param_int >=5) {
                 reload_incar=TRUE;
                 aus_exec << "cd " << xvasp.Directory << endl;
                 aus_exec << "cp INCAR INCAR.csloshing" << endl;
                 aus_exec << "cat INCAR | grep -v 'AMIX' > incar.tmp && mv incar.tmp INCAR" << endl; 
-                aus_exec << "echo \"AMIX=0.1                                          #FIX=" << mode << "\" >> INCAR " << endl;
+                aus_exec << "cat INCAR | grep -v 'BMIX' > incar.tmp && mv incar.tmp INCAR" << endl; 
+                aus_exec << "echo \"AMIX=0.01                                         #FIX=" << mode << "\" >> INCAR " << endl;
+                aus_exec << "echo \"BMIX=3.0                                          #FIX=" << mode << "\" >> INCAR " << endl;
                 aurostd::execute(aus_exec);
             }
         }

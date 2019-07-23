@@ -1982,7 +1982,7 @@ namespace KBIN {
         bool vasp_start=TRUE;
         aurostd::StringstreamClean(aus_exec);
         aurostd::StringstreamClean(aus);
-        int nrun=0,maxrun=15, SCF_maxrun=15, Relax_maxrun = 5;
+        int nrun=0,maxrun=15, SCF_maxrun=8, Relax_maxrun = 6;
         int num_CSLOSHING = 0, num_ReachNSW = 0;
         int fix_NIRMAT=0;
         int kpoints_k1=xvasp.str.kpoints_k1; double kpoints_s1=xvasp.str.kpoints_s1;
