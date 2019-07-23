@@ -25,6 +25,8 @@ static const char _LOGGER_MESSAGE_ = 'M';
 //[MOVED to aflow.h]// LOADENTRIES DEFAULTS
 //[MOVED to aflow.h]static const uint _AFLOW_LIB_MAX_ = 10;  //LIB11 does not exist yet, modify accordingly
 
+void DEVELOP(vector<string> argv);
+
 // aflow_pflow_main.cpp
 namespace pflow {
   int main(vector<string> &argv,vector<string> &cmds);

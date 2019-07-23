@@ -2446,6 +2446,7 @@ namespace KBIN {
   void VASP_RecycleExtraFile(_xvasp xvasp,string xfile,int relax_number);
   bool VASP_CheckRelaxReachNSW(string dir);
   bool VASP_isRelaxOUTCAR(string dir);
+  bool VASP_isStaticOUTCAR(string dir);
   bool VASP_CheckUnconvergedOUTCAR(string dir);
   bool VASP_CheckUnconvergedOSZICAR(string dir);
   void GetStatDiel(string& outcar, xvector<double>& eigr, xvector<double>& eigi); // CAMILO
@@ -2535,6 +2536,7 @@ namespace KBIN {
   double ExtractEfermiOUTCAR(string directory);
   xstructure GetMostRelaxedStructure(string directory); //CO 180627
   vector<string> ExtractAtomicSpecies(string directory);
+  bool GetINCARValue(string dir, string Keyword, string& Value); 
 
 }
 
