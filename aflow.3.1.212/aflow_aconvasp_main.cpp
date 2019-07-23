@@ -35,6 +35,9 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
   // GENERAL STUFF
 
   vpflow.flag("PFLOW_HELP",aurostd::args2flag(argv,cmds,"--HELP|--help"));
+  //DEVELOP KESONG
+  vpflow.flag("DEVELOP",aurostd::args2flag(argv,cmds,"--develop"));
+
   vpflow.flag("PROTOS",(aurostd::args2flag(argv,cmds,"--protos|--prototypes") || aurostd::args2flag(argv,cmds,"--proto")));// && (argv.size()==2));
   // [OBSOLETE]  vpflow.flag("PROTOS_ICSD",(aurostd::args2flag(argv,cmds,"--protos_icsd|--prototypes_icsd") || aurostd::args2flag(argv,cmds,"--proto_icsd")) && (argv.size()==2));
 
@@ -1426,6 +1429,9 @@ namespace pflow {
       if(vpflow.flag("PGROUPK")) {pflow::SYMMETRY_GROUPS(aflags,cin,vpflow,cout); _PROGRAMRUN=true;} // DX 8/18/17
       if(vpflow.flag("PGROUPK_XTAL")) {pflow::SYMMETRY_GROUPS(aflags,cin,vpflow,cout); _PROGRAMRUN=true;} // DX 12/5/17
       if(vpflow.flag("POSCAR")) {cout << pflow::POSCAR(cin); _PROGRAMRUN=true;}
+      //DEVELOP KESONG
+      if(vpflow.flag("DEVELOP")) {DEVELOP(argv); _PROGRAMRUN=true;}
+      //DEVELOP KESONG
       if(vpflow.flag("POSCAR2AFLOWIN")) {cout << pflow::POSCAR2AFLOWIN(cin); _PROGRAMRUN=true;}
       if(vpflow.flag("POSCAR2ENUM")) {pocc::POSCAR2ENUM(cin); _PROGRAMRUN=true;}
       if(vpflow.flag("POSCAR2GULP")) {pocc::POSCAR2GULP(cin); _PROGRAMRUN=true;}
@@ -1679,12 +1685,32 @@ namespace pflow {
 } // namespace pflow
 
 // ***************************************************************************
+// pflow::DEVELOP
+// ***************************************************************************
+void DEVELOP(vector<string> argv) {
+    cout << argv.at(0) << endl;
+    cout << argv.at(1) << endl;
+    cout << argv.at(2) << endl;
+    string dir = argv.at(2);
+    stringstream ssINCAR;
+    aurostd::file2stringstream(dir+"/INCAR", ssINCAR);
+    //cout << "strINCAR" <<  ssINCAR.str() << endl;
+    vector<string> vlines;
+    aurostd::string2vectorstring(ssINCAR.str(),vlines);
+    //cout << "vlines.size() " << vlines.size() << endl;
+    for (uint i=0; i <vlines.size(); i++){
+        cout << vlines.at(i) << endl;
+    }
+}
+
+
+// ***************************************************************************
 // pflow::CheckCommands
 // ***************************************************************************
 namespace pflow {
-  bool CheckCommands(vector<string> argv,const vector<string> &cmds) {
-    string _cmd;
-    vector<string> tokens;
+    bool CheckCommands(vector<string> argv,const vector<string> &cmds) {
+        string _cmd;
+        vector<string> tokens;
     bool found=FALSE;
     // check identities
     for(int i=argv.size()-1;i>=1&&!found;i--) {
@@ -10450,6 +10476,7 @@ namespace pflow {
     PrintNeatProj(proj_dat,cout);
   }
 } // namespace pflow
+
 
 // ***************************************************************************
 // pflow::POSCAR

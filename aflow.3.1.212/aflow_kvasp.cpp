@@ -1982,7 +1982,8 @@ namespace KBIN {
         bool vasp_start=TRUE;
         aurostd::StringstreamClean(aus_exec);
         aurostd::StringstreamClean(aus);
-        int nrun=0,maxrun=15;
+        int nrun=0,maxrun=15, SCF_maxrun=15, Relax_maxrun = 5;
+        int num_CSLOSHING = 0, num_ReachNSW = 0;
         int fix_NIRMAT=0;
         int kpoints_k1=xvasp.str.kpoints_k1; double kpoints_s1=xvasp.str.kpoints_s1;
         int kpoints_k2=xvasp.str.kpoints_k2; double kpoints_s2=xvasp.str.kpoints_s2;
@@ -2465,7 +2466,6 @@ namespace KBIN {
                 xwarning.flag("EXCCOR",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","ERROR FEXCF: supplied exchange-correlation table")); // look for problem at the correlation
                 xwarning.flag("NATOMS",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","The distance between some ions is very small")); // look for problem for distance
                 xwarning.flag("MEMORY",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","AFLOW ERROR: AFLOW_MEMORY=")); // look for problem for distance
-                // xwarning.flag("PSMAXN",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING: PSMAXN for non-local potential too small")); // look for problem for distance
                 xwarning.flag("PSMAXN",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","REAL_OPT: internal ERROR"));
                 xwarning.flag("IBZKPT",(!xmessage.flag("REACHED_ACCURACY") &&
                             aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","VERY BAD NEWS! internal error in subroutine IBZKPT") && 
@@ -2487,8 +2487,6 @@ namespace KBIN {
                             aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","NPAR=number of nodes")) ); // fix with NPAR=nodes in MPI
                 xwarning.flag("NPAR_REMOVE",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Please remove the tag NPAR from the INCAR file and restart the"));
                 xwarning.flag("GAMMA_SHIFT",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","shift your grid to Gamma"));
-                xwarning.flag("REACH_NSW", ( !xmessage.flag("REACHED_ACCURACY") && KBIN::VASP_isRelaxOUTCAR(xvasp.Directory) && KBIN::VASP_CheckRelaxReachNSW(xvasp.Directory)) ); // check relax (reach NSW)
-                xwarning.flag("CSLOSHING",KBIN::VASP_CheckUnconvergedOUTCAR(xvasp.Directory)); // check converged (static & relaxed)
                 xwarning.flag("NKXYZ_IKPTD",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","NKX>IKPTD"));
                 xwarning.flag("DENTET",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING: DENTET: can't reach specified precision")); // not only npar==1
                 xwarning.flag("EFIELD_PEAD",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","EFIELD_PEAD is too large")); // EFIELD_PEAD
@@ -2507,6 +2505,9 @@ namespace KBIN {
                 if(xwarning.flag("NPARN") && (aurostd::substring_present_file_FAST(xvasp.Directory+"/INCAR","LRPA") ||
                             aurostd::substring_present_file_FAST(xvasp.Directory+"/INCAR","LEPSILON") ||
                             aurostd::substring_present_file_FAST(xvasp.Directory+"/INCAR","LOPTICS"))) xwarning.flag("NPARN",FALSE);  // dont touch NPARN if LRPA or LEPSILON or LOPTICS necessary
+                //last checking
+                xwarning.flag("REACH_NSW", ( !xmessage.flag("REACHED_ACCURACY") && KBIN::VASP_isRelaxOUTCAR(xvasp.Directory) && KBIN::VASP_CheckRelaxReachNSW(xvasp.Directory)) ); // check relax (reach NSW)
+                xwarning.flag("CSLOSHING",KBIN::VASP_CheckUnconvergedOUTCAR(xvasp.Directory)); // check converged (static & relaxed)
 
                 int NBANDS_OUTCAR=0;
                 xOUTCAR OUTCAR_NBANDS(xvasp.Directory+"/OUTCAR");
@@ -2932,11 +2933,12 @@ namespace KBIN {
                 // ********* CHECK REACH_NSW PROBLEMS ******************
                 if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [CHECK REACH_NSW PROBLEMS]" << endl;
                 if(!vflags.KBIN_VASP_FORCE_OPTION_IGNORE_AFIX.flag("REACH_NSW") && !xfixed.flag("ALL")) { // check REACH_NSW
-                    if(xwarning.flag("REACH_NSW")) {  //Check multiple times
+                    if(xwarning.flag("REACH_NSW") && num_ReachNSW < Relax_maxrun) {  //Check multiple times until Relax_maxrum
+                        num_ReachNSW += 1;
                         KBIN::VASP_Error(xvasp,"WWWWW  ERROR KBIN::VASP_Run: "+Message("time")+"  REACH_NSW (Relax Unfinished) problems ");
-                        aus << "WWWWW  FIX REACH_NSW - " << nrun << ":" <<  Message(aflags,"user,host,time") << endl;
+                        aus << "WWWWW  FIX REACH_NSW - " << num_ReachNSW << ":" <<  Message(aflags,"user,host,time") << endl;
                         aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
-                        KBIN::XVASP_Afix_GENERIC("REACH_NSW",xvasp,kflags,vflags, 0.0, nrun);
+                        KBIN::XVASP_Afix_GENERIC("REACH_NSW",xvasp,kflags,vflags, 0.0, num_ReachNSW);
                         xfixed.flag("REACH_NSW",TRUE);xfixed.flag("ALL",TRUE);
                     }
                 }
@@ -2944,11 +2946,12 @@ namespace KBIN {
                 // ********* CHECK CSLOSHING PROBLEMS ******************
                 if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [CHECK CSLOSHING PROBLEMS]" << endl;
                 if(!vflags.KBIN_VASP_FORCE_OPTION_IGNORE_AFIX.flag("CSLOSHING") && !xfixed.flag("ALL")) { // check CSLOSHING
-                    if(xwarning.flag("CSLOSHING")) {  //Check multiple times
+                    if(xwarning.flag("CSLOSHING") && num_CSLOSHING < SCF_maxrun) {  //Check multiple times until SCF_maxrun
+                        num_CSLOSHING += 1;
                         KBIN::VASP_Error(xvasp,"WWWWW  ERROR KBIN::VASP_Run: "+Message("time")+"  CSLOSHING problems ");
-                        aus << "WWWWW  FIX CSLOSHING - " << nrun << ":" <<  Message(aflags,"user,host,time") << endl;
+                        aus << "WWWWW  FIX CSLOSHING - " << num_CSLOSHING << ":" <<  Message(aflags,"user,host,time") << endl;
                         aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
-                        KBIN::XVASP_Afix_GENERIC("CSLOSHING",xvasp,kflags,vflags, 0.0, nrun);
+                        KBIN::XVASP_Afix_GENERIC("CSLOSHING",xvasp,kflags,vflags, 0.0, num_CSLOSHING);
                         xfixed.flag("CSLOSHING",TRUE);xfixed.flag("ALL",TRUE);
                     }
                 }
@@ -3580,6 +3583,15 @@ namespace KBIN{
         xOUTCAR outcar(dir+"/OUTCAR");
         if (outcar.NSW > 0 ) isRelax = TRUE;
         return (isRelax);
+    }
+}
+
+namespace KBIN{
+    bool VASP_isStaticOUTCAR(string dir) {
+        bool isStatic = FALSE;
+        xOUTCAR outcar(dir+"/OUTCAR");
+        if (outcar.NSW < 0.1 ) isStatic = TRUE;
+        return (isStatic);
     }
 }
 

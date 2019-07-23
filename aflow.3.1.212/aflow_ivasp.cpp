@@ -2665,12 +2665,12 @@ namespace KBIN {
         ss_INCAR << aurostd::PaddedPOST("EMIN= -45.0",_incarpad_)     <<  notes  << endl;
         ss_INCAR << aurostd::PaddedPOST("EMAX=  25.0",_incarpad_)     <<  notes  << endl;
         ss_INCAR << aurostd::PaddedPOST("NEDOS= 7001",_incarpad_)     <<  notes  << endl;
-        ss_INCAR << aurostd::PaddedPOST("LCHARG=.TRUE.",_incarpad_)   <<  notes  << endl;
-        //better to let user set it in "aflow.in" by themselves
-        //if (RunType == "STATIC"){
-        //    ss_INCAR << aurostd::PaddedPOST("LOPTICS=.TRUE.",_incarpad_)   <<  notes  << endl;
-        //    ss_INCAR << aurostd::PaddedPOST("LVTOT=.TRUE.",_incarpad_)   <<  notes  << endl;
-        //}
+        if (RunType == "STATIC")
+            ss_INCAR << aurostd::PaddedPOST("LCHARG=.TRUE.",_incarpad_)   <<  notes << endl;
+        if (RunType == "BANDS"){
+            ss_INCAR << aurostd::PaddedPOST("ICHARG=11",_incarpad_)   <<  notes  << endl;
+            ss_INCAR << aurostd::PaddedPOST("LCHARG=.FALSE.",_incarpad_)   <<  notes << endl;
+        }
         ss_INCAR << aurostd::PaddedPOST("LWAVE=.FALSE.",_incarpad_)   <<  notes << endl;
 
         if(vflags.KBIN_VASP_FORCE_OPTION_BADER.isentry && vflags.KBIN_VASP_FORCE_OPTION_BADER.option) 
@@ -4761,8 +4761,6 @@ namespace KBIN {
             // fix aflowlin
             aus_exec << "cd " << xvasp.Directory << endl;
             aus_exec << "cat INCAR | sed \"s/NPAR/#REMOVED NPAR/g\" > aflow.tmp && mv aflow.tmp INCAR" << endl; // remove NPAR
-            //if(vflags.KBIN_VASP_INCAR_VERBOSE) aus_exec << "echo \"# Performing KBIN::XVASP_Afix (" << mode << ") [AFLOW] begin\" >> INCAR " << endl;
-            //if(vflags.KBIN_VASP_INCAR_VERBOSE) aus_exec << "echo \"# Performing KBIN::XVASP_Afix (" << mode << ") [AFLOW] end\" >> INCAR " << endl;
             aurostd::execute(aus_exec);
         }
 
@@ -4779,7 +4777,6 @@ namespace KBIN {
             vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme="VERYFAST";
             vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme="NORMAL";
             KBIN::XVASP_INCAR_PREPARE_GENERIC("ALGO",xvasp,vflags,"",0,0.0,FALSE);
-            // [OBSOLETE] KBIN::XVASP_INCAR_ALGO(xvasp,vflags);
             aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));
             // fix aflowlin
             if (param_int == 1) {
@@ -4787,17 +4784,26 @@ namespace KBIN {
                 aus_exec << "cat " << _AFLOWIN_ << " | sed \"s/\\[VASP_FORCE_OPTION\\]ALGO/#\\[VASP_FORCE_OPTION\\]ALGO/g\" | sed \"s/##\\[/#\\[/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl;
                 aus_exec << "echo \"[VASP_FORCE_OPTION]ALGO=NORMAL      // Self Correction\"" << " >> " << _AFLOWIN_ << " " << endl;
                 aurostd::execute(aus_exec);
-            }
-            if (param_int > 1) {
-                if (xvasp.AVASP_flag_RUN_RELAX_STATIC) {
+            } 
+            if (param_int >=2) {
+                reload_incar=TRUE;
+                if (KBIN::VASP_isStaticOUTCAR(xvasp.Directory) && not aurostd::substring_present_file_FAST(xvasp.Directory+"/INCAR","ICHARG=11")) {
                     xvasp.aopts.flag("FLAG::CHGCAR_PRESERVED", TRUE);
                     reload_incar=TRUE;
                     aus_exec << "cd " << xvasp.Directory << endl;
                     aus_exec << "cp INCAR INCAR.csloshing" << endl;
-                    aus_exec << "cat INCAR | grep -v 'ICHARG' > aflow.tmp && mv aflow.tmp INCAR" << endl; // remove SYMPREC
+                    aus_exec << "cat INCAR | grep -v 'ICHARG' > incar.tmp && mv incar.tmp INCAR" << endl; 
                     aus_exec << "echo \"ICHARG=1                                          #FIX=" << mode << "\" >> INCAR " << endl;
                     aurostd::execute(aus_exec);
                 }
+            }
+            if (param_int >=3) {
+                reload_incar=TRUE;
+                aus_exec << "cd " << xvasp.Directory << endl;
+                aus_exec << "cp INCAR INCAR.csloshing" << endl;
+                aus_exec << "cat INCAR | grep -v 'AMIX' > incar.tmp && mv incar.tmp INCAR" << endl; 
+                aus_exec << "echo \"AMIX=0.1                                          #FIX=" << mode << "\" >> INCAR " << endl;
+                aurostd::execute(aus_exec);
             }
         }
 
@@ -4828,7 +4834,7 @@ namespace KBIN {
             xvasp.KPOINTS.str(std::string()); xvasp.KPOINTS << aurostd::file2string(xvasp.Directory+"/KPOINTS");
         }
         //KESONG ADDS THIS, recycle CONTCAR, no waste time in relaxation; 2019-07-19
-        if(xvasp.AVASP_flag_RUN_RELAX) RecyclePOSCARfromCONTCAR(xvasp);
+        if (KBIN::VASP_isRelaxOUTCAR(xvasp.Directory))  RecyclePOSCARfromCONTCAR(xvasp);
 
         // clean to restart ----------------------------------
         if(file_error!="") KBIN::XVASP_Afix_Clean(xvasp,file_error);
@@ -4839,6 +4845,7 @@ namespace KBIN {
         return 0.0;
     }
 }
+
 
 // ***************************************************************************//
 // KBIN::GetMostRelaxedStructure
@@ -4947,7 +4954,7 @@ namespace KBIN {
                     AtomicName.push_back(xstr_name.species.at(i));
                 }
             }
-            else { // cout << "no name given taking from OUTCAR" << endl;
+                else { // cout << "no name given taking from OUTCAR" << endl;
                 // ********************************************************************************  
                 //READ  OUTCAR
                 bool found_OUTCAR=FALSE;
