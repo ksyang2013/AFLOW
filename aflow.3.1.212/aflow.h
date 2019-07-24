@@ -2447,6 +2447,7 @@ namespace KBIN {
   bool VASP_CheckUnconvergedOSZICAR(string dir);
   void GetStatDiel(string& outcar, xvector<double>& eigr, xvector<double>& eigi); // CAMILO
   void GetDynaDiel(string& outcar, xvector<double>& eigr, xvector<double>& eigi); // CAMILO
+  //KESONG
   bool VASP_CheckRelaxReachNSW(string dir);
   bool VASP_isSpinOUTCAR(string dir); 
   bool VASP_isRelaxOUTCAR(string dir);
@@ -2456,6 +2457,9 @@ namespace KBIN {
   bool doesKeywordExistLine(const string& strline, const string& keyword); 
   void capitalizeString(string& s);
   string GetValueOfKey(const string& FileContent, const string& keyword); 
+  string RemoveEmptyLines(const string& FileContent);
+  string RemoveLineWithKeyword(const string& FileContent, const string& keyword); 
+  //KESONG
 }
 
 // ----------------------------------------------------------------------------

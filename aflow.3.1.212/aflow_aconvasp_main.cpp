@@ -1695,12 +1695,47 @@ void DEVELOP(vector<string> argv) {
     stringstream ssINCAR;
     aurostd::file2stringstream(dir+"/INCAR", ssINCAR);
     //cout << "strINCAR" <<  ssINCAR.str() << endl;
-    vector<string> vlines;
-    aurostd::string2vectorstring(ssINCAR.str(),vlines);
-    //cout << "vlines.size() " << vlines.size() << endl;
-    for (uint i=0; i <vlines.size(); i++){
-        cout << vlines.at(i) << endl;
+    //cout << KBIN::RemoveLineWithKeyword(ssINCAR.str(), "NSW") << endl;
+    //vector<string> vlines;
+    //aurostd::string2vectorstring(ssINCAR.str(),vlines);
+    ////cout << "vlines.size() " << vlines.size() << endl;
+    //for (uint i=0; i <vlines.size(); i++){
+    //    cout << vlines.at(i) << endl;
+    //}
+    cout << ssINCAR.str() << endl;
+    cout << "--------------------" << endl;
+    ostringstream outstr;
+    string FileContent,strline;
+    FileContent=ssINCAR.str();
+    int imax=aurostd::GetNLinesString(FileContent);
+    for(int i=1;i<=imax;i++) {
+        strline=aurostd::GetLineString(FileContent,i); 
+        if(aurostd::substring2bool(strline,"IBRION",TRUE) || 
+                aurostd::substring2bool(strline,"NSW",TRUE) ||
+                aurostd::substring2bool(strline,"ISIF",TRUE) || 
+                aurostd::substring2bool(strline,"NELM",TRUE) ||
+                aurostd::substring2bool(strline,"NELMIN",TRUE) || 
+                aurostd::substring2bool(strline,"LREAL",TRUE)  || 
+                aurostd::substring2bool(strline,"ISMEAR",TRUE) || 
+                aurostd::substring2bool(strline,"SIGMA",TRUE) ||
+                aurostd::substring2bool(strline,"LORBIT",TRUE) || 
+                aurostd::substring2bool(strline,"EMIN",TRUE) ||
+                aurostd::substring2bool(strline,"EMAX",TRUE) || 
+                aurostd::substring2bool(strline,"NEDOS",TRUE) ||
+                aurostd::substring2bool(strline,"LCHARG",TRUE) || 
+                aurostd::substring2bool(strline,"LWAVE",TRUE) ||
+                aurostd::substring2bool(strline,"LELF",TRUE) ||
+                aurostd::substring2bool(strline,"NSW",TRUE) ||
+                aurostd::substring2bool(strline,"#NSW",TRUE) ||
+                aurostd::substring2bool(strline,"PREC",TRUE))
+        {
+            outstr << "";
+        }
+        else { 
+            if (strline.length()) outstr << strline << endl;
+        }
     }
+    cout << outstr.str() << endl;
 }
 
 
@@ -1711,65 +1746,65 @@ namespace pflow {
     bool CheckCommands(vector<string> argv,const vector<string> &cmds) {
         string _cmd;
         vector<string> tokens;
-    bool found=FALSE;
-    // check identities
-    for(int i=argv.size()-1;i>=1&&!found;i--) {
-      _cmd=aurostd::RemoveWhiteSpaces(string(argv.at(i)));
-      for(uint j=0;j<cmds.size()&&!found;j++) {//cerr << _cmd << " " << cmds[j] << endl;
-	if(_cmd==cmds.at(j)) found=TRUE;}
+        bool found=FALSE;
+        // check identities
+        for(int i=argv.size()-1;i>=1&&!found;i--) {
+            _cmd=aurostd::RemoveWhiteSpaces(string(argv.at(i)));
+            for(uint j=0;j<cmds.size()&&!found;j++) {//cerr << _cmd << " " << cmds[j] << endl;
+                if(_cmd==cmds.at(j)) found=TRUE;}
+        }
+        // check with =
+        for(int i=argv.size()-1;i>=1&&!found;i--) {
+            aurostd::RemoveWhiteSpaces(string(argv.at(i)));
+            aurostd::string2tokens(aurostd::RemoveWhiteSpaces(string(argv.at(i))),tokens,"=");
+            _cmd=tokens.at(0)+"=";
+            for(uint j=0;j<cmds.size()&&!found;j++) {// cerr << _cmd << " " << cmds[j] << endl;
+                if(_cmd==cmds.at(j)) found=TRUE;}
+        }
+        // not found
+        if(!found) {
+            cerr << aflow::Banner("BANNER_TINY") << endl;
+            cerr << "ERROR - pflow::CheckCommands: command not found: " << _cmd << endl;
+            return FALSE;
+        }
+        return TRUE;
     }
-    // check with =
-    for(int i=argv.size()-1;i>=1&&!found;i--) {
-      aurostd::RemoveWhiteSpaces(string(argv.at(i)));
-      aurostd::string2tokens(aurostd::RemoveWhiteSpaces(string(argv.at(i))),tokens,"=");
-      _cmd=tokens.at(0)+"=";
-      for(uint j=0;j<cmds.size()&&!found;j++) {// cerr << _cmd << " " << cmds[j] << endl;
-	if(_cmd==cmds.at(j)) found=TRUE;}
-    }
-    // not found
-    if(!found) {
-      cerr << aflow::Banner("BANNER_TINY") << endl;
-      cerr << "ERROR - pflow::CheckCommands: command not found: " << _cmd << endl;
-      return FALSE;
-    }
-    return TRUE;
-  }
 } // namespace pflow
 
 // ***************************************************************************
 // pflow::Intro_pflow
 // ***************************************************************************
 namespace pflow {
-  string Intro_pflow(string x) {
-    stringstream strstream;
-    // intro(strstream);
-    strstream << "\
-******* BEGIN POSTPROCESSING MODE ****************************************************************** \n\
-  "<< x<<" --help [-h] option_name \n\
-  \n\
-  "<< x<<" --abccar < POSCAR | WYCCAR \n\
-  "<< x<<" --abinit < POSCAR \n\
-  "<< x<<" --aims < POSCAR \n\
-  "<< x<<" --ace < POSCAR \n\
-  "<< x<<" --use_aflow.in=XXX \n\
-  "<< x<<" --aflowin < POSCAR \n\
-  "<< x<<" --aflowSG[_label,_number][=tolerance| =tight| =loose] < POSCAR \n\
-  "<< x<<" --aflow-sym|--AFLOW-SYM|--AFLOWSYM|--aflowSYM|--aflowsym|--full_symmetry|--full_sym|--fullsym[=tolerance| =tight| =loose] [--no_scan] [--print=txt| =json] [--screen_only] [--mag|--magnetic|--magmom=[m1,m2,...|INCAR|OUTCAR]] < POSCAR \n\
-  "<< x<<" --poscar2aflowin < POSCAR \n\
-  "<< x<<" --angle=cutoff < POSCAR \n\
-  "<< x<<" --agroup | --sitepointgroup[=tolerance| =tight| =loose] [--no_scan] [--print=txt| =json] [--screen_only] [--mag|--magnetic|--magmom=[m1,m2,...|INCAR|OUTCAR]] < POSCAR \n\
-  "<< x<<" --agroup2 < POSCAR \n\
-  "<< x<<" --agroup2m < POSCAR \n\
-  "<< x<<" --alphabetic < POSCAR \n\
-  "<< x<<" --alpha_compound=string1,string2.... \n\
-  "<< x<<" --alpha_species=string1,string2... \n\
-  "<< x<<" --aflowlib=entry \n\
-  "<< x<<" --aflowlib_auid2aurl=auid1,auid2.... | --auid2aurl=... \n\
-  "<< x<<" --aflowlib_aurl2auid=aurl1,aurl2.... [ --aurl2auid=... \n\
-  "<< x<<" --aflowlib_auid2loop=auid1,auid2.... | --auid2loop=... \n\
-  "<< x<<" --aflowlib_aurl2loop=aurl1,aurl2.... [ --aurl2loop=... \n\
-  "<< x<<" [options] --bader -D DIRECTORY \n\
-   options are:  --usage \n\
+    string Intro_pflow(string x) {
+        stringstream strstream;
+        // intro(strstream);
+        strstream << "\
+            ******* BEGIN POSTPROCESSING MODE ****************************************************************** \n\
+            "<< x<<" --help [-h] option_name \n\
+            \n\
+            "<< x<<" --abccar < POSCAR | WYCCAR \n\
+            "<< x<<" --abinit < POSCAR \n\
+            "<< x<<" --aims < POSCAR \n\
+            "<< x<<" --ace < POSCAR \n\
+            "<< x<<" --use_aflow.in=XXX \n\
+            "<< x<<" --aflowin < POSCAR \n\
+            "<< x<<" --aflowSG[_label,_number][=tolerance| =tight| =loose] < POSCAR \n\
+            "<< x<<" --aflow-sym|--AFLOW-SYM|--AFLOWSYM|--aflowSYM|--aflowsym|--full_symmetry|--full_sym|--fullsym[=tolerance| =tight| =loose] [--no_scan] [--print=txt| =json] [--screen_only] [--mag|--magnetic|--magmom=[m1,m2,...|INCAR|OUTCAR]] < POSCAR \n\
+            "<< x<<" --poscar2aflowin < POSCAR \n\
+            "<< x<<" --angle=cutoff < POSCAR \n\
+            "<< x<<" --agroup | --sitepointgroup[=tolerance| =tight| =loose] [--no_scan] [--print=txt| =json] [--screen_only] [--mag|--magnetic|--magmom=[m1,m2,...|INCAR|OUTCAR]] < POSCAR \n\
+            "<< x<<" --agroup2 < POSCAR \n\
+            "<< x<<" --agroup2m < POSCAR \n\
+            "<< x<<" --alphabetic < POSCAR \n\
+            "<< x<<" --alpha_compound=string1,string2.... \n\
+            "<< x<<" --alpha_species=string1,string2... \n\
+            "<< x<<" --aflowlib=entry \n\
+            "<< x<<" --aflowlib_auid2aurl=auid1,auid2.... | --auid2aurl=... \n\
+            "<< x<<" --aflowlib_aurl2auid=aurl1,aurl2.... [ --aurl2auid=... \n\
+            "<< x<<" --aflowlib_auid2loop=auid1,auid2.... | --auid2loop=... \n\
+            "<< x<<" --aflowlib_aurl2loop=aurl1,aurl2.... [ --aurl2loop=... \n\
+            "<< x<<" [options] --bader -D DIRECTORY \n\
+            options are:  --usage \n\
                  --critical_points|--cp \n\
                  --calculate=|--calc=bader|voronoi \n\
                  --nocalculate=|--nocalc=bader|voronoi \n\

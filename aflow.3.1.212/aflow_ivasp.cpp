@@ -54,6 +54,41 @@ namespace KBIN{
 }
 
 // ***************************************************************************
+// Remove empty lines from file string 
+namespace KBIN{
+    string RemoveEmptyLines(const string& FileContent){
+        string strline;
+        ostringstream outstr;
+        outstr.str(std::string());
+        int imax=aurostd::GetNLinesString(FileContent);
+        for(int i=1;i<=imax;i++) {
+            strline=aurostd::GetLineString(FileContent,i);
+            if(strline.length()) outstr << strline << endl;
+        }
+        return (outstr.str());
+    }
+}
+
+// ***************************************************************************
+// Remove keyword lines from file string 
+// very serious bug in aurostd::substring2bool, which cannot not find comment "#NSW" 
+// fix it in future
+namespace KBIN{
+    string RemoveLineWithKeyword(const string& FileContent, const string& keyword){
+        string strline;
+        ostringstream outstr;
+        int imax=aurostd::GetNLinesString(FileContent);
+        for(int i=1;i<=imax;i++) {
+            strline=aurostd::GetLineString(FileContent,i);
+            if (not aurostd::substring2bool(strline,keyword,TRUE)) {
+                if(strline.length()) outstr << strline << endl;
+            }
+        }
+        return (outstr.str());
+    }
+}
+
+// ***************************************************************************
 // if multiple keywords exist; then return the first effective one (without #)
 // since VASP only read the first key
 namespace KBIN{
@@ -2707,7 +2742,7 @@ namespace KBIN {
         if (RunType == "BANDS")
             ss_INCAR << aurostd::PaddedPOST("ICHARG=11",_incarpad_)   <<  notes  << endl;
 
-        return ss_INCAR.str();
+        return RemoveEmptyLines(ss_INCAR.str());
     }
 }
 
@@ -2747,6 +2782,7 @@ namespace KBIN {
                 if (strline.length()) xvasp.INCAR << strline << endl;
             }
         }
+        
 
         xvasp.INCAR << XVASP_WRITE_INCAR_Static(xvasp, vflags, "STATIC", "# Performing STATIC") << endl; 
         // check for LDA/GGA
@@ -3216,8 +3252,7 @@ namespace KBIN {
                     xvasp.INCAR << "";
                 }
                 else {
-                    if(!vflags.KBIN_VASP_INCAR_VERBOSE && strline.length()) xvasp.INCAR << strline << endl;
-                    if(vflags.KBIN_VASP_INCAR_VERBOSE) xvasp.INCAR << strline << endl;
+                    if(strline.length()) xvasp.INCAR << strline << endl;
                 }
             }
 
@@ -3242,8 +3277,7 @@ namespace KBIN {
                 if(aurostd::substring2bool(strline,"ENMAX",TRUE) || aurostd::substring2bool(strline,"#ENMAX",TRUE)) {
                     xvasp.INCAR << "";
                 } else {
-                    if(!vflags.KBIN_VASP_INCAR_VERBOSE && strline.length()) xvasp.INCAR << strline << endl;
-                    if(vflags.KBIN_VASP_INCAR_VERBOSE) xvasp.INCAR << strline << endl;
+                    if(strline.length()) xvasp.INCAR << strline << endl;
                 }
             }
             xvasp.INCAR << aurostd::PaddedPOST("ENMAX="+aurostd::utype2string(xvasp.POTCAR_ENMAX*vflags.KBIN_VASP_FORCE_OPTION_ENMAX_MULTIPLY_EQUAL.content_double,_IVASP_DOUBLE2STRING_PRECISION_),_incarpad_) << endl;
@@ -3258,8 +3292,7 @@ namespace KBIN {
                 if(aurostd::substring2bool(strline,"IMIX",TRUE) || aurostd::substring2bool(strline,"#IMIX",TRUE)) {
                     xvasp.INCAR << "";
                 } else {
-                    if(!vflags.KBIN_VASP_INCAR_VERBOSE && strline.length()) xvasp.INCAR << strline << endl;
-                    if(vflags.KBIN_VASP_INCAR_VERBOSE) xvasp.INCAR << strline << endl;
+                    if(strline.length()) xvasp.INCAR << strline << endl;
                 }
             }
             xvasp.INCAR << aurostd::PaddedPOST("IMIX="+aurostd::utype2string(ivalue),_incarpad_) << "# IMIX=X" << endl;
@@ -3276,8 +3309,7 @@ namespace KBIN {
                         aurostd::substring2bool(strline,"IMIX",TRUE) || aurostd::substring2bool(strline,"#IMIX",TRUE)) {
                     xvasp.INCAR << "";
                 } else {
-                    if(!vflags.KBIN_VASP_INCAR_VERBOSE && strline.length()) xvasp.INCAR << strline << endl;
-                    if(vflags.KBIN_VASP_INCAR_VERBOSE) xvasp.INCAR << strline << endl;
+                    if(strline.length()) xvasp.INCAR << strline << endl;
                 }
             }
             xvasp.INCAR << aurostd::PaddedPOST("IALGO="+aurostd::utype2string(ivalue),_incarpad_) << "# IALGOX1" << endl;
@@ -3293,7 +3325,7 @@ namespace KBIN {
                         aurostd::substring2bool(strline,"SIGMA",TRUE) || aurostd::substring2bool(strline,"#SIGMA",TRUE)) {
                     xvasp.INCAR << "";
                 } else {
-                    xvasp.INCAR << strline << endl;
+                    if(strline.length()) xvasp.INCAR << strline << endl;
                 }
             }
             if(svalue=="DEFAULT") {
@@ -3319,8 +3351,7 @@ namespace KBIN {
                 if(aurostd::substring2bool(strline,"LASPH",TRUE) || aurostd::substring2bool(strline,"#LASPH",TRUE)) {
                     xvasp.INCAR << "";
                 } else {
-                    if(!vflags.KBIN_VASP_INCAR_VERBOSE && strline.length()) xvasp.INCAR << strline << endl;
-                    if(vflags.KBIN_VASP_INCAR_VERBOSE) xvasp.INCAR << strline << endl;
+                    if(strline.length()) xvasp.INCAR << strline << endl;
                 }
             }
             xvasp.INCAR << aurostd::PaddedPOST("LASPH=.TRUE.",_incarpad_) << "# LASPH  http://cms.mpi.univie.ac.at/vasp/vasp/LASPH_tag.html#incar-lasph" << endl;
@@ -3335,7 +3366,7 @@ namespace KBIN {
                 if(aurostd::substring2bool(strline,"NBANDS",TRUE) || aurostd::substring2bool(strline,"#NBANDS",TRUE)) {
                     xvasp.INCAR << "";
                 } else {
-                    xvasp.INCAR << strline << endl;
+                    if(strline.length()) xvasp.INCAR << strline << endl;
                 }
             }
             if(vflags.KBIN_VASP_FORCE_OPTION_NBANDS_AUTO_isentry) {
@@ -3356,8 +3387,7 @@ namespace KBIN {
                 strline=aurostd::GetLineString(FileContent,i);
                 if(aurostd::substring2bool(strline,"PSTRESS",TRUE) || aurostd::substring2bool(strline,"#PSTRESS",TRUE)) {
                 } else {
-                    if(!vflags.KBIN_VASP_INCAR_VERBOSE && strline.length()) xvasp.INCAR << strline << endl;
-                    if(vflags.KBIN_VASP_INCAR_VERBOSE) xvasp.INCAR << strline << endl;
+                    if(strline.length()) xvasp.INCAR << strline << endl;
                 }
             }
             if(vflags.KBIN_VASP_FORCE_OPTION_PSTRESS_EQUAL.isentry) {
@@ -3373,8 +3403,7 @@ namespace KBIN {
                 if(aurostd::substring2bool(strline,"EDIFFG",TRUE) || aurostd::substring2bool(strline,"#EDIFFG",TRUE)) {
                     xvasp.INCAR << "";
                 } else {
-                    if(!vflags.KBIN_VASP_INCAR_VERBOSE && strline.length()) xvasp.INCAR << strline << endl;
-                    if(vflags.KBIN_VASP_INCAR_VERBOSE) xvasp.INCAR << strline << endl;
+                    if(strline.length()) xvasp.INCAR << strline << endl;
                 }
             }
             if(vflags.KBIN_VASP_FORCE_OPTION_EDIFFG_EQUAL.isentry) {
@@ -3391,8 +3420,7 @@ namespace KBIN {
                 if(aurostd::substring2bool(strline,"POTIM",TRUE) || aurostd::substring2bool(strline,"#POTIM",TRUE)) {
                     xvasp.INCAR << "";
                 } else {
-                    if(!vflags.KBIN_VASP_INCAR_VERBOSE && strline.length()) xvasp.INCAR << strline << endl;
-                    if(vflags.KBIN_VASP_INCAR_VERBOSE) xvasp.INCAR << strline << endl;
+                    if(strline.length()) xvasp.INCAR << strline << endl;
                 }
             }
             if(vflags.KBIN_VASP_FORCE_OPTION_POTIM_EQUAL.isentry) {
@@ -3413,7 +3441,7 @@ namespace KBIN {
                          && (aurostd::substring2bool(strline,"MAGMOM",TRUE) || aurostd::substring2bool(strline,"#MAGMOM",TRUE)))) { //corey
                     xvasp.INCAR << "";
                 } else {
-                    xvasp.INCAR << strline << endl;
+                    if(strline.length()) xvasp.INCAR << strline << endl;
                 }
             }
             if(!doesKeywordExist(FileContent, "ISPIN")) {
