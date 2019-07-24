@@ -1702,6 +1702,15 @@ void DEVELOP(vector<string> argv) {
     //for (uint i=0; i <vlines.size(); i++){
     //    cout << vlines.at(i) << endl;
     //}
+    //string2tokens: does not count tokens
+    vector<string> tokens;
+    //aurostd::string2tokens(aurostd::RemoveWhiteSpaces(ssINCAR.str()),tokens,"#");
+    aurostd::string2tokens(ssINCAR.str(),tokens,"#");
+    for (uint i=0; i <tokens.size(); i++){
+        cout << tokens.at(i) << endl;
+    }
+    exit(0);
+
     cout << ssINCAR.str() << endl;
     cout << "--------------------" << endl;
     ostringstream outstr;
