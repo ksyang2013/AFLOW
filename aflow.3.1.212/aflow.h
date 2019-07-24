@@ -2444,13 +2444,22 @@ namespace KBIN {
   void VASP_Recycle(_xvasp xvasp,int relax_number);
   void VASP_RecycleExtraFile(_xvasp xvasp,string xfile,string relax);
   void VASP_RecycleExtraFile(_xvasp xvasp,string xfile,int relax_number);
-  bool VASP_CheckRelaxReachNSW(string dir);
-  bool VASP_isRelaxOUTCAR(string dir);
-  bool VASP_isStaticOUTCAR(string dir);
-  bool VASP_CheckUnconvergedOUTCAR(string dir);
   bool VASP_CheckUnconvergedOSZICAR(string dir);
   void GetStatDiel(string& outcar, xvector<double>& eigr, xvector<double>& eigi); // CAMILO
   void GetDynaDiel(string& outcar, xvector<double>& eigr, xvector<double>& eigi); // CAMILO
+  //KESONG
+  bool VASP_CheckRelaxReachNSW(string dir);
+  bool VASP_isSpinOUTCAR(string dir); 
+  bool VASP_isRelaxOUTCAR(string dir);
+  bool VASP_isStaticOUTCAR(string dir);
+  bool VASP_CheckUnconvergedOUTCAR(string dir);
+  bool doesKeywordExist(const string& FileContent, const string& keyword); 
+  bool doesKeywordExistLine(const string& strline, const string& keyword); 
+  void capitalizeString(string& s);
+  string GetValueOfKey(const string& FileContent, const string& keyword); 
+  string RemoveEmptyLines(const string& FileContent);
+  string RemoveLineWithKeyword(const string& FileContent, const string& keyword); 
+  //KESONG
 }
 
 // ----------------------------------------------------------------------------
