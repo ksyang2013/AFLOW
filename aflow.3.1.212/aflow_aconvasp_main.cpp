@@ -1708,13 +1708,18 @@ void DEVELOP(vector<string> argv) {
     ////cout << KBIN::RemoveLineWithKeyword(ssINCAR.str(), "NSW") << endl;
     ////cout << KBIN::RemoveLineWithKeyword(ssINCAR.str(), "NSW", false) << endl;
     //cout << KBIN::RemoveLineWithKeyword(ssINCAR.str(), vkey, false) << endl;
-    stringstream ostr;
-    ostr << "Line1" << endl;
-    ostr << "Line2" << endl;
-    ostr << "Line3" << endl;
-    ostr << "Line4" ;
-    ostr << "Line5" ;
-    cout << ostr.str() << endl; 
+    //stringstream ostr;
+    //ostr << "Line1" << endl;
+    //ostr << "Line2" << endl;
+    //ostr << "Line3" << endl;
+    //ostr << "Line4" ;
+    //ostr << "Line5" ;
+    //cout << ostr.str() << endl; 
+    //cout << "strINCAR" <<  ssINCAR.str() << endl;
+    string FileContent1 = ssINCAR.str();
+    cout << FileContent1 << endl;
+    cout << "---" << endl;
+    cout << KBIN::RemoveEmptyLines(FileContent1);
     exit(0);
     //vector<string> vlines;
     //aurostd::string2vectorstring(ssINCAR.str(),vlines);
@@ -1723,6 +1728,7 @@ void DEVELOP(vector<string> argv) {
     //    cout << vlines.at(i) << endl;
     //}
     //string2tokens: does not count tokens
+    /*
     vector<string> tokens;
     //aurostd::string2tokens(aurostd::RemoveWhiteSpaces(ssINCAR.str()),tokens,"#");
     aurostd::string2tokens(ssINCAR.str(),tokens,"#");
@@ -1765,6 +1771,7 @@ void DEVELOP(vector<string> argv) {
         }
     }
     cout << outstr.str() << endl;
+    */
 }
 
 

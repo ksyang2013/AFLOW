@@ -21,6 +21,26 @@
 // ***************************************************************************
 // ***************************************************************************
 //KESONG 
+const std::string WHITESPACE = " \n\r\t\f\v";
+
+std::string ltrim(const std::string& s)
+{
+    size_t start = s.find_first_not_of(WHITESPACE);
+    return (start == std::string::npos) ? "" : s.substr(start);
+}
+
+std::string rtrim(const std::string& s)
+{
+    size_t end = s.find_last_not_of(WHITESPACE);
+    return (end == std::string::npos) ? "" : s.substr(0, end + 1);
+}
+
+std::string trim(const std::string& s)
+{
+    return rtrim(ltrim(s));
+}
+// ***************************************************************************
+
 namespace KBIN{
     bool doesKeywordExist(const string& FileContent, const string& keyword) {
         bool FLAG = FALSE;
@@ -60,9 +80,9 @@ namespace KBIN{
         string strline;
         ostringstream oss; oss.str("");
         vector<string> vlines;
-        aurostd::string2tokens(FileContent,vlines,"\n");
-        for(uint i=0;i<vlines.size();i++) {
-            strline = vlines.at(i);
+        int imax=aurostd::GetNLinesString(FileContent);
+        for(int i=1;i<=imax;i++) {
+            strline=aurostd::GetLineString(FileContent,i);
             if(strline.length()) oss << strline << endl;
         }
         return (oss.str());
@@ -2787,14 +2807,14 @@ namespace KBIN {
         //KBIN::XVASP_INCAR_Relax_Static_ON(xvasp,vflags);
         string FileContent,strline;
         //FileContent=xvasp.INCAR.str();
-        FileContent=KBIN::RemoveEmptyLines(xvasp.INCAR.str());
+        FileContent=xvasp.INCAR.str();
         xvasp.INCAR.str(std::string());
         xvasp.aopts.flag("FLAG::XVASP_INCAR_changed",TRUE);
         vector<string> vkey; 
         string stag = "IBRION; NSW; ISIF; NELM; NELMIN; LREAL; ISMEAR; SIGMA; LORBIT; EMIN; EMAX; NEDOS; LCHARG; LWAVE; LELF; PREC";
         aurostd::string2tokens(stag, vkey, ";");
         string stmp =  KBIN::RemoveLineWithKeyword(FileContent, vkey, true);
-        xvasp.INCAR << KBIN::RemoveEmptyLines(stmp) << endl;
+        xvasp.INCAR << KBIN::RemoveEmptyLines(stmp);  //remove empty line but not remove "\n" 
         xvasp.INCAR << XVASP_WRITE_INCAR_Static(xvasp, vflags, "STATIC", "# Performing STATIC") << endl; 
         // check for LDA/GGA
         if(xvasp.POTCAR_TYPE=="LDA" || xvasp.POTCAR_TYPE=="GGA") {
@@ -2810,14 +2830,14 @@ namespace KBIN {
     void XVASP_INCAR_Relax_Static_ON(_xvasp& xvasp,_vflags& vflags) {        // AFLOW_FUNCTION_IMPLEMENTATION
         //same with Static_ON
         string FileContent,strline;
-        FileContent=KBIN::RemoveEmptyLines(xvasp.INCAR.str());
+        FileContent=xvasp.INCAR.str();
         xvasp.INCAR.str(std::string());
         xvasp.aopts.flag("FLAG::XVASP_INCAR_changed",TRUE);
         vector<string> vkey; 
         string stag = "IBRION; NSW; ISIF; NELM; NELMIN; LREAL; ISMEAR; SIGMA; LORBIT; EMIN; EMAX; NEDOS; LCHARG; LWAVE; LELF; PREC";
         aurostd::string2tokens(stag, vkey, ";");
         string stmp =  KBIN::RemoveLineWithKeyword(FileContent, vkey, true);
-        xvasp.INCAR << KBIN::RemoveEmptyLines(stmp) << endl;
+        xvasp.INCAR << KBIN::RemoveEmptyLines(stmp); 
         xvasp.INCAR << XVASP_WRITE_INCAR_Static(xvasp, vflags, "STATIC", "# Performing RELAX_STATIC") << endl; 
 
         // check for LDA/GGA
@@ -2834,14 +2854,14 @@ namespace KBIN {
     void XVASP_INCAR_Relax_Static_Bands_ON(_xvasp& xvasp,_vflags& vflags) {        // AFLOW_FUNCTION_IMPLEMENTATION
         string FileContent,strline;
         //FileContent=xvasp.INCAR.str();
-        FileContent=KBIN::RemoveEmptyLines(xvasp.INCAR.str());
+        FileContent=xvasp.INCAR.str();
         xvasp.INCAR.str(std::string());
         xvasp.aopts.flag("FLAG::XVASP_INCAR_changed",TRUE);
         vector<string> vkey; 
         string stag = "IBRION; NSW; ISIF; NELM; NELMIN; LREAL; ISMEAR; SIGMA; LORBIT; EMIN; EMAX; NEDOS; LCHARG; LWAVE; LAECHG; LELF; PREC";
         aurostd::string2tokens(stag, vkey, ";");
         string stmp =  KBIN::RemoveLineWithKeyword(FileContent, vkey, true);
-        xvasp.INCAR << KBIN::RemoveEmptyLines(stmp) << endl;
+        xvasp.INCAR << KBIN::RemoveEmptyLines(stmp); 
         xvasp.INCAR << XVASP_WRITE_INCAR_Static(xvasp, vflags, "BANDS", "# Performing RELAX_STATIC_BANDS") << endl; 
 
         // check for LDA/GGA
