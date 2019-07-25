@@ -58,14 +58,14 @@ namespace KBIN{
 namespace KBIN{
     string RemoveEmptyLines(const string& FileContent){
         string strline;
-        ostringstream outstr;
-        outstr.str(std::string());
-        int imax=aurostd::GetNLinesString(FileContent);
-        for(int i=1;i<=imax;i++) {
-            strline=aurostd::GetLineString(FileContent,i);
-            if(strline.length()) outstr << strline << endl;
+        ostringstream oss; oss.str("");
+        vector<string> vlines;
+        aurostd::string2tokens(FileContent,vlines,"\n");
+        for(uint i=0;i<vlines.size();i++) {
+            strline = vlines.at(i);
+            if(strline.length()) oss << strline << endl;
         }
-        return (outstr.str());
+        return (oss.str());
     }
 }
 
