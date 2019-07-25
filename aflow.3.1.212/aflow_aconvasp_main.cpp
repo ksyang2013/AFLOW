@@ -35,7 +35,7 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
   // GENERAL STUFF
 
   vpflow.flag("PFLOW_HELP",aurostd::args2flag(argv,cmds,"--HELP|--help"));
-  //DEVELOP KESONG
+  //KESONG
   vpflow.flag("DEVELOP",aurostd::args2flag(argv,cmds,"--develop"));
 
   vpflow.flag("PROTOS",(aurostd::args2flag(argv,cmds,"--protos|--prototypes") || aurostd::args2flag(argv,cmds,"--proto")));// && (argv.size()==2));
@@ -1429,9 +1429,7 @@ namespace pflow {
       if(vpflow.flag("PGROUPK")) {pflow::SYMMETRY_GROUPS(aflags,cin,vpflow,cout); _PROGRAMRUN=true;} // DX 8/18/17
       if(vpflow.flag("PGROUPK_XTAL")) {pflow::SYMMETRY_GROUPS(aflags,cin,vpflow,cout); _PROGRAMRUN=true;} // DX 12/5/17
       if(vpflow.flag("POSCAR")) {cout << pflow::POSCAR(cin); _PROGRAMRUN=true;}
-      //DEVELOP KESONG
       if(vpflow.flag("DEVELOP")) {DEVELOP(argv); _PROGRAMRUN=true;}
-      //DEVELOP KESONG
       if(vpflow.flag("POSCAR2AFLOWIN")) {cout << pflow::POSCAR2AFLOWIN(cin); _PROGRAMRUN=true;}
       if(vpflow.flag("POSCAR2ENUM")) {pocc::POSCAR2ENUM(cin); _PROGRAMRUN=true;}
       if(vpflow.flag("POSCAR2GULP")) {pocc::POSCAR2GULP(cin); _PROGRAMRUN=true;}
@@ -1694,8 +1692,30 @@ void DEVELOP(vector<string> argv) {
     string dir = argv.at(2);
     stringstream ssINCAR;
     aurostd::file2stringstream(dir+"/INCAR", ssINCAR);
+    //string strline1 = "NSW=160";
+    //string strline2 = "#NSW=160";
+    //string strline3 = "#1234 NSW=160";
+    //cout << "NSW: " << aurostd::substring2bool(strline1,"NSW",TRUE)  << endl;
+    //cout << "#NSW: " << aurostd::substring2bool(strline2,"#NSW",TRUE)  << endl;
+    //cout << "aurostd::substring2bool2-- #NSW: " << aurostd::substring2bool2(strline2,"#NSW",TRUE)  << endl;
+    //cout << "#1234 NSW: " << aurostd::substring2bool(strline3,"#12",TRUE)  << endl;
     //cout << "strINCAR" <<  ssINCAR.str() << endl;
-    //cout << KBIN::RemoveLineWithKeyword(ssINCAR.str(), "NSW") << endl;
+    //vector<string> vkey;
+    //vkey.push_back("NSW");
+    //vkey.push_back("#NSW");
+    //vkey.push_back("IBRION");
+    //vkey.push_back("ISIF");
+    ////cout << KBIN::RemoveLineWithKeyword(ssINCAR.str(), "NSW") << endl;
+    ////cout << KBIN::RemoveLineWithKeyword(ssINCAR.str(), "NSW", false) << endl;
+    //cout << KBIN::RemoveLineWithKeyword(ssINCAR.str(), vkey, false) << endl;
+    stringstream ostr;
+    ostr << "Line1" << endl;
+    ostr << "Line2" << endl;
+    ostr << "Line3" << endl;
+    ostr << "Line4" ;
+    ostr << "Line5" ;
+    cout << ostr.str() << endl; 
+    exit(0);
     //vector<string> vlines;
     //aurostd::string2vectorstring(ssINCAR.str(),vlines);
     ////cout << "vlines.size() " << vlines.size() << endl;

@@ -3727,208 +3727,235 @@ namespace aurostd {
   }
 
   // ***************************************************************************
-  // Function SubStringsPresent
+  // Function SubStringsPresent2 KESONG 2019-07-25
+  // ***************************************************************************
+  bool substring2bool2(const string& strstream, const string& strsub1, bool CLEAN) {
+      CLEAN = true;
+      string _strstream(strstream),_strline,_strsub1(strsub1);
+      string strout="";
+      string::size_type idxS1;
+      if(CLEAN) _strstream=aurostd::RemoveWhiteSpaces(_strstream,'"');
+      if(_strstream.find(_strsub1)==string::npos) return (bool) FALSE;
+      vector<string> tokens;
+      aurostd::string2tokens(_strstream,tokens,"\n");
+      for(uint i=0;i<tokens.size();i++) {
+          _strline=tokens.at(i);
+          idxS1=_strline.find(_strsub1);
+          if(idxS1!=string::npos) {
+              return (bool) TRUE;
+          }
+      }
+      return (bool) FALSE;
+  }
+
+  // ***************************************************************************
+  // Function SubStringsPresent (this function does not check content after comment symbols like "#" "//")
   // ***************************************************************************
   bool substring2bool(const string& strstream, const string& strsub1, bool CLEAN) {
-    bool LDEBUG=FALSE;//TRUE;
-    if(LDEBUG) cerr << "bool substring2bool(const string& strstream, const string& strsub1, bool CLEAN)" << endl;
-    if(LDEBUG) cerr << "DEBUG substring2bool: (BEGIN) [" << strsub1 << "] " << CLEAN << endl;
-    string _strstream(strstream),_strline,_strsub1(strsub1);
-    string strout="";
-    string::size_type idxS1;
-    if(CLEAN==TRUE) _strstream=aurostd::RemoveWhiteSpaces(_strstream,'"');
-    if(LDEBUG) cerr << "DEBUG substring2bool: 1 [" << strstream << "], [" << _strsub1 << "]" << endl; 
-    if(_strstream.find(_strsub1)==string::npos) return (bool) FALSE;
-    if(LDEBUG) cerr << "DEBUG substring2bool: 2 [" << strstream << "], [" << _strsub1 << "]" << endl; 
-    vector<string> tokens;
-    aurostd::string2tokens(_strstream,tokens,"\n");
-    for(uint i=0;i<tokens.size();i++) {
-      _strline=tokens.at(i);
-      if(_strline.find("#")!=string::npos  
-	 && _strline.find("#1")==string::npos && _strline.find("#2")==string::npos && _strline.find("#3")==string::npos // avoid space groups
-	 && _strline.find("#4")==string::npos && _strline.find("#5")==string::npos && _strline.find("#6")==string::npos // avoid space groups
-	 && _strline.find("#7")==string::npos && _strline.find("#8")==string::npos && _strline.find("#9")==string::npos // avoid space groups
-	 ) _strline=_strline.substr(0,_strline.find("#")); // avoid space groups
-      if(_strline.find(COMMENT_NEGLECT_2)!=string::npos) _strline=_strline.substr(0,_strline.find(COMMENT_NEGLECT_2));
-      if(_strline.find(COMMENT_NEGLECT_3)!=string::npos) _strline=_strline.substr(0,_strline.find(COMMENT_NEGLECT_3));
-      idxS1=_strline.find(_strsub1);
-      if(idxS1!=string::npos) {
-	strout=_strline.substr(_strline.find(_strsub1)+_strsub1.length());
-	strout=aurostd::RemoveWhiteSpacesFromTheBack(strout);
-	if(LDEBUG) cerr << "DEBUG substring2bool: (END) " << strsub1 << " " << CLEAN << endl;
- 	return (bool) TRUE;
+      bool LDEBUG=FALSE;//TRUE;
+      if(LDEBUG) cerr << "bool substring2bool(const string& strstream, const string& strsub1, bool CLEAN)" << endl;
+      if(LDEBUG) cerr << "DEBUG substring2bool: (BEGIN) [" << strsub1 << "] " << CLEAN << endl;
+      string _strstream(strstream),_strline,_strsub1(strsub1);
+      string strout="";
+      string::size_type idxS1;
+      if(CLEAN==TRUE) _strstream=aurostd::RemoveWhiteSpaces(_strstream,'"');
+      if(LDEBUG) cerr << "DEBUG substring2bool: 1 [" << strstream << "], [" << _strsub1 << "]" << endl; 
+      if(_strstream.find(_strsub1)==string::npos) return (bool) FALSE;
+      if(LDEBUG) cerr << "DEBUG substring2bool: 2 [" << strstream << "], [" << _strsub1 << "]" << endl; 
+      vector<string> tokens;
+      aurostd::string2tokens(_strstream,tokens,"\n");
+      for(uint i=0;i<tokens.size();i++) {
+          _strline=tokens.at(i);
+          if(_strline.find("#")!=string::npos  
+                  && _strline.find("#1")==string::npos && _strline.find("#2")==string::npos && _strline.find("#3")==string::npos // avoid space groups
+                  && _strline.find("#4")==string::npos && _strline.find("#5")==string::npos && _strline.find("#6")==string::npos // avoid space groups
+                  && _strline.find("#7")==string::npos && _strline.find("#8")==string::npos && _strline.find("#9")==string::npos // avoid space groups
+            ) _strline=_strline.substr(0,_strline.find("#")); // avoid space groups
+          if(_strline.find(COMMENT_NEGLECT_2)!=string::npos) _strline=_strline.substr(0,_strline.find(COMMENT_NEGLECT_2));
+          if(_strline.find(COMMENT_NEGLECT_3)!=string::npos) _strline=_strline.substr(0,_strline.find(COMMENT_NEGLECT_3));
+          idxS1=_strline.find(_strsub1);
+          if(idxS1!=string::npos) {
+              strout=_strline.substr(_strline.find(_strsub1)+_strsub1.length());
+              strout=aurostd::RemoveWhiteSpacesFromTheBack(strout);
+              if(LDEBUG) cerr << "DEBUG substring2bool: (END) " << strsub1 << " " << CLEAN << endl;
+              return (bool) TRUE;
+          }
       }
-    }
-    return (bool) FALSE;
+      return (bool) FALSE;
   }
-  
+
   bool substring2bool(const vector<string>& vstrstream, const string& strsub1, bool CLEAN) {
-    //  if(LDEBUG) cerr << "bool substring2bool(const vector<string>& vstrstream, const string& strsub1, bool CLEAN)" << endl;
-    for(uint i=0;i<vstrstream.size();i++)
-      if(aurostd::substring2bool(vstrstream.at(i),strsub1,CLEAN)) return TRUE;
-    return FALSE;
+      //  if(LDEBUG) cerr << "bool substring2bool(const vector<string>& vstrstream, const string& strsub1, bool CLEAN)" << endl;
+      for(uint i=0;i<vstrstream.size();i++)
+          if(aurostd::substring2bool(vstrstream.at(i),strsub1,CLEAN)) return TRUE;
+      return FALSE;
   }
   bool substring2bool(const deque<string>& vstrstream, const string& strsub1, bool CLEAN) {
-    //  if(LDEBUG) cerr << "bool substring2bool(const deque<string>& vstrstream, const string& strsub1, bool CLEAN)" << endl;
-    for(uint i=0;i<vstrstream.size();i++)
-      if(aurostd::substring2bool(vstrstream.at(i),strsub1,CLEAN)) return TRUE;
-    return FALSE;
+      //  if(LDEBUG) cerr << "bool substring2bool(const deque<string>& vstrstream, const string& strsub1, bool CLEAN)" << endl;
+      for(uint i=0;i<vstrstream.size();i++)
+          if(aurostd::substring2bool(vstrstream.at(i),strsub1,CLEAN)) return TRUE;
+      return FALSE;
   }
 
   bool substring2bool(const stringstream& strstream, const string& strsub1, bool CLEAN) {
-    //  if(LDEBUG) cerr << "bool substring2bool(const stringstream& strstream, const string& strsub1, bool CLEAN)" << endl;
-    return aurostd::substring2bool(strstream.str(),strsub1,CLEAN);
+      //  if(LDEBUG) cerr << "bool substring2bool(const stringstream& strstream, const string& strsub1, bool CLEAN)" << endl;
+      return aurostd::substring2bool(strstream.str(),strsub1,CLEAN);
+  }
+
+  bool substring2bool2(const string& strstream, const string& strsub1) {
+      //  if(LDEBUG)   cerr << "bool substring2bool(const string& strstream, const string& strsub1)" << endl;
+      return (bool) aurostd::substring2bool2(strstream,strsub1,FALSE);
   }
 
   bool substring2bool(const string& strstream, const string& strsub1) {
-    //  if(LDEBUG)   cerr << "bool substring2bool(const string& strstream, const string& strsub1)" << endl;
-    return (bool) aurostd::substring2bool(strstream,strsub1,FALSE);
+      //  if(LDEBUG)   cerr << "bool substring2bool(const string& strstream, const string& strsub1)" << endl;
+      return (bool) aurostd::substring2bool(strstream,strsub1,FALSE);
   }
 
   bool substring2bool(const vector<string>& vstrstream, const string& strsub1) {
-    //  if(LDEBUG) cerr << "bool substring2bool(const vector<string>& vstrstream, const string& strsub1)" << endl;
-    for(uint i=0;i<vstrstream.size();i++)
-      if(aurostd::substring2bool(vstrstream.at(i),strsub1)) return TRUE;
-    return FALSE;
+      //  if(LDEBUG) cerr << "bool substring2bool(const vector<string>& vstrstream, const string& strsub1)" << endl;
+      for(uint i=0;i<vstrstream.size();i++)
+          if(aurostd::substring2bool(vstrstream.at(i),strsub1)) return TRUE;
+      return FALSE;
   }
   bool substring2bool(const deque<string>& vstrstream, const string& strsub1) {
-    //  if(LDEBUG) cerr << "bool substring2bool(const deque<string>& vstrstream, const string& strsub1)" << endl;
-    for(uint i=0;i<vstrstream.size();i++)
-      if(aurostd::substring2bool(vstrstream.at(i),strsub1)) return TRUE;
-    return FALSE;
+      //  if(LDEBUG) cerr << "bool substring2bool(const deque<string>& vstrstream, const string& strsub1)" << endl;
+      for(uint i=0;i<vstrstream.size();i++)
+          if(aurostd::substring2bool(vstrstream.at(i),strsub1)) return TRUE;
+      return FALSE;
   }
 
   bool substring2bool(const stringstream& strstream, const string& strsub1) {
-    //  if(LDEBUG) cerr << "bool substring2bool(const stringstream& strstream, const string& strsub1)" << endl;
-    return (bool) aurostd::substring2bool(strstream.str(),strsub1,FALSE);
+      //  if(LDEBUG) cerr << "bool substring2bool(const stringstream& strstream, const string& strsub1)" << endl;
+      return (bool) aurostd::substring2bool(strstream.str(),strsub1,FALSE);
   }
   bool substring_present_file(const string& FileName, const string& strsub1) {
-    //  if(LDEBUG) cerr << "bool substring_present_file(const string& FileName, const string& strsub1)" << endl;
-    return (bool) aurostd::substring2bool(FileName,strsub1,FALSE);
+      //  if(LDEBUG) cerr << "bool substring_present_file(const string& FileName, const string& strsub1)" << endl;
+      return (bool) aurostd::substring2bool(FileName,strsub1,FALSE);
   }
   bool substring_present_file_FAST(const string& FileName, const string& strsub1) {
-    //  if(LDEBUG) cerr << "bool substring_present_file_FAST(const string& FileName, const string& strsub1)" << endl;
-    // be careful, this does not filter-out # comments
-    return (bool) substring_present_file_FAST(FileName,strsub1,FALSE);
+      //  if(LDEBUG) cerr << "bool substring_present_file_FAST(const string& FileName, const string& strsub1)" << endl;
+      // be careful, this does not filter-out # comments
+      return (bool) substring_present_file_FAST(FileName,strsub1,FALSE);
   }
 
   bool withinList(const vector<string>& list,const string& str) {
-    for(uint i=0;i<list.size();i++){if(list[i]==str){return true;}}
-    return false;
+      for(uint i=0;i<list.size();i++){if(list[i]==str){return true;}}
+      return false;
   }
 
   // ***************************************************************************
   bool substring_present_file(const string& FileName, const string& strsub1, bool CLEAN) {
-    string StringFile;
-    ifstream FileFile;
-    FileFile.open(FileName.c_str(),std::ios::in);
-    FileFile.clear();FileFile.seekg(0);
-    if(!FileFile) {
-      cerr << "ERROR  FileName=" << FileName << "   not found" << endl;
-      return FALSE;
-      //    exit(0);
-    }
-    StringFile="";char c; while (FileFile.get(c)) StringFile+=c;
-    FileFile.close();
-    return aurostd::substring2bool(StringFile,strsub1,CLEAN);
+      string StringFile;
+      ifstream FileFile;
+      FileFile.open(FileName.c_str(),std::ios::in);
+      FileFile.clear();FileFile.seekg(0);
+      if(!FileFile) {
+          cerr << "ERROR  FileName=" << FileName << "   not found" << endl;
+          return FALSE;
+          //    exit(0);
+      }
+      StringFile="";char c; while (FileFile.get(c)) StringFile+=c;
+      FileFile.close();
+      return aurostd::substring2bool(StringFile,strsub1,CLEAN);
   }
 
   bool substring_present_file_FAST(const string& FileName, const string& strsub1, bool CLEAN) {
-    // be careful, this does not filter-out # comments
-    string temp_file=aurostd::TmpFileCreate("substring");
-    ostringstream aus;
-    ifstream FileFile;
-    int found=0;
-    aurostd::StringstreamClean(aus);
-    aus << "rm -f " << temp_file  << endl;
-    if(CLEAN==FALSE) aus << "cat " << FileName << " | grep -c \"" << strsub1 << "\" > " << temp_file  << endl;
-    if(CLEAN==TRUE ) aus << "cat " << FileName << " | sed \"s/ //g\" | sed \"s/\t//g\"  | grep -c \"" << aurostd::RemoveWhiteSpaces(strsub1) << "\" > " << temp_file  << endl;
-    aus << "echo >> " << temp_file << endl; // to give EOL
-    aurostd::execute(aus);
-    if(!aurostd::FileExist(FileName)) {
-      cerr << "ERROR: substring_present_file_FAST: file input not found =" << FileName << endl;
-      exit(0);
-    }
-    if(!aurostd::FileExist(temp_file)) {
-      cerr << "ERROR: substring_present_file_FAST: file output not found =" << temp_file << endl;
-      exit(0);
-    }
-    FileFile.open(temp_file.c_str(),std::ios::in);
-    FileFile.clear();FileFile.seekg(0);
-    FileFile >> found;
-    FileFile.close();
-    aurostd::StringstreamClean(aus);
+      // be careful, this does not filter-out # comments
+      string temp_file=aurostd::TmpFileCreate("substring");
+      ostringstream aus;
+      ifstream FileFile;
+      int found=0;
+      aurostd::StringstreamClean(aus);
+      aus << "rm -f " << temp_file  << endl;
+      if(CLEAN==FALSE) aus << "cat " << FileName << " | grep -c \"" << strsub1 << "\" > " << temp_file  << endl;
+      if(CLEAN==TRUE ) aus << "cat " << FileName << " | sed \"s/ //g\" | sed \"s/\t//g\"  | grep -c \"" << aurostd::RemoveWhiteSpaces(strsub1) << "\" > " << temp_file  << endl;
+      aus << "echo >> " << temp_file << endl; // to give EOL
+      aurostd::execute(aus);
+      if(!aurostd::FileExist(FileName)) {
+          cerr << "ERROR: substring_present_file_FAST: file input not found =" << FileName << endl;
+          exit(0);
+      }
+      if(!aurostd::FileExist(temp_file)) {
+          cerr << "ERROR: substring_present_file_FAST: file output not found =" << temp_file << endl;
+          exit(0);
+      }
+      FileFile.open(temp_file.c_str(),std::ios::in);
+      FileFile.clear();FileFile.seekg(0);
+      FileFile >> found;
+      FileFile.close();
+      aurostd::StringstreamClean(aus);
 #ifndef _AFLOW_TEMP_PRESERVE_
-    aurostd::RemoveFile(temp_file);
+      aurostd::RemoveFile(temp_file);
 #endif
-    if(found>0) return TRUE;
-    return FALSE;
+      if(found>0) return TRUE;
+      return FALSE;
   }
 
   // ***************************************************************************
   // Function SubStringsPresent and EXTRACT
   // ***************************************************************************
   string substring2string(const string& strstream, const string& strsub1, bool CLEAN) {
-    bool LDEBUG=(FALSE || XHOST.DEBUG);
-    if(LDEBUG) cerr << "DEBUG substring2string3: (BEGIN) " << strsub1 << " " << CLEAN << endl;
-    string _strstream(strstream),_strline,_strsub1(strsub1);
-    string strout="";
-    string::size_type idxS1;
-    if(CLEAN==TRUE) _strstream=aurostd::RemoveWhiteSpaces(_strstream,'"');
-    if(_strstream.find(_strsub1)==string::npos) return (string) strout;
-    //  transform(_strstream.begin(),_strstream.end(),_strstream.begin(),toupper); // pout everything UPPER
-    vector<string> tokens;
-    aurostd::string2tokens(_strstream,tokens,"\n");
-    for(uint i=0;i<tokens.size();i++) {
-      _strline=tokens.at(i);
-      if(_strline.find(COMMENT_NEGLECT_1)!=string::npos) _strline=_strline.substr(0,_strline.find(COMMENT_NEGLECT_1));
-      if(_strline.find(COMMENT_NEGLECT_2)!=string::npos) _strline=_strline.substr(0,_strline.find(COMMENT_NEGLECT_2));
-      if(_strline.find(COMMENT_NEGLECT_3)!=string::npos) _strline=_strline.substr(0,_strline.find(COMMENT_NEGLECT_3));
-      idxS1=_strline.find(_strsub1);
-      if(idxS1!=string::npos) {
-	strout=_strline.substr(_strline.find(_strsub1)+_strsub1.length());
-	strout=aurostd::RemoveWhiteSpacesFromTheBack(strout);
-	if(LDEBUG) cerr << "DEBUG substring2string3: (END) " << strsub1 << " " << CLEAN << endl;
-	return (string) strout;
+      bool LDEBUG=(FALSE || XHOST.DEBUG);
+      if(LDEBUG) cerr << "DEBUG substring2string3: (BEGIN) " << strsub1 << " " << CLEAN << endl;
+      string _strstream(strstream),_strline,_strsub1(strsub1);
+      string strout="";
+      string::size_type idxS1;
+      if(CLEAN==TRUE) _strstream=aurostd::RemoveWhiteSpaces(_strstream,'"');
+      if(_strstream.find(_strsub1)==string::npos) return (string) strout;
+      //  transform(_strstream.begin(),_strstream.end(),_strstream.begin(),toupper); // pout everything UPPER
+      vector<string> tokens;
+      aurostd::string2tokens(_strstream,tokens,"\n");
+      for(uint i=0;i<tokens.size();i++) {
+          _strline=tokens.at(i);
+          if(_strline.find(COMMENT_NEGLECT_1)!=string::npos) _strline=_strline.substr(0,_strline.find(COMMENT_NEGLECT_1));
+          if(_strline.find(COMMENT_NEGLECT_2)!=string::npos) _strline=_strline.substr(0,_strline.find(COMMENT_NEGLECT_2));
+          if(_strline.find(COMMENT_NEGLECT_3)!=string::npos) _strline=_strline.substr(0,_strline.find(COMMENT_NEGLECT_3));
+          idxS1=_strline.find(_strsub1);
+          if(idxS1!=string::npos) {
+              strout=_strline.substr(_strline.find(_strsub1)+_strsub1.length());
+              strout=aurostd::RemoveWhiteSpacesFromTheBack(strout);
+              if(LDEBUG) cerr << "DEBUG substring2string3: (END) " << strsub1 << " " << CLEAN << endl;
+              return (string) strout;
+          }
       }
-    }
-    return (string) strout;
+      return (string) strout;
   }
 
   string substring2string(const string& strstream, const string& strsub1, const string& strsub2, bool CLEAN) {
-    bool LDEBUG=(FALSE || XHOST.DEBUG);
-    if(LDEBUG) cerr << "DEBUG substring2string5: (BEGIN) " << strsub1 << " " << CLEAN << endl;
-    string _strstream(strstream),_strline,_strsub1(strsub1),_strsub2(strsub2);
-    string strout="";
-    string::size_type idxS1,idxS2;
-    if(CLEAN==TRUE) _strstream=aurostd::RemoveWhiteSpaces(_strstream,'"');
-    if(_strstream.find(_strsub1)==string::npos) return (string) strout;
-    if(_strstream.find(_strsub2)==string::npos) return (string) strout;
-    //  transform(_strstream.begin(),_strstream.end(),_strstream.begin(),toupper); // pout everything UPPER
-    vector<string> tokens;
-    aurostd::string2tokens(_strstream,tokens,"\n");
-    for(uint i=0;i<tokens.size();i++) {
-      _strline=tokens.at(i);
-      if(_strline.find(COMMENT_NEGLECT_1)!=string::npos) _strline=_strline.substr(0,_strline.find(COMMENT_NEGLECT_1));
-      if(_strline.find(COMMENT_NEGLECT_2)!=string::npos) _strline=_strline.substr(0,_strline.find(COMMENT_NEGLECT_2));
-      if(_strline.find(COMMENT_NEGLECT_3)!=string::npos) _strline=_strline.substr(0,_strline.find(COMMENT_NEGLECT_3));
-      idxS1=_strline.find(_strsub1);
-      idxS2=_strline.find(_strsub2);
-      if(idxS1!=string::npos && idxS2!=string::npos && idxS1<=idxS2) {
-	strout=_strline.substr(std::max(_strline.find(_strsub2)+_strsub2.length(),_strline.find(_strsub1)+_strsub1.length()));
-	strout=aurostd::RemoveWhiteSpacesFromTheBack(strout);
-	if(LDEBUG) cerr << "DEBUG substring2string5: (END) " << strsub1 << " " << CLEAN << endl;
-	return (string) strout;
+      bool LDEBUG=(FALSE || XHOST.DEBUG);
+      if(LDEBUG) cerr << "DEBUG substring2string5: (BEGIN) " << strsub1 << " " << CLEAN << endl;
+      string _strstream(strstream),_strline,_strsub1(strsub1),_strsub2(strsub2);
+      string strout="";
+      string::size_type idxS1,idxS2;
+      if(CLEAN==TRUE) _strstream=aurostd::RemoveWhiteSpaces(_strstream,'"');
+      if(_strstream.find(_strsub1)==string::npos) return (string) strout;
+      if(_strstream.find(_strsub2)==string::npos) return (string) strout;
+      //  transform(_strstream.begin(),_strstream.end(),_strstream.begin(),toupper); // pout everything UPPER
+      vector<string> tokens;
+      aurostd::string2tokens(_strstream,tokens,"\n");
+      for(uint i=0;i<tokens.size();i++) {
+          _strline=tokens.at(i);
+          if(_strline.find(COMMENT_NEGLECT_1)!=string::npos) _strline=_strline.substr(0,_strline.find(COMMENT_NEGLECT_1));
+          if(_strline.find(COMMENT_NEGLECT_2)!=string::npos) _strline=_strline.substr(0,_strline.find(COMMENT_NEGLECT_2));
+          if(_strline.find(COMMENT_NEGLECT_3)!=string::npos) _strline=_strline.substr(0,_strline.find(COMMENT_NEGLECT_3));
+          idxS1=_strline.find(_strsub1);
+          idxS2=_strline.find(_strsub2);
+          if(idxS1!=string::npos && idxS2!=string::npos && idxS1<=idxS2) {
+              strout=_strline.substr(std::max(_strline.find(_strsub2)+_strsub2.length(),_strline.find(_strsub1)+_strsub1.length()));
+              strout=aurostd::RemoveWhiteSpacesFromTheBack(strout);
+              if(LDEBUG) cerr << "DEBUG substring2string5: (END) " << strsub1 << " " << CLEAN << endl;
+              return (string) strout;
+          }
       }
-    }
-    return (string) strout;
+      return (string) strout;
   }
 
   string substring2string(const string& strstream, const string& strsub1) {
-    return (string) substring2string(strstream,strsub1,FALSE);
+      return (string) substring2string(strstream,strsub1,FALSE);
   }
   string substring2string(const string& strstream, const string& strsub1, const string& strsub2) {
-    return (string) substring2string(strstream,strsub1,strsub2,FALSE);
+      return (string) substring2string(strstream,strsub1,strsub2,FALSE);
   }
 
   template<typename utype> utype substring2utype(const string& strstream, const string& strsub1, bool CLEAN) {
