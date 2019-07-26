@@ -2458,7 +2458,9 @@ namespace KBIN {
   void capitalizeString(string& s);
   string GetValueOfKey(const string& FileContent, const string& keyword); 
   string RemoveEmptyLines(const string& FileContent);
-  string RemoveLineWithKeyword(const string& FileContent, const string& keyword); 
+  string RemoveLineWithKeyword(const string& FileContent, const string& keyword, bool CleanBlankLine=true);
+  string RemoveLineWithKeyword(const string& FileContent, const vector<string>& vkeyword, bool CleanBlankLine=true);
+  string RemoveLineWithMultipleKeywords(const string& FileContent, const string& keywords, bool CleanBlankLine=true);
   //KESONG
 }
 
