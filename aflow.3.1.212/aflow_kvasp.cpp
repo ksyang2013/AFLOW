@@ -2519,7 +2519,7 @@ namespace KBIN {
             if(nrun<maxrun) {  
                 if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  checking warnings" << endl;
                 xmessage.flag("REACHED_ACCURACY",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","reached required accuracy"));
-                xwarning.flag("REACH_NSW", ( !xmessage.flag("REACHED_ACCURACY") && KBIN::VASP_isRelaxOUTCAR(xvasp.Directory) && KBIN::VASP_CheckRelaxReachNSW(xvasp.Directory)) ); // check relax (reach NSW)
+                xwarning.flag("REACH_NSW", (!xmessage.flag("REACHED_ACCURACY") && KBIN::VASP_isRelaxOUTCAR(xvasp.Directory) && KBIN::VASP_CheckRelaxReachNSW(xvasp.Directory)) ); // check relax (reach NSW)
                 xwarning.flag("CSLOSHING",KBIN::VASP_CheckUnconvergedOUTCAR(xvasp.Directory)); // check converged (static & relaxed)
                 xwarning.flag("KKSYM",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Reciprocal lattice and k-lattice belong to different class of lattices"));
                 xwarning.flag("SGRCON",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","VERY BAD NEWS! internal error in subroutine SGRCON"));
@@ -3022,7 +3022,9 @@ namespace KBIN {
                         KBIN::XVASP_Afix_GENERIC("REACH_NSW",xvasp,kflags,vflags, 0.0, num_ReachNSW);
                         xfixed.flag("REACH_NSW",TRUE);xfixed.flag("ALL",TRUE);
                     }
+                    cout << "xfixed.flag" << xfixed.flag("ALL") << endl;
                 }
+
 
                 // ********* CHECK CSLOSHING PROBLEMS ******************; LAST Operation will cover all previous
                 if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [CHECK CSLOSHING PROBLEMS]" << endl;
@@ -3039,6 +3041,7 @@ namespace KBIN {
 
                 // ********* VASP TO BE RESTARTED *********
                 if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [DONE WIHT CHECKS]" << endl;
+                cout << "xfixed.flag" << xfixed.flag("ALL") << endl;
                 if(xfixed.flag("ALL")) vasp_start=TRUE;
                 if(vasp_start) {
                     if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [VASP TO BE RESTARTED]" << endl;

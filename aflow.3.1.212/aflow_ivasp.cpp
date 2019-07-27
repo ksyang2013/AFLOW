@@ -2678,6 +2678,7 @@ namespace KBIN {
                 }
             }
             xvasp.INCAR << aurostd::PaddedPOST("IBRION=2",_incarpad_) << endl;
+            //xvasp.INCAR << aurostd::PaddedPOST("NSW=6",_incarpad_)  << endl;  //debug
             xvasp.INCAR << aurostd::PaddedPOST("NSW=160",_incarpad_)  << endl;
             xvasp.INCAR << aurostd::PaddedPOST("ISIF="+aurostd::utype2string(isif),_incarpad_) << endl;
             if(!doesKeywordExist(FileContent, "EDIFFG")) {
@@ -4888,7 +4889,8 @@ namespace KBIN {
 
         // clean to restart ----------------------------------
         if(file_error!="") KBIN::XVASP_Afix_Clean(xvasp,file_error);
-        if(file_error.empty()) {cerr <<" ERROR KBIN::XVASP_Afix_GENERIC mode=" << mode << endl;exit(0);}
+        //if(file_error.empty()) {cerr <<" ERROR KBIN::XVASP_Afix_GENERIC mode=" << mode << endl;exit(0);}
+        //DO NOT CHECK, clusters (tscc) may not have enough time to synchronize large files  //KESONG 2019-07-26
         // return
         if(param_int==0) {;} // dummy load
         if(mode=="PSMAXN") return out;
