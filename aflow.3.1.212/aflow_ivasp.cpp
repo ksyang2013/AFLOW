@@ -2678,8 +2678,8 @@ namespace KBIN {
                 }
             }
             xvasp.INCAR << aurostd::PaddedPOST("IBRION=2",_incarpad_) << endl;
-            xvasp.INCAR << aurostd::PaddedPOST("NSW=3",_incarpad_)  << endl;  //debug
-            //xvasp.INCAR << aurostd::PaddedPOST("NSW=160",_incarpad_)  << endl;
+            //xvasp.INCAR << aurostd::PaddedPOST("NSW=3",_incarpad_)  << endl;  //debug
+            xvasp.INCAR << aurostd::PaddedPOST("NSW=160",_incarpad_)  << endl;
             xvasp.INCAR << aurostd::PaddedPOST("ISIF="+aurostd::utype2string(isif),_incarpad_) << endl;
             if(!doesKeywordExist(FileContent, "EDIFFG")) {
                 stringstream stmp;
