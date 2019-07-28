@@ -2678,7 +2678,7 @@ namespace KBIN {
                 }
             }
             xvasp.INCAR << aurostd::PaddedPOST("IBRION=2",_incarpad_) << endl;
-            //xvasp.INCAR << aurostd::PaddedPOST("NSW=6",_incarpad_)  << endl;  //debug
+            //xvasp.INCAR << aurostd::PaddedPOST("NSW=3",_incarpad_)  << endl;  //debug
             xvasp.INCAR << aurostd::PaddedPOST("NSW=160",_incarpad_)  << endl;
             xvasp.INCAR << aurostd::PaddedPOST("ISIF="+aurostd::utype2string(isif),_incarpad_) << endl;
             if(!doesKeywordExist(FileContent, "EDIFFG")) {
@@ -4801,13 +4801,10 @@ namespace KBIN {
             aus << "echo \"[AFLOW] SELF-MODIFICATION \" >> " << _AFLOWIN_ << " " << endl;
             aus << "echo \"[AFLOW] Recycling CONTCAR of reach_nsw" << aurostd::utype2string(param_int) << " \" >> " << _AFLOWIN_ << " " << endl;
             aus << "cat CONTCAR | aflow --aflowin  >> " << _AFLOWIN_ << " " << endl;
+            cout << "_AFLOWIN_: " << _AFLOWIN_ << endl;
+            cout << "xvasp.Directory: " << xvasp.Directory << endl;
+            aus << "cat " << _AFLOWIN_ << " | sed \"s/\\[VASP_FORCE_OPTION\\]VOLUME/#\\[VASP_FORCE_OPTION\\]VOLUME/g\" | sed \"s/##\\[/#\\[/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl;
             aurostd::execute(aus);
-            if (aurostd::substring_present_file_FAST( _AFLOWIN_, "VASP_FORCE_OPTION]VOLUME")){
-                aurostd::execute(aus);
-                aus << "cd " << xvasp.Directory << endl;
-                aus << "cat " << _AFLOWIN_ << " | sed \"s/\\[VASP_FORCE_OPTION\\]VOLUME/#\\[VASP_FORCE_OPTION\\]VOLUME/g\" | sed \"s/##\\[/#\\[/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl;
-                aurostd::execute(aus);
-            }
         }
 
 
@@ -4889,8 +4886,8 @@ namespace KBIN {
 
         // clean to restart ----------------------------------
         if(file_error!="") KBIN::XVASP_Afix_Clean(xvasp,file_error);
-        //if(file_error.empty()) {cerr <<" ERROR KBIN::XVASP_Afix_GENERIC mode=" << mode << endl;exit(0);}
-        //DO NOT CHECK, clusters (tscc) may not have enough time to synchronize large files  //KESONG 2019-07-26
+        if(file_error.empty()) {cerr <<" ERROR KBIN::XVASP_Afix_GENERIC mode=" << mode << endl;exit(0);}
+        //some clusters (tscc) may not have enough time to synchronize large files? not really? //KESONG 2019-07-26
         // return
         if(param_int==0) {;} // dummy load
         if(mode=="PSMAXN") return out;
