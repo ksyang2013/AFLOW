@@ -1784,10 +1784,10 @@ int InitializeXstr(xstructure &xstr, vector<string> vxstr_species_ori, ofstream 
 
   uint digits=6, digits1=4, digits2=2*digits+11;
 
-  cout << "KESONG xstr.partial_occupation_HNF: " << xstr.partial_occupation_HNF << endl;
+  //cout << "KESONG xstr.partial_occupation_HNF: " << xstr.partial_occupation_HNF << endl;
   if(xstr.partial_occupation_HNF) {return xstr.partial_occupation_HNF;} //if HNF exists, no need to optimize pocc values
-  cout << "KESONG xstr.partial_occupation_HNF: " << xstr.partial_occupation_HNF << endl;
-  exit(0);
+  //cout << "KESONG xstr.partial_occupation_HNF: " << xstr.partial_occupation_HNF << endl;
+  //exit(0);
   double tolerance=DEFAULT_PARTIAL_OCCUPATION_TOLERANCE;
   if(LDEBUG){ //CO 180409
     cerr << "default " << DEFAULT_PARTIAL_OCCUPATION_TOLERANCE << endl;
