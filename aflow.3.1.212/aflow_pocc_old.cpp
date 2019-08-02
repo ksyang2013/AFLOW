@@ -1677,6 +1677,7 @@ vector<xstructure> Partial2Supercell(xstructure xstr_ori) {
   vector<string> vxstr_species_ori;
   aurostd::string2tokens(str_species_ori, vxstr_species_ori, " ");
 
+  //string logfile = xstr_ori.title + "_pocc.log";
   ofstream FileMESSAGE;
   FileMESSAGE.open("LOG.POCC");
   _aflags aflags;
