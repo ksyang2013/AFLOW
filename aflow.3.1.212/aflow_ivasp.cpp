@@ -4676,9 +4676,9 @@ namespace KBIN {
         if(mode=="BRMIX") {
             file_error="aflow.error.brmix";
             reload_incar=TRUE;
-            vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme="VERYFAST";
+            //vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme="VERYFAST";
+            vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme="NORMAL";
             KBIN::XVASP_INCAR_PREPARE_GENERIC("ALGO",xvasp,vflags,"",0,0.0,FALSE);
-            // [OBSOLETE] KBIN::XVASP_INCAR_ALGO(xvasp,vflags);
             rewrite_incar=TRUE;
         }
         if(mode=="DAV") {

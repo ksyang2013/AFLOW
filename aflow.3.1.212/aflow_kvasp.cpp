@@ -2525,7 +2525,8 @@ namespace KBIN {
                 xwarning.flag("KKSYM",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Reciprocal lattice and k-lattice belong to different class of lattices"));
                 xwarning.flag("SGRCON",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","VERY BAD NEWS! internal error in subroutine SGRCON"));
                 xwarning.flag("NIRMAT",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Found some non-integer element in rotation matrix"));
-                xwarning.flag("BRMIX",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","BRMIX: very serious problems"));
+                xwarning.flag("BRMIX",(!xmessage.flag("REACHED_ACCURACY") &&
+                            aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","BRMIX: very serious problems")) );
                 xwarning.flag("DAV",(!xmessage.flag("REACHED_ACCURACY") &&
                             aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING: Sub-Space-Matrix is not hermitian in DAV")) );
                 xwarning.flag("EDDDAV",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Error EDDDAV: Call to ZHEGV failed. Returncode"));
