@@ -2823,6 +2823,8 @@ namespace KBIN {
                         // if(nrun<maxrun) vasp_start=TRUE;
                     }
                 }
+
+                /*
                 // ********* CHECK BRMIX PROBLEMS ******************
                 if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [CHECK BRMIX PROBLEMS]" << endl;
                 if(!vflags.KBIN_VASP_FORCE_OPTION_IGNORE_AFIX.flag("BRMIX") && !xfixed.flag("ALL")) { // check BRMIX
@@ -2834,6 +2836,8 @@ namespace KBIN {
                         xfixed.flag("BRMIX",TRUE);xfixed.flag("ALL",TRUE);
                     }
                 }
+                */
+
                 // ********* CHECK DAV PROBLEMS ******************
                 if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [CHECK DAV PROBLEMS]" << endl;
                 if(!vflags.KBIN_VASP_FORCE_OPTION_IGNORE_AFIX.flag("DAV") && !xfixed.flag("ALL")) { // check DAV
