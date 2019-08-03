@@ -2681,7 +2681,8 @@ namespace KBIN {
             string stmp =  KBIN::RemoveLineWithKeyword(FileContent, vkey, true);
             xvasp.INCAR << KBIN::RemoveEmptyLines(stmp);  //remove empty line but not remove "\n" 
 
-            xvasp.INCAR << aurostd::PaddedPOST("IBRION=2",_incarpad_) << endl;
+            //KESONG, 2019-08-02, https://cms.mpi.univie.ac.at/vasp/vasp/IBRION_tag_NFREE_tag.html
+            xvasp.INCAR << aurostd::PaddedPOST("IBRION=1",_incarpad_) << endl; 
             xvasp.INCAR << aurostd::PaddedPOST("NSW=160",_incarpad_)  << endl;
             xvasp.INCAR << aurostd::PaddedPOST("ISIF="+aurostd::utype2string(isif),_incarpad_) << endl;
             if(setEDIFFG){
@@ -2708,7 +2709,7 @@ namespace KBIN {
             string stmp =  KBIN::RemoveLineWithKeyword(FileContent, vkey, true);
             xvasp.INCAR << KBIN::RemoveEmptyLines(stmp);  //remove empty line but not remove "\n" 
 
-            xvasp.INCAR << aurostd::PaddedPOST("IBRION=1",_incarpad_) << endl;
+            xvasp.INCAR << aurostd::PaddedPOST("IBRION=2",_incarpad_) << endl;
             xvasp.INCAR << aurostd::PaddedPOST("NSW=160",_incarpad_)  << endl;
             xvasp.INCAR << aurostd::PaddedPOST("ISIF="+aurostd::utype2string(isif),_incarpad_)     << endl;
             xvasp.INCAR << aurostd::PaddedPOST("NELMIN=4",_incarpad_) << endl;
