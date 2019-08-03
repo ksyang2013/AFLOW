@@ -2051,7 +2051,7 @@ namespace KBIN {
         aurostd::StringstreamClean(aus_exec);
         aurostd::StringstreamClean(aus);
         int nrun=0,maxrun=15, SCF_maxrun=12, Relax_maxrun = 8;
-        int num_CSLOSHING = 0, num_ReachNSW = 0;
+        int num_CSLOSHING = 0, num_ReachNSW = 0, num_ZBRENT=0;
         int fix_NIRMAT=0;
         int kpoints_k1=xvasp.str.kpoints_k1; double kpoints_s1=xvasp.str.kpoints_s1;
         int kpoints_k2=xvasp.str.kpoints_k2; double kpoints_s2=xvasp.str.kpoints_s2;
@@ -2521,6 +2521,7 @@ namespace KBIN {
                 xmessage.flag("REACHED_ACCURACY",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","reached required accuracy"));
                 xwarning.flag("REACH_NSW", (!xmessage.flag("REACHED_ACCURACY") && KBIN::VASP_isRelaxOUTCAR(xvasp.Directory) && KBIN::VASP_CheckRelaxReachNSW(xvasp.Directory)) ); // check relax (reach NSW)
                 xwarning.flag("CSLOSHING",KBIN::VASP_CheckUnconvergedOUTCAR(xvasp.Directory)); // check converged (static & relaxed)
+                xwarning.flag("ZBRENT",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","ZBRENT: fatal error in bracketing"));
                 xwarning.flag("KKSYM",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Reciprocal lattice and k-lattice belong to different class of lattices"));
                 xwarning.flag("SGRCON",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","VERY BAD NEWS! internal error in subroutine SGRCON"));
                 xwarning.flag("NIRMAT",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Found some non-integer element in rotation matrix"));
@@ -3010,6 +3011,19 @@ namespace KBIN {
                 }
                 }
                 */
+                
+                // ********* CHECK ZBRENT PROBLEMS ****************** 
+                if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [CHECK ZBRENT PROBLEMS]" << endl;
+                if(!vflags.KBIN_VASP_FORCE_OPTION_IGNORE_AFIX.flag("ZBRENT") && !xfixed.flag("ALL")) { // check ZBRENT
+                    if(xwarning.flag("ZBRENT") && num_ZBRENT < Relax_maxrun) {  //Check multiple times until SCF_maxrun
+                        num_ZBRENT += 1;
+                        KBIN::VASP_Error(xvasp,"WWWWW  ERROR KBIN::VASP_Run: "+Message("time")+"  ZBRENT problems ");
+                        aus << "WWWWW  FIX ZBRENT - " << num_ZBRENT << ":" <<  Message(aflags,"user,host,time") << endl;
+                        aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
+                        KBIN::XVASP_Afix_GENERIC("ZBRENT",xvasp,kflags,vflags, 0.0, num_ZBRENT);
+                        xfixed.flag("ZBRENT",TRUE);xfixed.flag("ALL",TRUE);
+                    }
+                }
 
                 // ********* CHECK REACH_NSW PROBLEMS ******************
                 if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [CHECK REACH_NSW PROBLEMS]" << endl;
@@ -3022,8 +3036,8 @@ namespace KBIN {
                         KBIN::XVASP_Afix_GENERIC("REACH_NSW",xvasp,kflags,vflags, 0.0, num_ReachNSW);
                         xfixed.flag("REACH_NSW",TRUE);xfixed.flag("ALL",TRUE);
                     }
-                    cout << "xfixed.flag" << xfixed.flag("ALL") << endl;
                 }
+
 
 
                 // ********* CHECK CSLOSHING PROBLEMS ******************; LAST Operation will cover all previous

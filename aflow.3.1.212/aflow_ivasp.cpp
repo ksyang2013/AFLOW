@@ -4794,6 +4794,22 @@ namespace KBIN {
             aurostd::execute(aus_exec);
         }
 
+
+        if(mode=="ZBRENT") {
+            file_error="aflow.error.zbrent" + aurostd::utype2string(param_int);
+            reload_incar=TRUE;
+            RecyclePOSCARfromCONTCAR(xvasp);
+            ostringstream aus;
+            aus << "cd " << xvasp.Directory << endl;
+            aus << "echo \"[AFLOW] SELF-MODIFICATION \" >> " << _AFLOWIN_ << " " << endl;
+            aus << "echo \"[AFLOW] Recycling CONTCAR of zbrent_error" << aurostd::utype2string(param_int) << " \" >> " << _AFLOWIN_ << " " << endl;
+            aus << "cat CONTCAR | aflow --aflowin  >> " << _AFLOWIN_ << " " << endl;
+            aus << "cat " << _AFLOWIN_ << " | sed \"s/\\[VASP_FORCE_OPTION\\]VOLUME/#\\[VASP_FORCE_OPTION\\]VOLUME/g\" | sed \"s/##\\[/#\\[/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl;
+            aus_exec << "cat INCAR | grep -v 'EDIFF=' > incar.tmp && mv incar.tmp INCAR" << endl; 
+            aus_exec << "echo \"EDIFF=1E-3                                        #FIX=" << mode << "\" >> INCAR " << endl;
+            aurostd::execute(aus);
+        }
+
         if(mode=="REACH_NSW") {
             file_error="aflow.error.reach_nsw" + aurostd::utype2string(param_int);
             reload_incar=TRUE;
@@ -4803,8 +4819,6 @@ namespace KBIN {
             aus << "echo \"[AFLOW] SELF-MODIFICATION \" >> " << _AFLOWIN_ << " " << endl;
             aus << "echo \"[AFLOW] Recycling CONTCAR of reach_nsw" << aurostd::utype2string(param_int) << " \" >> " << _AFLOWIN_ << " " << endl;
             aus << "cat CONTCAR | aflow --aflowin  >> " << _AFLOWIN_ << " " << endl;
-            cout << "_AFLOWIN_: " << _AFLOWIN_ << endl;
-            cout << "xvasp.Directory: " << xvasp.Directory << endl;
             aus << "cat " << _AFLOWIN_ << " | sed \"s/\\[VASP_FORCE_OPTION\\]VOLUME/#\\[VASP_FORCE_OPTION\\]VOLUME/g\" | sed \"s/##\\[/#\\[/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl;
             aurostd::execute(aus);
         }
