@@ -2675,7 +2675,7 @@ namespace KBIN {
             if(!doesKeywordExist(FileContent, "EDIFFG")) setEDIFFG = true;
             //-------------------------------------------------------------------------------- 
             vector<string> vkey; 
-            string stag = "IBRION; NSW; ISIF; NELM; NELMIN"; 
+            string stag = "IBRION; NSW; ISIF; NELM; NELMIN; LOPTICS"; 
             aurostd::string2tokens(stag, vkey, ";");
             if (setEDIFFG) {vkey.push_back("EDIFFG");}
             string stmp =  KBIN::RemoveLineWithKeyword(FileContent, vkey, true);
@@ -2703,7 +2703,7 @@ namespace KBIN {
             if(!doesKeywordExist(FileContent, "EDIFFG")) setEDIFFG = true;
             //-------------------------------------------------------------------------------- 
             vector<string> vkey; 
-            string stag = "IBRION; NSW; ISIF; NELM; NELMIN"; 
+            string stag = "IBRION; NSW; ISIF; NELM; NELMIN; LOPTICS"; 
             aurostd::string2tokens(stag, vkey, ";");
             if (setEDIFFG) {vkey.push_back("EDIFFG");}
             string stmp =  KBIN::RemoveLineWithKeyword(FileContent, vkey, true);
@@ -2862,7 +2862,7 @@ namespace KBIN {
         xvasp.INCAR.str(std::string());
         xvasp.aopts.flag("FLAG::XVASP_INCAR_changed",TRUE);
         vector<string> vkey; 
-        string stag = "IBRION; NSW; ISIF; NELM; NELMIN; LREAL; ISMEAR; SIGMA; LORBIT; EMIN; EMAX; NEDOS; LCHARG; LWAVE; LAECHG; LELF; PREC";
+        string stag = "IBRION; NSW; ISIF; NELM; NELMIN; LREAL; ISMEAR; SIGMA; LORBIT; EMIN; EMAX; NEDOS; LCHARG; LWAVE; LAECHG; LELF; PREC; LOPTICS";
         aurostd::string2tokens(stag, vkey, ";");
         string stmp =  KBIN::RemoveLineWithKeyword(FileContent, vkey, true);
         xvasp.INCAR << KBIN::RemoveEmptyLines(stmp); 
