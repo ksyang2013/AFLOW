@@ -6618,7 +6618,7 @@ xmatrix<double> ReciprocalLattice(const xmatrix<double>& rlattice,double scale) 
 string KPPRA(int& k1,int& k2,int& k3,const xmatrix<double>& rlattice,const int& NK) {
     bool LDEBUG=(FALSE || XHOST.DEBUG);
     //bool LDEBUG=(TRUE || XHOST.DEBUG);
-    cout << "NK1 in xatom: " << NK << endl;
+    //cout << "NK1 in xatom: " << NK << endl;
     //exit(0);
     stringstream aus("");
     aus.precision(5);
