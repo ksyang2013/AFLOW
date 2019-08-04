@@ -305,8 +305,233 @@ void AVASP_Get_LDAU_Parameters(string _species,bool &LDAU,vector<string>& vLDAUs
   
 }
 
+//actual usage in generating potential
+// ***************************************************************************
+string AVASP_Get_PseudoPotential_PAW_PBE(string species) {
+  string error;
+  bool ALLOW_ACTINIDIES=TRUE; //FALSE;
+  if(ALLOW_ACTINIDIES==FALSE) {
+    if(species=="Ra" || species=="Ac" || species=="Th" || species=="Pa" || species=="U" ||
+       species=="Np" || species=="Pu" || species=="Am" || species=="Cm" || species=="Bk" || species=="Cf" ||
+       species=="Es" || species=="Fm" || species=="Md" || species=="No" || species=="Lw") {
+      error="WARNING AVASP_Get_PseudoPotential_PAW_PBE: not producing Actinides";
+      aurostd::execute("echo "+error+" >> "+DEFAULT_AFLOW_ERVASP_OUT);
+      cerr << error << endl;
+      exit(0);
+    }
+    if(species=="D" || species=="T") {
+      error="WARNING AVASP_Get_PseudoPotential_PAW_PBE: not producing heavy hydrogen";
+      aurostd::execute("echo "+error+" >> "+DEFAULT_AFLOW_ERVASP_OUT);
+      cerr << error << endl;
+      exit(0);
+    }
+  }
+
+  if(species=="Ac") return "Ac"; // UNTESTED STEFANO of Ac,Ac_s take the hardest one [Wed Nov 23 EST 2011]     [PAW_PBE]
+  if(species=="Ag") return "Ag"; // unique choice...     [PAW_PBE]
+  if(species=="Al") return "Al"; // STEFANO Al_h has ghost states     [PAW_PBE]
+  if(species=="Ar") return "Ar"; // unique choice...     [PAW_PBE]
+  if(species=="As") return "As"; // unique choice...     [PAW_PBE]
+  if(species=="Au") return "Au"; // unique choice...     [PAW_PBE]
+  if(species=="B")  return "B_h"; // STEFANO     [PAW_PBE]
+  //if(species=="B")  return "B"; //vasp recommends     [PAW_PBE]
+  if(species=="Ba") return "Ba_sv"; // unique choice...     [PAW_PBE]
+  if(species=="Be") return "Be_sv"; // STEFANO     [PAW_PBE]
+  if(species=="Bi") return "Bi_d"; //STEFANO,WAHYU     [PAW_PBE]
+  if(species=="Br") return "Br"; // unique choice...     [PAW_PBE]
+  if(species=="C")  return "C"; // STEFANO, vasp recommends     [PAW_PBE]
+  if(species=="Ca") return "Ca_sv"; // STEFANO     [PAW_PBE]
+  if(species=="Cd") return "Cd"; // unique choice..     [PAW_PBE]
+  if(species=="Ce") return "Ce"; //WAHYU     [PAW_PBE]
+  if(species=="Cl") return "Cl"; //WAHYU     [PAW_PBE]
+  if(species=="Co") return "Co"; // unique choice..     [PAW_PBE]
+  if(species=="Cr") return "Cr_pv"; // STEFANO     [PAW_PBE]
+  if(species=="Cs") return "Cs_sv"; // unique choice..     [PAW_PBE]
+  if(species=="Cu") return "Cu_pv"; // STEFANO     [PAW_PBE]
+  if(species=="Dy") return "Dy_3"; // unique choice...     [PAW_PBE]
+  if(species=="Er") return "Er_3"; // WAHYU, teragrid project     [PAW_PBE]
+  //  if(species=="Eu") return "Eu_3"; // WAHYU, frozen f     [PAW_PBE]
+  if(species=="Eu") return "Eu"; // WAHYU, with f-states, teragrid project     [PAW_PBE]
+  if(species=="F")  return "F"; // WAHYU     [PAW_PBE]
+  if(species=="Fe") return "Fe_pv"; // STEFANO     [PAW_PBE]
+  if(species=="Ga") return "Ga_h"; // STEFANO     [PAW_PBE]
+  if(species=="Ge") return "Ge_h"; // STEFANO     [PAW_PBE]
+  // if(species=="Ge") return "Ge_d"; // WAHYU     [PAW_PBE]
+  if(species=="Gd") return "Gd"; // WAHYU // LDAU     [PAW_PBE]
+  if(species=="H")  return "H"; // WAHYU     [PAW_PBE]
+  if(species=="He") return "He"; // unique choice...     [PAW_PBE]
+  if(species=="Hf") return "Hf_pv"; // STEFANO     [PAW_PBE]
+  if(species=="Hg") return "Hg"; // unique choice...     [PAW_PBE]
+  if(species=="Ho") return "Ho_3"; // unique choice...     [PAW_PBE]
+  if(species=="I")  return "I"; // unique choice...     [PAW_PBE]
+  if(species=="In") return "In_d"; // STEFANO     [PAW_PBE]
+  if(species=="Ir") return "Ir"; // unique choice...     [PAW_PBE]
+  if(species=="K")  return "K_sv"; // STEFANO     [PAW_PBE]
+  if(species=="Kr") return "Kr"; // unique choice...     [PAW_PBE]
+  if(species=="La") return "La"; // STEFANO,WAHYU // LDAU     [PAW_PBE]
+  if(species=="Li") return "Li_sv"; // STEFANO     [PAW_PBE]
+  //  if(species=="Lu") return "Lu_3"; // WAHYU, frozen f     [PAW_PBE]
+  if(species=="Lu") return "Lu"; //WAHYU, with f-states,  LDAU     [PAW_PBE]
+  if(species=="Mg") return "Mg_pv"; // STEFANO     [PAW_PBE]
+  if(species=="Mn") return "Mn_pv"; // STEFANO     [PAW_PBE]
+  if(species=="Mo") return "Mo_pv"; // STEFANO     [PAW_PBE]
+  if(species=="Na") return "Na_sv"; // was pv "; // STEFANO,WAHYU     [PAW_PBE]
+  if(species=="N")  return "N"; // vasp recommends     [PAW_PBE]
+  if(species=="Nb") return "Nb_sv"; // STEFANO     [PAW_PBE]
+  //  if(species=="Nd") return "Nd_3"; // WAHYU, frozen f     [PAW_PBE]
+  if(species=="Nd") return "Nd"; // WAHYU, with f-states, teragrid project     [PAW_PBE]
+  if(species=="Ne") return "Ne"; // unique choice...     [PAW_PBE]
+  if(species=="Ni") return "Ni_pv"; // STEFANO     [PAW_PBE]
+  if(species=="Np") return "Np_s"; // STEFANO NEVER USED JUST FOR COMPLETENESS     [PAW_PBE]
+  if(species=="O")  return "O"; //WAHYU     [PAW_PBE]
+  if(species=="Os") return "Os_pv"; // STEFANO     [PAW_PBE]
+  if(species=="P")  return "P"; // WAHYU, teragrid project     [PAW_PBE]
+  if(species=="Pa") return "Pa"; // UNTESTED STEFANO of Pa,Pa_s take the hardest one [Wed Nov 23 EST 2011]     [PAW_PBE]
+  if(species=="Pb") return "Pb_d"; //STEFANO,WAHYU     [PAW_PBE]
+  if(species=="Pd") return "Pd_pv"; // STEFANO     [PAW_PBE]
+  //  if(species=="Pm") return "Pm_3"; // WAHYU, frozen f     [PAW_PBE]
+  if(species=="Pm") return "Pm"; // WAHYU, with f-states, teragrid project     [PAW_PBE]
+  if(species=="Pt") return "Pt"; // STEFANO     [PAW_PBE]
+  //  if(species=="Pr") return "Pr_3"; // WAHYU, frozen f     [PAW_PBE]
+  if(species=="Pr") return "Pr";  // WAHYU, with f-states, teragrid project     [PAW_PBE]
+  if(species=="Pu") return "Pu_s"; // STEFANO NEVER USED JUST FOR COMPLETENESS     [PAW_PBE]
+  if(species=="Rb") return "Rb_sv"; // vasp recommends     [PAW_PBE]
+  if(species=="Re") return "Re_pv"; // STEFANO     [PAW_PBE]
+  if(species=="Rh") return "Rh_pv"; // STEFANO     [PAW_PBE]
+  if(species=="Ru") return "Ru_pv"; // STEFANO     [PAW_PBE]
+  if(species=="S")  return "S"; // WAHYU, teragrid project     [PAW_PBE]
+  if(species=="Sb") return "Sb"; // unique choice...     [PAW_PBE]
+  if(species=="Sc") return "Sc_sv"; // unique choice...     [PAW_PBE]
+  if(species=="Se") return "Se"; // unique choice...     [PAW_PBE]
+  if(species=="Si") return "Si"; // was _h"; //STEFANO,WAHYU     [PAW_PBE]
+  //  if(species=="Sm") return "Sm_3"; // WAHYU, frozen f     [PAW_PBE]
+  if(species=="Sm") return "Sm"; // WAHYU, with f-states, teragrid project     [PAW_PBE]
+  if(species=="Sn") {cout << "here" << endl; exit(0); return "Sn";}//STEFANO     [PAW_PBE]
+  if(species=="Sr") return "Sr_sv"; // unique choice...     [PAW_PBE]
+  if(species=="Ta") return "Ta_pv"; // STEFANO     [PAW_PBE]
+  if(species=="Tb") return "Tb_3"; //  unique choice...     [PAW_PBE]
+  if(species=="Tc") return "Tc_pv"; // STEFANO     [PAW_PBE]
+  if(species=="Te") return "Te"; // unique choice...     [PAW_PBE]
+  if(species=="Th") return "Th_s"; // STEFANO NEVER USED JUST FOR COMPLETENESS     [PAW_PBE]
+  if(species=="Ti") return "Ti_pv"; // STEFANO    //KESONG changes Ti_sv to Ti_pv, 
+  if(species=="Tl") return "Tl_d"; // STEFANO     [PAW_PBE]
+  //  if(species=="Tm") return "Tm_3"; // WAHYU, frozen f     [PAW_PBE]
+  if(species=="Tm") return "Tm";  // WAHYU, with f-states, teragrid project     [PAW_PBE]
+  if(species=="U") return "U"; // UNTESTED STEFANO of U,U_s take the hardest one [Wed Nov 23 EST 2011]     [PAW_PBE]
+  if(species=="V")  return "V_sv"; // STEFANO     [PAW_PBE]
+  if(species=="W")  return "W_pv"; // STEFANO     [PAW_PBE]
+  if(species=="Xe") return "Xe"; // unique choice...     [PAW_PBE]
+  if(species=="Y")  return "Y_sv"; // unique choice...     [PAW_PBE]
+  //  if(species=="Yb") return "Yb_2"; // WAHYU, frozen f     [PAW_PBE]
+  if(species=="Yb") return "Yb";  // WAHYU, with f-states, teragrid project     [PAW_PBE]
+  if(species=="Zn") return "Zn"; // unique choice...     [PAW_PBE]
+  if(species=="Zr") return "Zr_sv"; // STEFANO     [PAW_PBE]
+
+  if(species=="Po") {
+    error="ERROR AVASP_Get_PseudoPotential_PAW_PBE: No pseudopotential available: "+species;
+    aurostd::execute("echo "+error+" >> "+DEFAULT_AFLOW_ERVASP_OUT);
+    cerr << error << endl;
+    exit(0);
+  }
+  // If not found then UNKNOWN
+  error="ERROR AVASP_Get_PseudoPotential_PAW_PBE: Potential Not found: "+species;
+  aurostd::execute("echo "+error+" >> "+DEFAULT_AFLOW_ERVASP_OUT);
+  cerr << error << endl;
+
+  exit(0);
+  return species; // you shall hope that there is something compatible
+}
+
+// ***************************************************************************
+string AVASP_Get_PseudoPotential_PAW_GGA(string species) {
+  if(species=="Gd") return "Gd_3"; // in potpaw_GGA only the Gd !!
+
+  if(species=="Pr") return "Pr"; //"Pr_3";  // wahyu, teragrid project  // same as potpaw_PBE, compatibility
+  if(species=="Lu") return "Lu"; //"Lu_3"; // wahyu // LDAU  // same as potpaw_PBE, compatibility
+  if(species=="Sm") return "Sm_3"; //"Sm_3"; // wahyu, teragrid project // same as potpaw_PBE, compatibility
+  if(species=="Nd") return "Nd"; //"Nd_3"; // wahyu, teragrid project // same as potpaw_PBE, compatibility
+  if(species=="Eu") return "Eu"; //"Eu_2"; // wahyu, teragrid project // same as potpaw_PBE, compatibility
+  if(species=="Pm") return "Pm"; //"Pm_3"; // wahyu, teragrid project // same as potpaw_PBE, compatibility
+  return AVASP_Get_PseudoPotential_PAW_PBE(species);
+}
+
+// ***************************************************************************
+string AVASP_Get_PseudoPotential_PAW_LDA(string species) {
+  // not defined... let`s hope the PAWGGA is good naming
+  return  AVASP_Get_PseudoPotential_PAW_GGA(species);
+}
+
+// ***************************************************************************
+string AVASP_Get_PseudoPotential_GGA(string species) {
+
+  if(species=="B")  return "B"; // vasp recommends    [GGA]
+  if(species=="Ba") return "Ba_pv"; // unique choice...    [GGA]
+  if(species=="Be") return "Be"; //  unique choice...    [GGA]
+  if(species=="Bi") return "Bi"; //  unique choice...    [GGA]
+
+  if(species=="C")  return "C"; // stefano    [GGA]
+  if(species=="Ca") return "Ca_pv"; // stefano    [GGA]
+  if(species=="Cl") return "Cl"; // unique choice..    [GGA]
+  if(species=="Cr") return "Cr"; // unique choice..    [GGA]
+  if(species=="Cs") return "Cs_pv"; // unique choice..    [GGA]
+  if(species=="Cu") return "Cu"; // unique choice..    [GGA]
+
+  if(species=="Fe") return "Fe"; // unique choice..    [GGA]
+  if(species=="Ga") return "Ga_d"; // stefano    [GGA]
+  if(species=="Ge") return "Ge"; // wahyu    [GGA]
+  if(species=="H")  return "H_soft"; // wahyu    [GGA]
+  if(species=="Hf") return "Hf"; // unique choice...    [GGA]
+  if(species=="Hg") return "Hg"; // unique choice...    [GGA]
+
+  if(species=="K")  return "K_pv"; // stefano    [GGA]
+  if(species=="Kr") return "Kr"; // unique choice...    [GGA]
+
+  if(species=="Li") return "Li_pv"; // stefano    [GGA]
+  if(species=="Mg") return "Mg_pv"; // stefano    [GGA]
+  if(species=="Mn") return "Mn"; // unique choice...    [GGA]
+
+  if(species=="N")  return "N"; // vasp recommends    [GGA]
+  if(species=="Na") return "Na_pv"; // there is no _sv in potGGA    [GGA]
+  if(species=="Nb") return "Nb_pv"; // stefano    [GGA]
+  if(species=="Ne") return "Ne"; // unique choice...    [GGA]
+  if(species=="Ni") return "Ni"; // unique choice...    [GGA]
+  if(species=="O")  return "O"; //wahyu    [GGA]
+  if(species=="Os") return "Os"; // unique choice...    [GGA]
+
+  if(species=="Pd") return "Pd"; // stefano    [GGA]
+  if(species=="Pt") return "Pt"; // stefano    [GGA]
+  if(species=="Rb") return "Rb_pv"; // vasp recommends    [GGA]
+  if(species=="Re") return "Re"; // stefano    [GGA]
+  if(species=="Rh") return "Rh"; // stefano    [GGA]
+  if(species=="Ru") return "Ru"; // stefano    [GGA]
+  if(species=="Sc") return "Sc_pv"; // unique choice...    [GGA]
+  if(species=="Sm") return "Sm_3"; //   [GGA]
+  if(species=="Sr") return "Sr_pv"; // unique choice...    [GGA]
+  if(species=="Ta") return "Ta"; // stefano    [GGA]
+  if(species=="Tc") return "Tc"; // stefano    [GGA]
+  if(species=="Ti") return "Ti_pv"; // stefano    [GGA]
+  if(species=="V")  return "V_pv"; // stefano    [GGA]
+  if(species=="W")  return "W"; // stefano    [GGA]
+  if(species=="Y")  return "Y_pv"; // unique choice...    [GGA]
+  if(species=="Zr") return "Zr_pv"; // stefano    [GGA]
+
+  return  AVASP_Get_PseudoPotential_PAW_PBE(species);
+}
+
+// ***************************************************************************
+string AVASP_Get_PseudoPotential_LDA(string species) {
+  // not defined... let`s hope the GGA is good naming
+  return  AVASP_Get_PseudoPotential_GGA(species);
+}
+
+// ***************************************************************************
+string AVASP_Get_PseudoPotential_PBE(string species) {
+  // not defined... let`s hope the GGA is good naming
+  return  AVASP_Get_PseudoPotential_GGA(species);
+}
 
 
+//Low priority  (first use above setting, if not found, then use this?) //KESONG 2019-08-03
 // ***************************************************************************
 string AVASP_Get_PseudoPotential_PAW_PBE_KIN(string species) {
   string error;
@@ -442,231 +667,6 @@ string AVASP_Get_PseudoPotential_PAW_LDA_KIN(string species) {
   return  AVASP_Get_PseudoPotential_PAW_PBE_KIN(species);
 }
 
-
-
-// ***************************************************************************
-string AVASP_Get_PseudoPotential_PAW_PBE(string species) {
-  string error;
-  bool ALLOW_ACTINIDIES=TRUE; //FALSE;
-  if(ALLOW_ACTINIDIES==FALSE) {
-    if(species=="Ra" || species=="Ac" || species=="Th" || species=="Pa" || species=="U" ||
-       species=="Np" || species=="Pu" || species=="Am" || species=="Cm" || species=="Bk" || species=="Cf" ||
-       species=="Es" || species=="Fm" || species=="Md" || species=="No" || species=="Lw") {
-      error="WARNING AVASP_Get_PseudoPotential_PAW_PBE: not producing Actinides";
-      aurostd::execute("echo "+error+" >> "+DEFAULT_AFLOW_ERVASP_OUT);
-      cerr << error << endl;
-      exit(0);
-    }
-    if(species=="D" || species=="T") {
-      error="WARNING AVASP_Get_PseudoPotential_PAW_PBE: not producing heavy hydrogen";
-      aurostd::execute("echo "+error+" >> "+DEFAULT_AFLOW_ERVASP_OUT);
-      cerr << error << endl;
-      exit(0);
-    }
-  }
-
-  if(species=="Ac") return "Ac"; // UNTESTED STEFANO of Ac,Ac_s take the hardest one [Wed Nov 23 EST 2011]     [PAW_PBE]
-  if(species=="Ag") return "Ag"; // unique choice...     [PAW_PBE]
-  if(species=="Al") return "Al"; // STEFANO Al_h has ghost states     [PAW_PBE]
-  if(species=="Ar") return "Ar"; // unique choice...     [PAW_PBE]
-  if(species=="As") return "As"; // unique choice...     [PAW_PBE]
-  if(species=="Au") return "Au"; // unique choice...     [PAW_PBE]
-  if(species=="B")  return "B_h"; // STEFANO     [PAW_PBE]
-  //if(species=="B")  return "B"; //vasp recommends     [PAW_PBE]
-  if(species=="Ba") return "Ba_sv"; // unique choice...     [PAW_PBE]
-  if(species=="Be") return "Be_sv"; // STEFANO     [PAW_PBE]
-  if(species=="Bi") return "Bi_d"; //STEFANO,WAHYU     [PAW_PBE]
-  if(species=="Br") return "Br"; // unique choice...     [PAW_PBE]
-  if(species=="C")  return "C"; // STEFANO, vasp recommends     [PAW_PBE]
-  if(species=="Ca") return "Ca_sv"; // STEFANO     [PAW_PBE]
-  if(species=="Cd") return "Cd"; // unique choice..     [PAW_PBE]
-  if(species=="Ce") return "Ce"; //WAHYU     [PAW_PBE]
-  if(species=="Cl") return "Cl"; //WAHYU     [PAW_PBE]
-  if(species=="Co") return "Co"; // unique choice..     [PAW_PBE]
-  if(species=="Cr") return "Cr_pv"; // STEFANO     [PAW_PBE]
-  if(species=="Cs") return "Cs_sv"; // unique choice..     [PAW_PBE]
-  if(species=="Cu") return "Cu_pv"; // STEFANO     [PAW_PBE]
-  if(species=="Dy") return "Dy_3"; // unique choice...     [PAW_PBE]
-  if(species=="Er") return "Er_3"; // WAHYU, teragrid project     [PAW_PBE]
-  //  if(species=="Eu") return "Eu_3"; // WAHYU, frozen f     [PAW_PBE]
-  if(species=="Eu") return "Eu"; // WAHYU, with f-states, teragrid project     [PAW_PBE]
-  if(species=="F")  return "F"; // WAHYU     [PAW_PBE]
-  if(species=="Fe") return "Fe_pv"; // STEFANO     [PAW_PBE]
-  if(species=="Ga") return "Ga_h"; // STEFANO     [PAW_PBE]
-  if(species=="Ge") return "Ge_h"; // STEFANO     [PAW_PBE]
-  // if(species=="Ge") return "Ge_d"; // WAHYU     [PAW_PBE]
-  if(species=="Gd") return "Gd"; // WAHYU // LDAU     [PAW_PBE]
-  if(species=="H")  return "H"; // WAHYU     [PAW_PBE]
-  if(species=="He") return "He"; // unique choice...     [PAW_PBE]
-  if(species=="Hf") return "Hf_pv"; // STEFANO     [PAW_PBE]
-  if(species=="Hg") return "Hg"; // unique choice...     [PAW_PBE]
-  if(species=="Ho") return "Ho_3"; // unique choice...     [PAW_PBE]
-  if(species=="I")  return "I"; // unique choice...     [PAW_PBE]
-  if(species=="In") return "In_d"; // STEFANO     [PAW_PBE]
-  if(species=="Ir") return "Ir"; // unique choice...     [PAW_PBE]
-  if(species=="K")  return "K_sv"; // STEFANO     [PAW_PBE]
-  if(species=="Kr") return "Kr"; // unique choice...     [PAW_PBE]
-  if(species=="La") return "La"; // STEFANO,WAHYU // LDAU     [PAW_PBE]
-  if(species=="Li") return "Li_sv"; // STEFANO     [PAW_PBE]
-  //  if(species=="Lu") return "Lu_3"; // WAHYU, frozen f     [PAW_PBE]
-  if(species=="Lu") return "Lu"; //WAHYU, with f-states,  LDAU     [PAW_PBE]
-  if(species=="Mg") return "Mg_pv"; // STEFANO     [PAW_PBE]
-  if(species=="Mn") return "Mn_pv"; // STEFANO     [PAW_PBE]
-  if(species=="Mo") return "Mo_pv"; // STEFANO     [PAW_PBE]
-  if(species=="Na") return "Na_sv"; // was pv "; // STEFANO,WAHYU     [PAW_PBE]
-  if(species=="N")  return "N"; // vasp recommends     [PAW_PBE]
-  if(species=="Nb") return "Nb_sv"; // STEFANO     [PAW_PBE]
-  //  if(species=="Nd") return "Nd_3"; // WAHYU, frozen f     [PAW_PBE]
-  if(species=="Nd") return "Nd"; // WAHYU, with f-states, teragrid project     [PAW_PBE]
-  if(species=="Ne") return "Ne"; // unique choice...     [PAW_PBE]
-  if(species=="Ni") return "Ni_pv"; // STEFANO     [PAW_PBE]
-  if(species=="Np") return "Np_s"; // STEFANO NEVER USED JUST FOR COMPLETENESS     [PAW_PBE]
-  if(species=="O")  return "O"; //WAHYU     [PAW_PBE]
-  if(species=="Os") return "Os_pv"; // STEFANO     [PAW_PBE]
-  if(species=="P")  return "P"; // WAHYU, teragrid project     [PAW_PBE]
-  if(species=="Pa") return "Pa"; // UNTESTED STEFANO of Pa,Pa_s take the hardest one [Wed Nov 23 EST 2011]     [PAW_PBE]
-  if(species=="Pb") return "Pb_d"; //STEFANO,WAHYU     [PAW_PBE]
-  if(species=="Pd") return "Pd_pv"; // STEFANO     [PAW_PBE]
-  //  if(species=="Pm") return "Pm_3"; // WAHYU, frozen f     [PAW_PBE]
-  if(species=="Pm") return "Pm"; // WAHYU, with f-states, teragrid project     [PAW_PBE]
-  if(species=="Pt") return "Pt"; // STEFANO     [PAW_PBE]
-  //  if(species=="Pr") return "Pr_3"; // WAHYU, frozen f     [PAW_PBE]
-  if(species=="Pr") return "Pr";  // WAHYU, with f-states, teragrid project     [PAW_PBE]
-  if(species=="Pu") return "Pu_s"; // STEFANO NEVER USED JUST FOR COMPLETENESS     [PAW_PBE]
-  if(species=="Rb") return "Rb_sv"; // vasp recommends     [PAW_PBE]
-  if(species=="Re") return "Re_pv"; // STEFANO     [PAW_PBE]
-  if(species=="Rh") return "Rh_pv"; // STEFANO     [PAW_PBE]
-  if(species=="Ru") return "Ru_pv"; // STEFANO     [PAW_PBE]
-  if(species=="S")  return "S"; // WAHYU, teragrid project     [PAW_PBE]
-  if(species=="Sb") return "Sb"; // unique choice...     [PAW_PBE]
-  if(species=="Sc") return "Sc_sv"; // unique choice...     [PAW_PBE]
-  if(species=="Se") return "Se"; // unique choice...     [PAW_PBE]
-  if(species=="Si") return "Si"; // was _h"; //STEFANO,WAHYU     [PAW_PBE]
-  //  if(species=="Sm") return "Sm_3"; // WAHYU, frozen f     [PAW_PBE]
-  if(species=="Sm") return "Sm"; // WAHYU, with f-states, teragrid project     [PAW_PBE]
-  if(species=="Sn") return "Sn"; //STEFANO     [PAW_PBE]
-  if(species=="Sr") return "Sr_sv"; // unique choice...     [PAW_PBE]
-  if(species=="Ta") return "Ta_pv"; // STEFANO     [PAW_PBE]
-  if(species=="Tb") return "Tb_3"; //  unique choice...     [PAW_PBE]
-  if(species=="Tc") return "Tc_pv"; // STEFANO     [PAW_PBE]
-  if(species=="Te") return "Te"; // unique choice...     [PAW_PBE]
-  if(species=="Th") return "Th_s"; // STEFANO NEVER USED JUST FOR COMPLETENESS     [PAW_PBE]
-  if(species=="Ti") return "Ti_pv"; // STEFANO    //KESONG changes Ti_sv to Ti_pv, 
-  if(species=="Tl") return "Tl_d"; // STEFANO     [PAW_PBE]
-  //  if(species=="Tm") return "Tm_3"; // WAHYU, frozen f     [PAW_PBE]
-  if(species=="Tm") return "Tm";  // WAHYU, with f-states, teragrid project     [PAW_PBE]
-  if(species=="U") return "U"; // UNTESTED STEFANO of U,U_s take the hardest one [Wed Nov 23 EST 2011]     [PAW_PBE]
-  if(species=="V")  return "V_sv"; // STEFANO     [PAW_PBE]
-  if(species=="W")  return "W_pv"; // STEFANO     [PAW_PBE]
-  if(species=="Xe") return "Xe"; // unique choice...     [PAW_PBE]
-  if(species=="Y")  return "Y_sv"; // unique choice...     [PAW_PBE]
-  //  if(species=="Yb") return "Yb_2"; // WAHYU, frozen f     [PAW_PBE]
-  if(species=="Yb") return "Yb";  // WAHYU, with f-states, teragrid project     [PAW_PBE]
-  if(species=="Zn") return "Zn"; // unique choice...     [PAW_PBE]
-  if(species=="Zr") return "Zr_sv"; // STEFANO     [PAW_PBE]
-
-  if(species=="Po") {
-    error="ERROR AVASP_Get_PseudoPotential_PAW_PBE: No pseudopotential available: "+species;
-    aurostd::execute("echo "+error+" >> "+DEFAULT_AFLOW_ERVASP_OUT);
-    cerr << error << endl;
-    exit(0);
-  }
-  // If not found then UNKNOWN
-  error="ERROR AVASP_Get_PseudoPotential_PAW_PBE: Potential Not found: "+species;
-  aurostd::execute("echo "+error+" >> "+DEFAULT_AFLOW_ERVASP_OUT);
-  cerr << error << endl;
-
-  exit(0);
-  return species; // you shall hope that there is something compatible
-}
-
-// ***************************************************************************
-string AVASP_Get_PseudoPotential_PAW_GGA(string species) {
-  if(species=="Gd") return "Gd_3"; // in potpaw_GGA only the Gd !!
-
-  if(species=="Pr") return "Pr"; //"Pr_3";  // wahyu, teragrid project  // same as potpaw_PBE, compatibility
-  if(species=="Lu") return "Lu"; //"Lu_3"; // wahyu // LDAU  // same as potpaw_PBE, compatibility
-  if(species=="Sm") return "Sm_3"; //"Sm_3"; // wahyu, teragrid project // same as potpaw_PBE, compatibility
-  if(species=="Nd") return "Nd"; //"Nd_3"; // wahyu, teragrid project // same as potpaw_PBE, compatibility
-  if(species=="Eu") return "Eu"; //"Eu_2"; // wahyu, teragrid project // same as potpaw_PBE, compatibility
-  if(species=="Pm") return "Pm"; //"Pm_3"; // wahyu, teragrid project // same as potpaw_PBE, compatibility
-  return AVASP_Get_PseudoPotential_PAW_PBE(species);
-}
-
-// ***************************************************************************
-string AVASP_Get_PseudoPotential_PAW_LDA(string species) {
-  // not defined... let`s hope the PAWGGA is good naming
-  return  AVASP_Get_PseudoPotential_PAW_GGA(species);
-}
-
-// ***************************************************************************
-string AVASP_Get_PseudoPotential_GGA(string species) {
-
-  if(species=="B")  return "B"; // vasp recommends    [GGA]
-  if(species=="Ba") return "Ba_pv"; // unique choice...    [GGA]
-  if(species=="Be") return "Be"; //  unique choice...    [GGA]
-  if(species=="Bi") return "Bi"; //  unique choice...    [GGA]
-
-  if(species=="C")  return "C"; // stefano    [GGA]
-  if(species=="Ca") return "Ca_pv"; // stefano    [GGA]
-  if(species=="Cl") return "Cl"; // unique choice..    [GGA]
-  if(species=="Cr") return "Cr"; // unique choice..    [GGA]
-  if(species=="Cs") return "Cs_pv"; // unique choice..    [GGA]
-  if(species=="Cu") return "Cu"; // unique choice..    [GGA]
-
-  if(species=="Fe") return "Fe"; // unique choice..    [GGA]
-  if(species=="Ga") return "Ga_d"; // stefano    [GGA]
-  if(species=="Ge") return "Ge"; // wahyu    [GGA]
-  if(species=="H")  return "H_soft"; // wahyu    [GGA]
-  if(species=="Hf") return "Hf"; // unique choice...    [GGA]
-  if(species=="Hg") return "Hg"; // unique choice...    [GGA]
-
-  if(species=="K")  return "K_pv"; // stefano    [GGA]
-  if(species=="Kr") return "Kr"; // unique choice...    [GGA]
-
-  if(species=="Li") return "Li_pv"; // stefano    [GGA]
-  if(species=="Mg") return "Mg_pv"; // stefano    [GGA]
-  if(species=="Mn") return "Mn"; // unique choice...    [GGA]
-
-  if(species=="N")  return "N"; // vasp recommends    [GGA]
-  if(species=="Na") return "Na_pv"; // there is no _sv in potGGA    [GGA]
-  if(species=="Nb") return "Nb_pv"; // stefano    [GGA]
-  if(species=="Ne") return "Ne"; // unique choice...    [GGA]
-  if(species=="Ni") return "Ni"; // unique choice...    [GGA]
-  if(species=="O")  return "O"; //wahyu    [GGA]
-  if(species=="Os") return "Os"; // unique choice...    [GGA]
-
-  if(species=="Pd") return "Pd"; // stefano    [GGA]
-  if(species=="Pt") return "Pt"; // stefano    [GGA]
-  if(species=="Rb") return "Rb_pv"; // vasp recommends    [GGA]
-  if(species=="Re") return "Re"; // stefano    [GGA]
-  if(species=="Rh") return "Rh"; // stefano    [GGA]
-  if(species=="Ru") return "Ru"; // stefano    [GGA]
-  if(species=="Sc") return "Sc_pv"; // unique choice...    [GGA]
-  if(species=="Sm") return "Sm_3"; //   [GGA]
-  if(species=="Sr") return "Sr_pv"; // unique choice...    [GGA]
-  if(species=="Ta") return "Ta"; // stefano    [GGA]
-  if(species=="Tc") return "Tc"; // stefano    [GGA]
-  if(species=="Ti") return "Ti_pv"; // stefano    [GGA]
-  if(species=="V")  return "V_pv"; // stefano    [GGA]
-  if(species=="W")  return "W"; // stefano    [GGA]
-  if(species=="Y")  return "Y_pv"; // unique choice...    [GGA]
-  if(species=="Zr") return "Zr_pv"; // stefano    [GGA]
-
-  return  AVASP_Get_PseudoPotential_PAW_PBE(species);
-}
-
-// ***************************************************************************
-string AVASP_Get_PseudoPotential_LDA(string species) {
-  // not defined... let`s hope the GGA is good naming
-  return  AVASP_Get_PseudoPotential_GGA(species);
-}
-
-// ***************************************************************************
-string AVASP_Get_PseudoPotential_PBE(string species) {
-  // not defined... let`s hope the GGA is good naming
-  return  AVASP_Get_PseudoPotential_GGA(species);
-}
 
 // ***************************************************************************
 
