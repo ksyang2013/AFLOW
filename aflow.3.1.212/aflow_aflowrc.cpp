@@ -156,7 +156,7 @@
 #define         DEFAULT_AIMS_BIN                        XHOST.adefault.getattachedscheme("DEFAULT_AIMS_BIN")
 
 // POTCARS // DONE
-#define AFLOWRC_DEFAULT_VASP_POTCAR_DIRECTORIES               string("/common/VASP,/common/AFLOW/VASP,/home/aflow/common/AFLOW/VASP,/fslhome/fslcollab8/group/VASP,/fslhome/glh43/src/,/share/home/00470/tg457283/common/AFLOW/VASP/,/share/home/00457/tg457357/common/AFLOW/VASP/,/home/mehl/bin/AFLOW/VASP/,~/common/VASP/,~/common/AFLOW/VASP/,/nics/a/proj/aflow/common/AFLOW/VASP/,/home/users/aflow/common/VASP,/share/apps/AFLOW3/VASP,/projects/kyang-group/common/VASP,/somewhere/")  // first is default, tokenized with ","
+#define AFLOWRC_DEFAULT_VASP_POTCAR_DIRECTORIES               string("/common/VASP,/common/AFLOW/VASP,/home/aflow/common/AFLOW/VASP,/fslhome/fslcollab8/group/VASP,/fslhome/glh43/src/,/share/home/00470/tg457283/common/AFLOW/VASP/,/share/home/00457/tg457357/common/AFLOW/VASP/,/home/mehl/bin/AFLOW/VASP/,~/common/VASP/,~/common/AFLOW/VASP/,/nics/a/proj/aflow/common/AFLOW/VASP/,/home/users/aflow/common/VASP,/share/apps/AFLOW3/VASP,/projects/kyang-group/common/VASP,/oasis/projects/nsf/csd416/key021/common/AFLOW/VASP,/somewhere/")  // first is default, tokenized with ","
 #define         DEFAULT_VASP_POTCAR_DIRECTORIES               XHOST.adefault.getattachedscheme("DEFAULT_VASP_POTCAR_DIRECTORIES")
 #define AFLOWRC_DEFAULT_VASP_POTCAR_DATE                      string("current")
 #define         DEFAULT_VASP_POTCAR_DATE                      XHOST.adefault.getattachedscheme("DEFAULT_VASP_POTCAR_DATE")
