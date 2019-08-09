@@ -406,7 +406,7 @@ string AVASP_Get_PseudoPotential_PAW_PBE(string species) {
     if(species=="Si") return "Si"; // was _h"; //STEFANO,WAHYU     [PAW_PBE]
     //  if(species=="Sm") return "Sm_3"; // WAHYU, frozen f     [PAW_PBE]
     if(species=="Sm") return "Sm"; // WAHYU, with f-states, teragrid project     [PAW_PBE]
-    if(species=="Sn") {cout << "here" << endl; exit(0); return "Sn";}//STEFANO     [PAW_PBE]
+    if(species=="Sn") return "Sn";//STEFANO     [PAW_PBE]
     if(species=="Sr") return "Sr_sv"; // unique choice...     [PAW_PBE]
     if(species=="Ta") return "Ta_pv"; // STEFANO     [PAW_PBE]
     if(species=="Tb") return "Tb_3"; //  unique choice...     [PAW_PBE]
