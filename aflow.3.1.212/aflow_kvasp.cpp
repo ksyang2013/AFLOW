@@ -2544,8 +2544,9 @@ namespace KBIN {
                             (!aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Tetrahedron method fails for NKPT<4."))
                             ));
                 xwarning.flag("IBZKPT_KNPT", aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Tetrahedron method fails for NKPT<4."));
-                xwarning.flag("EDDRMM",( (!xmessage.flag("REACHED_ACCURACY") || !isConverged) && 
-                            aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING in EDDRMM: call to ZHEGV failed, returncode")) ); // && !xwarning.flag("ZPOTRF");
+                //xwarning.flag("EDDRMM",( (!xmessage.flag("REACHED_ACCURACY") || !isConverged) && 
+                //            aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING in EDDRMM: call to ZHEGV failed, returncode")) ); // && !xwarning.flag("ZPOTRF");
+                xwarning.flag("EDDRMM", aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING in EDDRMM: call to ZHEGV failed, returncode")); 
                 xwarning.flag("REAL_OPTLAY_1",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","REAL_OPTLAY: internal error (1)"));
                 xwarning.flag("REAL_OPT",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","REAL_OPT: internal ERROR"));
                 xwarning.flag("SYMPREC",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","inverse of rotation matrix was not found (increase SYMPREC)"));
@@ -2592,6 +2593,7 @@ namespace KBIN {
 
                 //************************KESONG Check Static*****************************
                 if (isConverged && xwarning.flag("IBZKPT")) xwarning.flag("IBZKPT",FALSE);
+                if((xmessage.flag("REACHED_ACCURACY") || isConverged) && xwarning.flag("EDDRMM")) xwarning.flag("EDDRMM",FALSE);  
                 //************************KESONG Check Static*****************************
 
                 xfixed.flag("ALL",FALSE);

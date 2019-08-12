@@ -186,10 +186,6 @@ OBJS_ALL= aflow.o $(AUROSTD_OBJ) $(AFLOW_CLASS_OBJ) $(AFLOW_FUNCS_OBJ) $(PFLOW_F
 all: aflow aflow_data 
 	$(MAKE) check
 aflow: $(OBJS_ALL) Makefile 
-#	$(MAKE) -C ../AFLOW2_FREE/EXTRA/APL2AGR/ && cd ../../
-	cp -f aflow_apl*.o  aflow_aapl*.o  aflow_qha*.o ./APL/
-	#cp -f aflow_anrl*.o ./ANRL/   #KSYANG, 20190501
-	#cp sqlite3.o ./SQLITE/
 #	$(CPP) $(LIBS_AFLOW) -o aflow *.o $(LIB_MKL) $(LIBS_AFLOW)
 	$(CPP) $(LIBS_AFLOW) -o aflow `ls *.o | grep -v aflow_data` $(LIB_MKL) $(LIBS_AFLOW)
 	ln -sf aflow aflowd

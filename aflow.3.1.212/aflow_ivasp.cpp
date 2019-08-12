@@ -2675,7 +2675,8 @@ namespace KBIN {
             if(!doesKeywordExist(FileContent, "EDIFFG")) setEDIFFG = true;
             //-------------------------------------------------------------------------------- 
             vector<string> vkey; 
-            string stag = "IBRION; NSW; ISIF; NELM; NELMIN; LOPTICS"; 
+            //string stag = "IBRION; NSW; ISIF; NELM; NELMIN; LOPTICS"; 
+            string stag = "IBRION; NSW; ISIF; NELM; NELMIN"; 
             aurostd::string2tokens(stag, vkey, ";");
             if (setEDIFFG) {vkey.push_back("EDIFFG");}
             string stmp =  KBIN::RemoveLineWithKeyword(FileContent, vkey, true);
@@ -2702,7 +2703,8 @@ namespace KBIN {
             if(!doesKeywordExist(FileContent, "EDIFFG")) setEDIFFG = true;
             //-------------------------------------------------------------------------------- 
             vector<string> vkey; 
-            string stag = "IBRION; NSW; ISIF; NELM; NELMIN; LOPTICS"; 
+            //string stag = "IBRION; NSW; ISIF; NELM; NELMIN; LOPTICS"; 
+            string stag = "IBRION; NSW; ISIF; NELM; NELMIN"; 
             aurostd::string2tokens(stag, vkey, ";");
             if (setEDIFFG) {vkey.push_back("EDIFFG");}
             string stmp =  KBIN::RemoveLineWithKeyword(FileContent, vkey, true);
@@ -4581,9 +4583,7 @@ namespace KBIN {
             reload_incar=TRUE;
             aus_exec << "cd " << xvasp.Directory << endl;
             aus_exec << "cat INCAR | sed \"s/ISYM/#ISYM/g\" > aflow.tmp && mv aflow.tmp INCAR" << endl; // remove SYMPREC
-            //if(vflags.KBIN_VASP_INCAR_VERBOSE) aus_exec << "echo \"# Performing KBIN::XVASP_Afix (" << mode << ") [AFLOW] begin\" >> INCAR " << endl;
             aus_exec << "echo \"ISYM=0                      #FIX=" << mode << "\" >> INCAR " << endl;
-            //if(vflags.KBIN_VASP_INCAR_VERBOSE) aus_exec << "echo \"# Performing KBIN::XVASP_Afix (" << mode << ") [AFLOW] end\" >> INCAR " << endl;
             aurostd::execute(aus_exec);
         }
 
@@ -4605,8 +4605,8 @@ namespace KBIN {
             aus_exec << "cp INCAR INCAR.ibzkpt_knpt" << endl;
             aus_exec << "cat INCAR | grep -v 'ISMEAR' > aflow.tmp && mv aflow.tmp INCAR" << endl; // remove SYMPREC
             aus_exec << "cat INCAR | grep -v 'SIGMA' > aflow.tmp && mv aflow.tmp INCAR" << endl; // remove ISYM
-            aus_exec << "echo \"ISMEAR=0                                          #FIX=" << mode << "\" >> INCAR " << endl;
-            aus_exec << "echo \"SIGMA=0.05                                        #FIX=" << mode << ")\" >> INCAR " << endl;
+            aus_exec << "echo \"ISMEAR=0                                        #FIX=" << mode << "\" >> INCAR " << endl;
+            aus_exec << "echo \"SIGMA=0.05                                      #FIX=" << mode << "\" >> INCAR " << endl;
             aurostd::execute(aus_exec);
         }
 
@@ -4644,6 +4644,7 @@ namespace KBIN {
             KBIN::XVASP_KPOINTS_OPERATION(xvasp,"X--,Y--,Z--");  // this should put the origin in GAMMA ??
             rewrite_kpoints=TRUE;
         }
+        //this approach seems to be not working for fixing eddrm error
         if(mode=="EDDRMM") {
             file_error="aflow.error.eddrmm";
             reload_kpoints=TRUE;
