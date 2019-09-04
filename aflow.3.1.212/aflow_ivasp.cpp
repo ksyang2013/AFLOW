@@ -3059,34 +3059,16 @@ namespace KBIN {
 namespace KBIN {
     void XVASP_INCAR_Metagga(_xvasp& xvasp,_vflags& vflags) {        // AFLOW_FUNCTION_IMPLEMENTATION   TPSS | RTPSS | M06L | MBJL | SCAN | MS0 | MS1 | MS2 | NONE
         string FileContent,strline;
-        int imax;
-        // cerr << xvasp.INCAR.str() << endl; exit(0);
         FileContent=xvasp.INCAR.str();
         xvasp.INCAR.str(std::string());
         xvasp.aopts.flag("FLAG::XVASP_INCAR_changed",TRUE);
-        imax=aurostd::GetNLinesString(FileContent);
-        for(int i=1;i<=imax;i++) {
-            strline=aurostd::GetLineString(FileContent,i);
-            if(aurostd::substring2bool(strline,"METAGGA",TRUE) || aurostd::substring2bool(strline,"#METAGGA",TRUE)) {
-                if(vflags.KBIN_VASP_INCAR_VERBOSE) {
-                    if(vflags.KBIN_VASP_FORCE_OPTION_METAGGA.xscheme=="TPSS") xvasp.INCAR << "# " << strline << " # AFLOW REMOVED (KBIN::XVASP_INCAR METAGGA=TPSS) " << endl;
-                    if(vflags.KBIN_VASP_FORCE_OPTION_METAGGA.xscheme=="RTPSS") xvasp.INCAR << "# " << strline << " # AFLOW REMOVED (KBIN::XVASP_INCAR METAGGA=RTPSS) " << endl;
-                    if(vflags.KBIN_VASP_FORCE_OPTION_METAGGA.xscheme=="M06L") xvasp.INCAR << "# " << strline << " # AFLOW REMOVED (KBIN::XVASP_INCAR METAGGA=M06L) " << endl;
-                    if(vflags.KBIN_VASP_FORCE_OPTION_METAGGA.xscheme=="MBJL") xvasp.INCAR << "# " << strline << " # AFLOW REMOVED (KBIN::XVASP_INCAR METAGGA=MBJL) " << endl;
-                    if(vflags.KBIN_VASP_FORCE_OPTION_METAGGA.xscheme=="SCAN") xvasp.INCAR << "# " << strline << " # AFLOW REMOVED (KBIN::XVASP_INCAR METAGGA=SCAN) " << endl;
-                    if(vflags.KBIN_VASP_FORCE_OPTION_METAGGA.xscheme=="MS0") xvasp.INCAR << "# " << strline << " # AFLOW REMOVED (KBIN::XVASP_INCAR METAGGA=MS0) " << endl;
-                    if(vflags.KBIN_VASP_FORCE_OPTION_METAGGA.xscheme=="MS1") xvasp.INCAR << "# " << strline << " # AFLOW REMOVED (KBIN::XVASP_INCAR METAGGA=MS1) " << endl;
-                    if(vflags.KBIN_VASP_FORCE_OPTION_METAGGA.xscheme=="MS2") xvasp.INCAR << "# " << strline << " # AFLOW REMOVED (KBIN::XVASP_INCAR METAGGA=MS2) " << endl;
-                    if(vflags.KBIN_VASP_FORCE_OPTION_METAGGA.xscheme=="NONE") xvasp.INCAR << "# " << strline << " # AFLOW REMOVED (KBIN::XVASP_INCAR METAGGA=NONE) " << endl;
-                }
-            } else {
-                if(!vflags.KBIN_VASP_INCAR_VERBOSE && strline.length()) xvasp.INCAR << strline << endl;
-                if(vflags.KBIN_VASP_INCAR_VERBOSE) xvasp.INCAR << strline << endl;
-            }
-        }
-        // xvasp.INCAR << endl;
+        vector<string> vkey; 
+        string stag = "TPSS; RTPSS; M06L; MBJL; SCAN; MS0; MS1; MS2; NONE";
+        aurostd::string2tokens(stag, vkey, ";");
+        string stmp =  KBIN::RemoveLineWithKeyword(FileContent, vkey, true);
+        xvasp.INCAR << KBIN::RemoveEmptyLines(stmp); 
+        
         if(vflags.KBIN_VASP_FORCE_OPTION_METAGGA.xscheme!="NONE") {
-            //if(vflags.KBIN_VASP_INCAR_VERBOSE) xvasp.INCAR << "# Performing Metagga METAGGA=" << vflags.KBIN_VASP_FORCE_OPTION_METAGGA.xscheme << " [AFLOW] begin " << endl;
             if(vflags.KBIN_VASP_FORCE_OPTION_METAGGA.xscheme=="TPSS") xvasp.INCAR << aurostd::PaddedPOST("METAGGA=TPSS",_incarpad_) << "# METAGGA = TPSS  " << endl;
             if(vflags.KBIN_VASP_FORCE_OPTION_METAGGA.xscheme=="RTPSS") xvasp.INCAR << aurostd::PaddedPOST("METAGGA=RTPSS",_incarpad_) << "# METAGGA = RTPSS  " << endl;
             if(vflags.KBIN_VASP_FORCE_OPTION_METAGGA.xscheme=="M06L") xvasp.INCAR << aurostd::PaddedPOST("METAGGA=M06L",_incarpad_) << "# METAGGA = M06L  " << endl;
@@ -3096,7 +3078,6 @@ namespace KBIN {
             if(vflags.KBIN_VASP_FORCE_OPTION_METAGGA.xscheme=="MS1") xvasp.INCAR << aurostd::PaddedPOST("METAGGA=MS1",_incarpad_) << "# METAGGA = MS1  " << endl;
             if(vflags.KBIN_VASP_FORCE_OPTION_METAGGA.xscheme=="MS2") xvasp.INCAR << aurostd::PaddedPOST("METAGGA=MS2",_incarpad_) << "# METAGGA = MS2  " << endl;
             if(vflags.KBIN_VASP_FORCE_OPTION_METAGGA.xscheme=="NONE") xvasp.INCAR << aurostd::PaddedPOST("METAGGA=NONE",_incarpad_) << "# METAGGA = NONE  " << endl;
-            //if(vflags.KBIN_VASP_INCAR_VERBOSE) xvasp.INCAR << "# Performing Metagga METAGGA=" << vflags.KBIN_VASP_FORCE_OPTION_METAGGA.xscheme << " [AFLOW] end " << endl;
         }
     }
 }
