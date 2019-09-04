@@ -3058,17 +3058,17 @@ namespace KBIN {
 // KBIN::XVASP_INCAR_Metagga
 namespace KBIN {
     void XVASP_INCAR_Metagga(_xvasp& xvasp,_vflags& vflags) {        // AFLOW_FUNCTION_IMPLEMENTATION   TPSS | RTPSS | M06L | MBJL | SCAN | MS0 | MS1 | MS2 | NONE
-        string FileContent,strline;
-        FileContent=xvasp.INCAR.str();
-        xvasp.INCAR.str(std::string());
-        xvasp.aopts.flag("FLAG::XVASP_INCAR_changed",TRUE);
-        vector<string> vkey; 
-        string stag = "TPSS; RTPSS; M06L; MBJL; SCAN; MS0; MS1; MS2; NONE";
-        aurostd::string2tokens(stag, vkey, ";");
-        string stmp =  KBIN::RemoveLineWithKeyword(FileContent, vkey, true);
-        xvasp.INCAR << KBIN::RemoveEmptyLines(stmp); 
-        
-        if(vflags.KBIN_VASP_FORCE_OPTION_METAGGA.xscheme!="NONE") {
+        if(vflags.KBIN_VASP_FORCE_OPTION_METAGGA.xscheme!="NONE") {  //ONLY WORKS IF AFLOW TAG WAS SET
+            string FileContent,strline;
+            FileContent=xvasp.INCAR.str();
+            xvasp.INCAR.str(std::string());
+            xvasp.aopts.flag("FLAG::XVASP_INCAR_changed",TRUE);
+            vector<string> vkey; 
+            string stag = "TPSS; RTPSS; M06L; MBJL; SCAN; MS0; MS1; MS2; NONE";
+            aurostd::string2tokens(stag, vkey, ";");
+            string stmp =  KBIN::RemoveLineWithKeyword(FileContent, vkey, true);
+            xvasp.INCAR << KBIN::RemoveEmptyLines(stmp); 
+
             if(vflags.KBIN_VASP_FORCE_OPTION_METAGGA.xscheme=="TPSS") xvasp.INCAR << aurostd::PaddedPOST("METAGGA=TPSS",_incarpad_) << "# METAGGA = TPSS  " << endl;
             if(vflags.KBIN_VASP_FORCE_OPTION_METAGGA.xscheme=="RTPSS") xvasp.INCAR << aurostd::PaddedPOST("METAGGA=RTPSS",_incarpad_) << "# METAGGA = RTPSS  " << endl;
             if(vflags.KBIN_VASP_FORCE_OPTION_METAGGA.xscheme=="M06L") xvasp.INCAR << aurostd::PaddedPOST("METAGGA=M06L",_incarpad_) << "# METAGGA = M06L  " << endl;
