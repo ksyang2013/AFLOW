@@ -861,9 +861,9 @@ install_auro: install_user
 	./aflow --apool > $(BIN)/etc_aflowlib_apool.txt
 	chmod 644 $(BIN)/etc_aflowlib_apool.txt
 install_root: all
-	cp -f aflow /usr/local/bin/aflow.$(VERSNUMBER)
+	cp -f aflow /usr/local/bin/aflow.$(VERSNUMBER).$(DAY)
 	cp -f aflow_data /usr/local/bin/aflow_data
-	cp -f /usr/local/bin/aflow.$(VERSNUMBER) /usr/local/bin/aflow
+	cp -f /usr/local/bin/aflow.$(VERSNUMBER).$(DAY) /usr/local/bin/aflow
 	ls -las /usr/local/bin/aflow*
 	$(MAKE) check
 niet:	
