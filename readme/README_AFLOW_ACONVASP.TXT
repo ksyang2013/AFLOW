@@ -1616,11 +1616,11 @@ LATTICES = (the ones with "")
   
   aflow --lattice_type | --lattice | --lattice_crystal < POSCAR
         Returns the lattice type and the conventional lattice type of the CRYSTAL following the tables
-        of Setyawayn-Curtarolo [http://dx.doi.org/10.1016/j.commatsci.2010.05.010].
+        of Setyawayn-Curtarolo [https://doi.org/10.1016/j.commatsci.2010.05.010].
         Check aflow --readme=symmetry
   aflow --lattice_lattice_type | --lattice_lattice < POSCAR
         Returns the lattice type and the conventional lattice type of the LATTICE following the tables
-        of Setyawayn-Curtarolo [http://dx.doi.org/10.1016/j.commatsci.2010.05.010].
+        of Setyawayn-Curtarolo [https://doi.org/10.1016/j.commatsci.2010.05.010].
         Check aflow --readme=symmetry
   aflow --latticehistogram < POSCAR
         Outputs the lattice calculated respect to tolerance of histogram of symmetry.
