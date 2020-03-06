@@ -2051,7 +2051,7 @@ namespace KBIN {
         aurostd::StringstreamClean(aus_exec);
         aurostd::StringstreamClean(aus);
         int nrun=0,maxrun=15, SCF_maxrun=12, Relax_maxrun = 8;
-        int num_CSLOSHING = 0, num_ReachNSW = 0, num_ZBRENT=0;
+        int num_CSLOSHING = 0, num_ReachNSW = 0, num_ZBRENT=0, num_EXCCOR=0;
         int fix_NIRMAT=0;
         int kpoints_k1=xvasp.str.kpoints_k1; double kpoints_s1=xvasp.str.kpoints_s1;
         int kpoints_k2=xvasp.str.kpoints_k2; double kpoints_s2=xvasp.str.kpoints_s2;
@@ -2914,11 +2914,13 @@ namespace KBIN {
                 // ********* CHECK EXCHANGE_CORRELATION PROBLEMS ******************
                 if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [CHECK EXCHANGE_CORRELATION PROBLEMS]" << endl;
                 if(!vflags.KBIN_VASP_FORCE_OPTION_IGNORE_AFIX.flag("EXCCOR") && !xfixed.flag("ALL")) { // OPTIONS FOR EXCCOR
-                    if(xwarning.flag("EXCCOR") && !xfixed.flag("EXCCOR")) {  // Apply only ONCE
+                    //if(xwarning.flag("EXCCOR") && !xfixed.flag("EXCCOR")) {  // Apply only ONCE
+                    if(xwarning.flag("EXCCOR") && num_EXCCOR < 10) {
+                        num_EXCCOR++;
                         KBIN::VASP_Error(xvasp,"WWWWW  ERROR KBIN::VASP_Run: "+Message("time")+"  EXCHANGE-CORRELATION problems ");
                         aus << "WWWWW  FIX  EXCHANGE-CORRELATION - " << Message(aflags,"user,host,time") << endl;
                         aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
-                        KBIN::XVASP_Afix_GENERIC("EXCCOR",xvasp,kflags,vflags);
+                        KBIN::XVASP_Afix_GENERIC("EXCCOR",xvasp,kflags,vflags, 0.0, num_EXCCOR);
                         xfixed.flag("EXCCOR",TRUE);xfixed.flag("ALL",TRUE);
                     }
                 }
