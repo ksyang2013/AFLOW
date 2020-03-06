@@ -4659,21 +4659,18 @@ namespace KBIN {
             aurostd::execute(aus_exec);
         }
         if(mode=="EXCCOR") {
+            //KESONG 2020-03-06
             file_error="aflow.error.exccor"+aurostd::utype2string(param_int);
-            if (param_int == 1) {
+            if (param_int == 1 && KBIN::VASP_isRelaxOUTCAR(xvasp.Directory)) {
                 reload_poscar=TRUE;
                 if(xvasp.aopts.flag("FLAG::POSCAR_PRESERVED")) return 0.0; // don`t touch poscar
                 aurostd::stringstream2file(xvasp.POSCAR,string(xvasp.Directory+"/POSCAR.orig"));
-                xvasp.str.scale=xvasp.str.scale*1.0627;   // cubic root of 1.2
-                xvasp.str.scale=xvasp.str.scale*1.0627;   // cubic root of 1.2
-                xvasp.str.scale=xvasp.str.scale*1.0627;   // cubic root of 1.2
+                xvasp.str.scale=xvasp.str.scale*1.2;
                 KBIN::VASP_Produce_POSCAR(xvasp);
                 rewrite_poscar=TRUE;
-            }
-            //new, added by KESONG, 2020-03-06
-            if (param_int >=2) {
+            } else {
                 reload_incar=TRUE;
-                double potim=0;
+                double potim=0.1;
                 xOUTCAR OUTCAR_POTIM(xvasp.Directory+"/OUTCAR");
                 potim=OUTCAR_POTIM.POTIM;
                 if (potim > 0.1) potim = 0.1;
