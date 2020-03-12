@@ -2407,20 +2407,13 @@ namespace KBIN {
                         aus << "00000  MESSAGE POTCAR  DATA: Found potcar FilePotcar=" << FilePotcar << " - DataPotcar.size()=" << DataPotcar.size() << " " << endl;
                         aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
                         xvasp.POTCAR << DataPotcar << endl;
-                        // [OBSOLETE] aus << "00000  MESSAGE POTCAR  DATA: Found potcar xvasp.POTCAR.str().size()=" << xvasp.POTCAR.str().size() << " " << endl;
-                        // [OBSOLETE] aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);	      
                     }
                 } else {
                     found_FILE=KBIN::VASP_Find_FILE_POTCAR(FilePotcars.at(i),FilePotcar,DataPotcar);
                     if(found_FILE) {
-                        // FileINPUT.clear();FileINPUT.open(FilePotcar.c_str(),std::ios::in);
-                        // char c;while (FileINPUT.get(c)) xvasp.POTCAR.put(c);
-                        // FileINPUT.clear();FileINPUT.close();
                         aus << "00000  MESSAGE POTCAR  FILE: Found potcar FilePotcar=" << FilePotcar << " - DataPotcar.size()=" << DataPotcar.size() << " " << endl;
                         aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
                         xvasp.POTCAR << DataPotcar;// << endl; file has already new line
-                        // [OBSOLETE] aus << "00000  MESSAGE POTCAR  FILE: Found potcar xvasp.POTCAR.str().size()=" << xvasp.POTCAR.str().size() << " " << endl;
-                        // [OBSOLETE] aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);	      
                     } else {
                         aus << "EEEEE  POTCAR [" << FilePotcars.at(i).c_str() << "] not found! (aflow_aims_ivasp.cpp) " << Message(aflags,"user,host,time") << endl;
                         aurostd::PrintErrorStream(FileMESSAGE,aus,XHOST.QUIET);
@@ -2936,11 +2929,13 @@ namespace KBIN {
 namespace KBIN {
     void XVASP_INCAR_Precision(_xvasp& xvasp,_vflags& vflags) {        // AFLOW_FUNCTION_IMPLEMENTATION
         string FileContent,strline;
+        cout << vflags.KBIN_VASP_FORCE_OPTION_PREC.xscheme << endl;
         int imax;
         FileContent=xvasp.INCAR.str();
         xvasp.INCAR.str(std::string());
         xvasp.aopts.flag("FLAG::XVASP_INCAR_changed",TRUE);
         imax=aurostd::GetNLinesString(FileContent);
+        vflags.KBIN_VASP_FORCE_OPTION_PREC.xscheme = GetValueOfKey(FileContent, "PREC"); //KESONG, get prec from user's INCAR, 2020-03-12
         for(int i=1;i<=imax;i++) {
             strline=aurostd::GetLineString(FileContent,i);
             if(vflags.KBIN_VASP_FORCE_OPTION_PREC.xscheme=="LOW" || vflags.KBIN_VASP_FORCE_OPTION_PREC.xscheme=="MEDIUM"){ 
@@ -3224,6 +3219,7 @@ namespace KBIN {
         xvasp.INCAR.str(std::string());
         xvasp.aopts.flag("FLAG::XVASP_INCAR_changed",TRUE);
         int imax=aurostd::GetNLinesString(FileContent);
+        vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme = GetValueOfKey(FileContent, "ALGO"); //KESONG, get ALGO from user's INCAR, 2020-03-12
 
         // ***************************************************************************
         if(command=="GENERIC") {
@@ -3244,7 +3240,7 @@ namespace KBIN {
                 }
             }
 
-            if(vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme=="NORMAL") 
+            if(vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme=="NORMAL")
                 xvasp.INCAR << aurostd::PaddedPOST("ALGO=Normal",_incarpad_) << endl;
             if(vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme=="VERYFAST") xvasp.
                 INCAR << aurostd::PaddedPOST("ALGO=Veryfast",_incarpad_) << endl;
