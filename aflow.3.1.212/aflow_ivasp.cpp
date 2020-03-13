@@ -141,23 +141,28 @@ namespace KBIN{
 // since VASP only read the first key
 namespace KBIN{
     string GetValueOfKey(const string& FileContent, const string& keyword) {
-        int imax; 
-        string strline, value, firstLine, stmp;
-        imax=aurostd::GetNLinesString(FileContent);
-        vector<string> targetLines, tokens;
-        for(int i=0;i<=imax;i++) {
-            strline=aurostd::GetLineString(FileContent,i);
-            if(aurostd::substring2bool(strline,keyword,TRUE) && !aurostd::substring2bool(strline,"#" + keyword,TRUE)) {
-                targetLines.push_back(strline);
+        if (doesKeywordExist(FileContent, keyword)) {
+            int imax; 
+            string strline, value, firstLine, stmp;
+            imax=aurostd::GetNLinesString(FileContent);
+            vector<string> targetLines, tokens;
+            for(int i=0;i<=imax;i++) {
+                strline=aurostd::GetLineString(FileContent,i);
+                if(aurostd::substring2bool(strline,keyword,TRUE) && !aurostd::substring2bool(strline,"#" + keyword,TRUE)) {
+                    targetLines.push_back(strline);
+                }
             }
+            firstLine = targetLines.at(0);
+            aurostd::string2tokens(firstLine, tokens, "=");
+            stmp = tokens.at(1);
+            aurostd::string2tokens(stmp, tokens, " ");
+            value = tokens.at(0);
+            capitalizeString(value);
+            if (value.size() > 0) return (value);
         }
-        firstLine = targetLines.at(0);
-        aurostd::string2tokens(firstLine, tokens, "=");
-        stmp = tokens.at(1);
-        aurostd::string2tokens(stmp, tokens, " ");
-        value = tokens.at(0);
-        capitalizeString(value);
-        return (value);
+        else 
+            cerr << "WARNNING " + keyword + " DOES NOT EXIST!\n" << endl;
+            return ("NONE");
     }
 }
 // ***************************************************************************
@@ -2935,7 +2940,7 @@ namespace KBIN {
         xvasp.INCAR.str(std::string());
         xvasp.aopts.flag("FLAG::XVASP_INCAR_changed",TRUE);
         imax=aurostd::GetNLinesString(FileContent);
-        vflags.KBIN_VASP_FORCE_OPTION_PREC.xscheme = GetValueOfKey(FileContent, "PREC"); //KESONG, get prec from user's INCAR, 2020-03-12
+        //vflags.KBIN_VASP_FORCE_OPTION_PREC.xscheme = GetValueOfKey(FileContent, "PREC"); //KESONG, get prec from user's INCAR, 2020-03-12
         for(int i=1;i<=imax;i++) {
             strline=aurostd::GetLineString(FileContent,i);
             if(vflags.KBIN_VASP_FORCE_OPTION_PREC.xscheme=="LOW" || vflags.KBIN_VASP_FORCE_OPTION_PREC.xscheme=="MEDIUM"){ 
@@ -3219,7 +3224,7 @@ namespace KBIN {
         xvasp.INCAR.str(std::string());
         xvasp.aopts.flag("FLAG::XVASP_INCAR_changed",TRUE);
         int imax=aurostd::GetNLinesString(FileContent);
-        vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme = GetValueOfKey(FileContent, "ALGO"); //KESONG, get ALGO from user's INCAR, 2020-03-12
+        if (doesKeywordExist(FileContent, "ALGO")) vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme = GetValueOfKey(FileContent, "ALGO"); //KESONG, get ALGO from user's INCAR, 2020-03-12
 
         // ***************************************************************************
         if(command=="GENERIC") {
