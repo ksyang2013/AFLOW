@@ -337,7 +337,8 @@ string AVASP_Get_PseudoPotential_PAW_PBE(string species) {
     //if(species=="B")  return "B"; //vasp recommends     [PAW_PBE]
     if(species=="Ba") return "Ba_sv"; // unique choice...     [PAW_PBE]
     if(species=="Be") return "Be_sv"; // STEFANO     [PAW_PBE]
-    if(species=="Bi") return "Bi_d"; //STEFANO,WAHYU     [PAW_PBE]
+    //if(species=="Bi") return "Bi_d"; //STEFANO,WAHYU     [PAW_PBE]
+    if(species=="Bi") return "Bi"; //HY
     if(species=="Br") return "Br"; // unique choice...     [PAW_PBE]
     if(species=="C")  return "C"; // STEFANO, vasp recommends     [PAW_PBE]
     if(species=="Ca") return "Ca_sv"; // STEFANO     [PAW_PBE]
@@ -354,7 +355,8 @@ string AVASP_Get_PseudoPotential_PAW_PBE(string species) {
     if(species=="Eu") return "Eu"; // WAHYU, with f-states, teragrid project     [PAW_PBE]
     if(species=="F")  return "F"; // WAHYU     [PAW_PBE]
     if(species=="Fe") return "Fe_pv"; // STEFANO     [PAW_PBE]
-    if(species=="Ga") return "Ga_h"; // STEFANO     [PAW_PBE]
+    //if(species=="Ga") return "Ga_h"; // STEFANO     [PAW_PBE]
+    if(species=="Ga") return "Ga"; // HY
     if(species=="Ge") return "Ge_h"; // STEFANO     [PAW_PBE]
     // if(species=="Ge") return "Ge_d"; // WAHYU     [PAW_PBE]
     if(species=="Gd") return "Gd"; // WAHYU // LDAU     [PAW_PBE]
@@ -580,7 +582,8 @@ string AVASP_Get_PseudoPotential_PAW_PBE_KIN(string species) {
     if(species=="Eu") return "Eu"; //  with f-states           [PAW_PBE_KIN]
     if(species=="F")  return "F"; //            [PAW_PBE_KIN]
     if(species=="Fe") return "Fe_pv"; //            [PAW_PBE_KIN]
-    if(species=="Ga") return "Ga_h"; // pick the _h instead of _d           [PAW_PBE_KIN]
+    //if(species=="Ga") return "Ga_h"; // pick the _h instead of _d           [PAW_PBE_KIN]
+    if(species=="Ga") return "Ga"; // HY
     if(species=="Ge") return "Ge_h"; // pick the _h instead of _d           [PAW_PBE_KIN]
     // if(species=="Ge") return "Ge_d"; //            [PAW_PBE_KIN]
     if(species=="Gd") return "Gd"; //  // LDAU           [PAW_PBE_KIN]
