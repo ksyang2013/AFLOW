@@ -377,7 +377,8 @@ string AVASP_Get_PseudoPotential_PAW_PBE(string species) {
     if(species=="Mg") return "Mg_pv"; // STEFANO     [PAW_PBE]
     if(species=="Mn") return "Mn_pv"; // STEFANO     [PAW_PBE]
     if(species=="Mo") return "Mo_pv"; // STEFANO     [PAW_PBE]
-    if(species=="Na") return "Na_sv"; // was pv "; // STEFANO,WAHYU     [PAW_PBE]
+    //if(species=="Na") return "Na_sv"; // was pv "; // STEFANO,WAHYU     [PAW_PBE]
+    if(species=="Na") return "Na"; // Kesong
     if(species=="N")  return "N"; // vasp recommends     [PAW_PBE]
     if(species=="Nb") return "Nb_sv"; // STEFANO     [PAW_PBE]
     //  if(species=="Nd") return "Nd_3"; // WAHYU, frozen f     [PAW_PBE]
@@ -493,7 +494,8 @@ string AVASP_Get_PseudoPotential_GGA(string species) {
     if(species=="Mn") return "Mn"; // unique choice...    [GGA]
 
     if(species=="N")  return "N"; // vasp recommends    [GGA]
-    if(species=="Na") return "Na_pv"; // there is no _sv in potGGA    [GGA]
+    //if(species=="Na") return "Na_pv"; // there is no _sv in potGGA    [GGA]
+    if(species=="Na") return "Na"; // Kesong
     if(species=="Nb") return "Nb_pv"; // stefano    [GGA]
     if(species=="Ne") return "Ne"; // unique choice...    [GGA]
     if(species=="Ni") return "Ni"; // unique choice...    [GGA]
@@ -604,7 +606,8 @@ string AVASP_Get_PseudoPotential_PAW_PBE_KIN(string species) {
     if(species=="Mg") return "Mg_pv"; //            [PAW_PBE_KIN]
     if(species=="Mn") return "Mn_pv"; // vasp suggested           [PAW_PBE_KIN]
     if(species=="Mo") return "Mo_sv"; // curious about _sv           [PAW_PBE_KIN]
-    if(species=="Na") return "Na_pv"; // Rico recommends _pv           [PAW_PBE_KIN]
+    //if(species=="Na") return "Na_pv"; // Rico recommends _pv           [PAW_PBE_KIN]
+    if(species=="Na") return "Na"; //  Kesong
     if(species=="N")  return "N"; // vasp recommends           [PAW_PBE_KIN]
     if(species=="Nb") return "Nb_sv"; //            [PAW_PBE_KIN]
     //  if(species=="Nd") return "Nd_3"; //  frozen f           [PAW_PBE_KIN]
