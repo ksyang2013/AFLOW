@@ -4861,9 +4861,12 @@ namespace KBIN {
                     aus_exec << "cat INCAR | grep -v 'ICHARG' > incar.tmp && mv incar.tmp INCAR" << endl; 
                     aus_exec << "cat INCAR | grep -v 'AMIX' > incar.tmp && mv incar.tmp INCAR" << endl; 
                     aus_exec << "cat INCAR | grep -v 'BMIX' > incar.tmp && mv incar.tmp INCAR" << endl; 
+                    aus_exec << "cat INCAR | grep -v 'NELM' > incar.tmp && mv incar.tmp INCAR" << endl; 
                     aus_exec << "echo \"ICHARG=1                                         #FIX=" << mode << "\" >> INCAR " << endl;
                     aus_exec << "echo \"AMIX=0.1                                         #FIX=" << mode << "\" >> INCAR " << endl;
                     aus_exec << "echo \"BMIX=0.01                                       #FIX=" << mode << "\" >> INCAR " << endl;
+                    aus_exec << "echo \"ELMIN=2                                       #FIX=" << mode << "\" >> INCAR " << endl;
+                    aus_exec << "echo \"ELM=120                                       #FIX=" << mode << "\" >> INCAR " << endl;
                     aurostd::execute(aus_exec);
                 }
             }
