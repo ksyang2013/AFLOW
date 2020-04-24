@@ -4797,6 +4797,7 @@ namespace KBIN {
             //if(vflags.KBIN_VASP_INCAR_VERBOSE) aus_exec << "echo \"# Performing KBIN::XVASP_Afix (" << mode << ") [AFLOW] end\" >> INCAR " << endl;
             aurostd::execute(aus_exec);
         }
+
         if(mode=="NPAR_REMOVE") {
             file_error="aflow.error.npar_remove";
             reload_incar=TRUE;
@@ -4806,6 +4807,14 @@ namespace KBIN {
             aurostd::execute(aus_exec);
         }
 
+        if(mode=="AMIN") {
+            file_error="aflow.error.amin";
+            reload_incar=TRUE;
+            aus_exec << "cd " << xvasp.Directory << endl;
+            aus_exec << "cat INCAR | grep -v 'AMIN=' > incar.tmp && mv incar.tmp INCAR" << endl; 
+            aus_exec << "echo \"AMIN= 0.01                                       #FIX=" << mode << "\" >> INCAR " << endl;
+            aurostd::execute(aus_exec);
+        }
 
         if(mode=="ZBRENT") {
             file_error="aflow.error.zbrent" + aurostd::utype2string(param_int);

@@ -2521,6 +2521,7 @@ namespace KBIN {
                 xmessage.flag("REACHED_ACCURACY",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","reached required accuracy"));
                 xwarning.flag("REACH_NSW", (!xmessage.flag("REACHED_ACCURACY") && KBIN::VASP_isRelaxOUTCAR(xvasp.Directory) && KBIN::VASP_CheckRelaxReachNSW(xvasp.Directory)) ); // check relax (reach NSW)
                 xwarning.flag("CSLOSHING",KBIN::VASP_CheckUnconvergedOUTCAR(xvasp.Directory)); // check converged (static & relaxed)
+                xwarning.flag("AMIN",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","decrease AMIN to a smaller values"));
                 xwarning.flag("ZBRENT",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","ZBRENT: fatal error in bracketing"));
                 xwarning.flag("KKSYM",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Reciprocal lattice and k-lattice belong to different class of lattices"));
                 xwarning.flag("SGRCON",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","VERY BAD NEWS! internal error in subroutine SGRCON"));
@@ -3022,6 +3023,18 @@ namespace KBIN {
                 }
                 */
                 
+                // ********* CHECK AMIN PROBLEMS ******************; LAST Operation will cover all previous
+                if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [CHECK AMIN PROBLEMS]" << endl;
+                if(!vflags.KBIN_VASP_FORCE_OPTION_IGNORE_AFIX.flag("AMIN") && !xfixed.flag("ALL")) { // check AMIN
+                    if(xwarning.flag("AMIN") && !xfixed.flag("AMIN")) {
+                        KBIN::VASP_Error(xvasp,"WWWWW  ERROR KBIN::VASP_Run: "+Message("time")+"  AMIN problems ");
+                        aus << "WWWWW  FIX AMIN - " << Message(aflags,"user,host,time") << endl;
+                        aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
+                        KBIN::XVASP_Afix_GENERIC("AMIN",xvasp,kflags,vflags, 0.0, kflags.KBIN_MPI_NCPUS);
+                        xfixed.flag("AMIN",TRUE);xfixed.flag("ALL",TRUE);
+                    }
+                }
+                
                 // ********* CHECK ZBRENT PROBLEMS ****************** 
                 if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [CHECK ZBRENT PROBLEMS]" << endl;
                 if(!vflags.KBIN_VASP_FORCE_OPTION_IGNORE_AFIX.flag("ZBRENT") && !xfixed.flag("ALL")) { // check ZBRENT
@@ -3047,8 +3060,6 @@ namespace KBIN {
                         xfixed.flag("REACH_NSW",TRUE);xfixed.flag("ALL",TRUE);
                     }
                 }
-
-
 
                 // ********* CHECK CSLOSHING PROBLEMS ******************; LAST Operation will cover all previous
                 if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [CHECK CSLOSHING PROBLEMS]" << endl;
