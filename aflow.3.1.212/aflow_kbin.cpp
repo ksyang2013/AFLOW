@@ -1900,149 +1900,161 @@ namespace KBIN {
 // KBIN::Clean
 // *******************************************************************************************
 namespace KBIN {
-  void Clean(const _aflags& aflags) {          // AFLOW_FUNCTION_IMPLEMENTATION
-    //    cerr << "KBIN::Clean: aflags.Directory=" << aflags.Directory << endl;
-    KBIN::Clean(aflags.Directory);
-  }
+    void Clean(const _aflags& aflags) {          // AFLOW_FUNCTION_IMPLEMENTATION
+        //    cerr << "KBIN::Clean: aflags.Directory=" << aflags.Directory << endl;
+        KBIN::Clean(aflags.Directory);
+    }
 }
 
 namespace KBIN {
-  void Clean(const string _directory) {        // AFLOW_FUNCTION_IMPLEMENTATION
-    string directory=_directory;
-    //    cerr << "KBIN::Clean: directory=" << aflags.Directory << endl;
-    
-    deque<string> vext; aurostd::string2tokens(".bz2,.xz,.gz",vext,",");
-    deque<string> vzip; aurostd::string2tokens("bzip2,xz,gzip",vzip,",");
+    void Clean(const string _directory) {        // AFLOW_FUNCTION_IMPLEMENTATION
+        string directory=_directory;
+        //    cerr << "KBIN::Clean: directory=" << aflags.Directory << endl;
 
-    aurostd::StringSubst(directory,"/"+_AFLOWIN_,"");  // so it is easier to search
+        deque<string> vext; aurostd::string2tokens(".bz2,.xz,.gz",vext,",");
+        deque<string> vzip; aurostd::string2tokens("bzip2,xz,gzip",vzip,",");
 
-    for(uint iext=0;iext<vext.size();iext++) { 
-      aurostd::StringSubst(directory,"/"+vext.at(iext),"");  // so it is easier to search
-      aurostd::StringSubst(directory,"/"+vext.at(iext),"");  // so it is easier to search    
-      aurostd::StringSubst(directory,"/"+vext.at(iext),"");  // so it is easier to search
-    }   
+        aurostd::StringSubst(directory,"/"+_AFLOWIN_,"");  // so it is easier to search
 
-    for(uint iext=0;iext<vext.size();iext++) { 
-      aurostd::StringSubst(directory,"/agl_aflow.in"+vext.at(iext),"");  // so it is easier to search
-      aurostd::StringSubst(directory,"/ael_aflow.in"+vext.at(iext),"");  // so it is easier to search    
-      aurostd::StringSubst(directory,"/aflow.in"+vext.at(iext),"");      // so it is easier to search
-    }   
-    aurostd::StringSubst(directory,"/agl_aflow.in","");  // so it is easier to search
-    aurostd::StringSubst(directory,"/ael_aflow.in","");  // so it is easier to search    
-    aurostd::StringSubst(directory,"/aflow.in","");      // so it is easier to search
+        for(uint iext=0;iext<vext.size();iext++) { 
+            aurostd::StringSubst(directory,"/"+vext.at(iext),"");  // so it is easier to search
+            aurostd::StringSubst(directory,"/"+vext.at(iext),"");  // so it is easier to search    
+            aurostd::StringSubst(directory,"/"+vext.at(iext),"");  // so it is easier to search
+        }   
 
-    if(!aurostd::FileExist(string(directory+"/"+"NOCLEAN")) &&
-       !aurostd::FileExist(string(directory+"/"+"NOCLEAR")) &&
-       !aurostd::FileExist(string(directory+"/"+"noclean")) &&
-       !aurostd::FileExist(string(directory+"/"+"noclear")) &&
-       !aurostd::FileExist(string(directory+"/"+"Makefile")) &&
-       !aurostd::FileExist(string(directory+"/"+"aflow.h")) &&
-       !aurostd::FileExist(string(directory+"/"+"paper.tex")) &&
-       !aurostd::FileExist(string(directory+"/"+"manuscript.tex")) &&
-       !aurostd::FileExist(string(directory+"/"+"supplementary_information.tex")) &&
-       !aurostd::FileExist(string(directory+"/"+"supplementary_materials.tex")) &&
-       !aurostd::FileExist(string(directory+"/"+"review.tex"))) {
-      if(aurostd::FileExist(string(directory+"/"+_AFLOWIN_)) ||    // normal aflow.in or specified it
-	 aurostd::FileExist(string(directory+"/aflow.in")) ||      // normal aflow.in
-	 aurostd::FileExist(string(directory+"/agl_aflow.in")) ||  // normal agl_aflow.in
-	 aurostd::FileExist(string(directory+"/ael_aflow.in")) ) { // normal ael_aflow.in
-	
-	// CLEAN directory
-        // DX and CO - START
-        vector<string> vfiles;  //not only files, includes EVERYTHING
-        string file_path;
-        aurostd::DirectoryLS(directory,vfiles);
-        for(uint i=0;i<vfiles.size();i++) {
-          file_path=directory + "/" + vfiles.at(i);
-          if(aurostd::substring2bool(vfiles.at(i),_AFLOWIN_)){continue;}
-          if(aurostd::substring2bool(vfiles.at(i),"aflow.in")){continue;}
-          if(aurostd::substring2bool(vfiles.at(i),"agl_aflow.in")){continue;}
-          if(aurostd::substring2bool(vfiles.at(i),"ael_aflow.in")){continue;}
-          if(aurostd::substring2bool(vfiles.at(i),"vdw_kernel.bindat")){continue;}
-          if(aurostd::substring2bool(vfiles.at(i),"vdw_kernel.bindat.big_endian")){continue;}
-          if(aurostd::substring2bool(vfiles.at(i),DEFAULT_AFLOW_FROZSL_INPUT_OUT)){continue;}
-          if(aurostd::IsDirectory(file_path)){                 
-            if(aurostd::substring2bool(vfiles.at(i),KBIN_SUBDIRECTORIES)){ // only directories we don't ignore
-              aurostd::RemoveDirectory(file_path);
+        for(uint iext=0;iext<vext.size();iext++) { 
+            aurostd::StringSubst(directory,"/agl_aflow.in"+vext.at(iext),"");  // so it is easier to search
+            aurostd::StringSubst(directory,"/ael_aflow.in"+vext.at(iext),"");  // so it is easier to search    
+            aurostd::StringSubst(directory,"/aflow.in"+vext.at(iext),"");      // so it is easier to search
+        }   
+        aurostd::StringSubst(directory,"/agl_aflow.in","");  // so it is easier to search
+        aurostd::StringSubst(directory,"/ael_aflow.in","");  // so it is easier to search    
+        aurostd::StringSubst(directory,"/aflow.in","");      // so it is easier to search
+
+        if(!aurostd::FileExist(string(directory+"/"+"NOCLEAN")) &&
+                !aurostd::FileExist(string(directory+"/"+"NOCLEAR")) &&
+                !aurostd::FileExist(string(directory+"/"+"noclean")) &&
+                !aurostd::FileExist(string(directory+"/"+"noclear")) &&
+                !aurostd::FileExist(string(directory+"/"+"Makefile")) &&
+                !aurostd::FileExist(string(directory+"/"+"aflow.h")) &&
+                !aurostd::FileExist(string(directory+"/"+"paper.tex")) &&
+                !aurostd::FileExist(string(directory+"/"+"manuscript.tex")) &&
+                !aurostd::FileExist(string(directory+"/"+"supplementary_information.tex")) &&
+                !aurostd::FileExist(string(directory+"/"+"supplementary_materials.tex")) &&
+                !aurostd::FileExist(string(directory+"/"+"review.tex"))) {
+            if(aurostd::FileExist(string(directory+"/"+_AFLOWIN_)) ||    // normal aflow.in or specified it
+                    aurostd::FileExist(string(directory+"/aflow.in")) ||      // normal aflow.in
+                    aurostd::FileExist(string(directory+"/agl_aflow.in")) ||  // normal agl_aflow.in
+                    aurostd::FileExist(string(directory+"/ael_aflow.in")) ) { // normal ael_aflow.in
+
+                // CLEAN directory
+                // DX and CO - START
+                vector<string> vfiles;  //not only files, includes EVERYTHING
+                string file_path;
+                aurostd::DirectoryLS(directory,vfiles);
+                for(uint i=0;i<vfiles.size();i++) {
+                    file_path=directory + "/" + vfiles.at(i);
+                    if(aurostd::substring2bool(vfiles.at(i),_AFLOWIN_)){continue;}
+                    if(aurostd::substring2bool(vfiles.at(i),"aflow.in")){continue;}
+                    //DO NOT REMOVE INCAR,POSCAR,POTCAR,KPOINTS IF VASP_INCAR_MODE_EXTERNAL
+                    //KESONG 2020-04-24
+                    string strAflowIn = aurostd::file2string(directory + "/aflow.in");
+                    if(aurostd::substring2bool(strAflowIn,"[VASP_INCAR_MODE_EXTERNAL]")) {
+                        if(aurostd::substring2bool(vfiles.at(i),"INCAR")){continue;}}
+                    if(aurostd::substring2bool(strAflowIn,"[VASP_POSCAR_MODE_EXTERNAL]")) {
+                        if(aurostd::substring2bool(vfiles.at(i),"POSCAR")){continue;}}
+                    if(aurostd::substring2bool(strAflowIn,"[VASP_POTCAR_MODE_EXTERNAL]")) {
+                        if(aurostd::substring2bool(vfiles.at(i),"POTCAR")){continue;}}
+                    if(aurostd::substring2bool(strAflowIn,"[VASP_KPOINTS_MODE_EXTERNAL]")) {
+                        if(aurostd::substring2bool(vfiles.at(i),"KPOINTS")){continue;}}
+                    //
+                    if(aurostd::substring2bool(vfiles.at(i),"agl_aflow.in")){continue;}
+                    if(aurostd::substring2bool(vfiles.at(i),"ael_aflow.in")){continue;}
+                    if(aurostd::substring2bool(vfiles.at(i),"vdw_kernel.bindat")){continue;}
+                    if(aurostd::substring2bool(vfiles.at(i),"vdw_kernel.bindat.big_endian")){continue;}
+                    if(aurostd::substring2bool(vfiles.at(i),DEFAULT_AFLOW_FROZSL_INPUT_OUT)){continue;}
+                    if(aurostd::IsDirectory(file_path)){                 
+                        if(aurostd::substring2bool(vfiles.at(i),KBIN_SUBDIRECTORIES)){ // only directories we don't ignore
+                            aurostd::RemoveDirectory(file_path);
+                        }
+                        continue;                                                   // ignore all other directories
+                    }
+                    if(aurostd::IsFile(file_path)){                 
+                        if(vfiles.at(i).size() && vfiles.at(i)[0]=='.'){
+                            if(aurostd::substring2bool(vfiles.at(i),".nfs")){            // only hidden files we don't ignore
+                                aurostd::RemoveFile(file_path);
+                            }
+                            continue;                                                 // ignore all other hidden files
+                        }
+                        aurostd::RemoveFile(file_path);
+                    }
+                }
+                aurostd::execute("rm -f "+directory+"/.pam*");
+                aurostd::execute("rm -f "+directory+"/*~");
+
+                // DX and CO - END
+                // now DECOMPRESS _AFLOWIN_.EXT if a mistake was made
+                for(uint iext=0;iext<vext.size();iext++) { 
+                    ifstream FileCHECK;string FileNameCHECK;
+                    FileNameCHECK=directory+"/" + _AFLOWIN_ + vext.at(iext);                    // _AFLOWIN_.EXT
+                    FileCHECK.open(FileNameCHECK.c_str(),std::ios::in);                         // _AFLOWIN_.EXT
+                    FileCHECK.clear();FileCHECK.close();                                        // _AFLOWIN_.EXT
+                    if(FileCHECK) {                                                             // _AFLOWIN_.EXT
+                        aurostd::execute(vzip.at(iext)+" -dqf "+_AFLOWIN_+vext.at(iext)); // _AFLOWIN_.EXT
+                    }
+                } // _AFLOWIN_.EXT
             }
-            continue;                                                   // ignore all other directories
-          }
-          if(aurostd::IsFile(file_path)){                 
-            if(vfiles.at(i).size() && vfiles.at(i)[0]=='.'){
-              if(aurostd::substring2bool(vfiles.at(i),".nfs")){            // only hidden files we don't ignore
-                aurostd::RemoveFile(file_path);
-              }
-              continue;                                                 // ignore all other hidden files
-            }
-            aurostd::RemoveFile(file_path);
-          }
         }
-	aurostd::execute("rm -f "+directory+"/.pam*");
-	aurostd::execute("rm -f "+directory+"/*~");
-	
-	// DX and CO - END
-	// now DECOMPRESS _AFLOWIN_.EXT if a mistake was made
-	for(uint iext=0;iext<vext.size();iext++) { 
-	  ifstream FileCHECK;string FileNameCHECK;
-	  FileNameCHECK=directory+"/" + _AFLOWIN_ + vext.at(iext);                    // _AFLOWIN_.EXT
-	  FileCHECK.open(FileNameCHECK.c_str(),std::ios::in);                         // _AFLOWIN_.EXT
-	  FileCHECK.clear();FileCHECK.close();                                        // _AFLOWIN_.EXT
-	  if(FileCHECK) {                                                             // _AFLOWIN_.EXT
-	    aurostd::execute(vzip.at(iext)+" -dqf "+_AFLOWIN_+vext.at(iext)); // _AFLOWIN_.EXT
-	  }
-	} // _AFLOWIN_.EXT
-      }
     }
-  }
 }
 
 // *******************************************************************************************
 // KBIN::XClean
 // *******************************************************************************************
 namespace KBIN {
-  void XClean(string options) {
-    bool LDEBUG=(FALSE || XHOST.DEBUG);
-    if(LDEBUG) cerr << "KBIN::XClean: BEGIN" << endl;  
-    vector<string> tokens;
-    aurostd::string2tokens(options,tokens,",");
-    if(tokens.size()!=0) {
-      init::ErrorOption(cout,options,"KBIN::XClean","aflow --xclean");
-      exit(0);
-    }
+    void XClean(string options) {
+        bool LDEBUG=(FALSE || XHOST.DEBUG);
+        if(LDEBUG) cerr << "KBIN::XClean: BEGIN" << endl;  
+        vector<string> tokens;
+        aurostd::string2tokens(options,tokens,",");
+        if(tokens.size()!=0) {
+            init::ErrorOption(cout,options,"KBIN::XClean","aflow --xclean");
+            exit(0);
+        }
 
-    deque<string> vext; aurostd::string2tokens(".bz2,.xz,.gz",vext,",");
- 
-    vector<string> vcheck1;aurostd::string2tokens(string("OUTCAR.static,OUTCAR.relax2,OUTCAR.relax1"),vcheck1,",");
-    for(uint iext=0;iext<vext.size();iext++) { vcheck1.push_back("OUTCAR.relax1"+vext.at(iext)); }
-    vector<string> vcheck2;aurostd::string2tokens(string("OUTCAR,OUTCAR,OUTCAR"),vcheck2,",");
-    for(uint iext=0;iext<vext.size();iext++) { vcheck2.push_back("OUTCAR.relax2"+vext.at(iext)); }
-    
-    vector<string> vfile;
-    bool test=false;
-    
-    cout << "KBIN::XClean: checking missing " << "OUTCAR*" << " with " << _AFLOWLOCK_ << endl;  // check OUTCAR.static
-    aurostd::string2vectorstring(aurostd::execute2string(XHOST.command("find")+" ./ -name "+_AFLOWLOCK_),vfile);
-    for(uint j=0;j<vfile.size();j++) {
-      aurostd::StringSubst(vfile.at(j),_AFLOWLOCK_,"");
-      if(!aurostd::FileExist(vfile.at(j)+"OUTCAR") && !aurostd::EFileExist(vfile.at(j)+"OUTCAR.relax1")) {
-	cout << "KBIN::XClean: cleaning=" << vfile.at(j) << endl;
-	if(!test) KBIN::Clean(vfile.at(j));
-      }
+        deque<string> vext; aurostd::string2tokens(".bz2,.xz,.gz",vext,",");
+
+        vector<string> vcheck1;aurostd::string2tokens(string("OUTCAR.static,OUTCAR.relax2,OUTCAR.relax1"),vcheck1,",");
+        for(uint iext=0;iext<vext.size();iext++) { vcheck1.push_back("OUTCAR.relax1"+vext.at(iext)); }
+        vector<string> vcheck2;aurostd::string2tokens(string("OUTCAR,OUTCAR,OUTCAR"),vcheck2,",");
+        for(uint iext=0;iext<vext.size();iext++) { vcheck2.push_back("OUTCAR.relax2"+vext.at(iext)); }
+
+        vector<string> vfile;
+        bool test=false;
+
+        cout << "KBIN::XClean: checking missing " << "OUTCAR*" << " with " << _AFLOWLOCK_ << endl;  // check OUTCAR.static
+        aurostd::string2vectorstring(aurostd::execute2string(XHOST.command("find")+" ./ -name "+_AFLOWLOCK_),vfile);
+        for(uint j=0;j<vfile.size();j++) {
+            aurostd::StringSubst(vfile.at(j),_AFLOWLOCK_,"");
+            if(!aurostd::FileExist(vfile.at(j)+"OUTCAR") && !aurostd::EFileExist(vfile.at(j)+"OUTCAR.relax1")) {
+                cout << "KBIN::XClean: cleaning=" << vfile.at(j) << endl;
+                if(!test) KBIN::Clean(vfile.at(j));
+            }
+        }
+        for(uint i=0;i<vcheck1.size();i++) {
+            cout << "KBIN::XClean: checking missing " << vcheck2.at(i) << " with " << vcheck1.at(i) << endl;  // check OUTCAR.static
+            aurostd::string2vectorstring(aurostd::execute2string(XHOST.command("find")+" ./ -name "+vcheck1.at(i)),vfile);
+            for(uint j=0;j<vfile.size();j++) {
+                aurostd::StringSubst(vfile.at(j),vcheck1.at(i),"");
+                if(!aurostd::FileExist(vfile.at(j)+vcheck2.at(i))) {
+                    cout << "KBIN::XClean: cleaning=" << vfile.at(j) << endl;
+                    if(!test) KBIN::Clean(vfile.at(j));
+                }
+            }
+        }    
+        if(LDEBUG) cerr << "KBIN::XClean: END" << endl;  
+        // exit(0);
     }
-    for(uint i=0;i<vcheck1.size();i++) {
-      cout << "KBIN::XClean: checking missing " << vcheck2.at(i) << " with " << vcheck1.at(i) << endl;  // check OUTCAR.static
-      aurostd::string2vectorstring(aurostd::execute2string(XHOST.command("find")+" ./ -name "+vcheck1.at(i)),vfile);
-      for(uint j=0;j<vfile.size();j++) {
-	aurostd::StringSubst(vfile.at(j),vcheck1.at(i),"");
-	if(!aurostd::FileExist(vfile.at(j)+vcheck2.at(i))) {
-	  cout << "KBIN::XClean: cleaning=" << vfile.at(j) << endl;
-	  if(!test) KBIN::Clean(vfile.at(j));
-	}
-      }
-    }    
-    if(LDEBUG) cerr << "KBIN::XClean: END" << endl;  
-    // exit(0);
-  }
 } // namespace KBIN
 
 // ***************************************************************************

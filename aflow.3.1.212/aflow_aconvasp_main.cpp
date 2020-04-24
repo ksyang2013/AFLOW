@@ -1136,11 +1136,11 @@ namespace pflow {
     aflags.AFLOW_PERFORM_DIRECTORY=XHOST.vflag_control.flag("DIRECTORY");
     aflags.AFLOW_PERFORM_FILE=XHOST.vflag_control.flag("FILE");
     if(vpflow.flag("CLEAN")) {
-      if(!aflags.AFLOW_PERFORM_DIRECTORY) {
-	cerr << "AFLOW: to use --clean, you must specify the directory" << endl; exit(0);
-      } else {
-	KBIN::Clean(aflags);
-      }
+        if(!aflags.AFLOW_PERFORM_DIRECTORY) {
+            cerr << "AFLOW: to use --clean, you must specify the directory" << endl; exit(0);
+        } else {
+            KBIN::Clean(aflags);
+        }
     }
 
     //*************************************
