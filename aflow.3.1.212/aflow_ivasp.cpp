@@ -4862,8 +4862,8 @@ namespace KBIN {
                     aus_exec << "cat " << _AFLOWIN_ << " | sed \"s/\\[VASP_FORCE_OPTION\\]ALGO/#\\[VASP_FORCE_OPTION\\]ALGO/g\" | sed \"s/##\\[/#\\[/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl;
                     aus_exec << "cat aflow.in | grep -v 'ALGO=NORMAL      // Self Correction' > aflow.tmp && mv aflow.tmp aflow.in" << endl;
                     aus_exec << "echo \"[VASP_FORCE_OPTION]ALGO=NORMAL      // Self Correction\"" << " >> " << _AFLOWIN_ << " " << endl;
-                    aus_exec << "cat INCAR | grep -v 'NELM' > incar.tmp && mv incar.tmp INCAR" << endl; 
                     aus_exec << "cat INCAR | grep -v 'ICHARG' > incar.tmp && mv incar.tmp INCAR" << endl; 
+                    aus_exec << "cat INCAR | grep -v 'NELM' > incar.tmp && mv incar.tmp INCAR" << endl; 
                     aus_exec << "cat INCAR | grep -v 'AMIN' > incar.tmp && mv incar.tmp INCAR" << endl; 
                     aus_exec << "echo \"ICHARG=1                                         #FIX=" << mode << "\" >> INCAR " << endl;
                     aus_exec << "echo \"NELM=120                                         #FIX=" << mode << "\" >> INCAR " << endl;
@@ -4879,10 +4879,10 @@ namespace KBIN {
                     aus_exec << "cd " << xvasp.Directory << endl;
                     aus_exec << "cat " << _AFLOWIN_ << " | sed \"s/\\[VASP_FORCE_OPTION\\]SPIN/#\\[VASP_FORCE_OPTION\\]SPIN/g\" | sed \"s/##\\[/#\\[/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl;
                     aus_exec << "cat aflow.in | grep -v 'SPIN=ON      // Self Correction' > aflow.tmp && mv aflow.tmp aflow.in" << endl;
-                    aus_exec << "cat INCAR | grep -v 'AMIX' > incar.tmp && mv incar.tmp INCAR" << endl; 
                     aus_exec << "echo \"[VASP_FORCE_OPTION]SPIN=ON      // Self Correction\"" << " >> " << _AFLOWIN_ << " " << endl;
-                    aus_exec << "cat INCAR | grep -v 'NELM' > incar.tmp && mv incar.tmp INCAR" << endl; 
+                    aus_exec << "cat INCAR | grep -v 'MAGMOM' > incar.tmp && mv incar.tmp INCAR" << endl; //use default seting of vasp
                     aus_exec << "cat INCAR | grep -v 'ICHARG' > incar.tmp && mv incar.tmp INCAR" << endl; 
+                    aus_exec << "cat INCAR | grep -v 'NELM' > incar.tmp && mv incar.tmp INCAR" << endl; 
                     aus_exec << "cat INCAR | grep -v 'AMIN' > incar.tmp && mv incar.tmp INCAR" << endl; 
                     aus_exec << "echo \"ICHARG=1                                         #FIX=" << mode << "\" >> INCAR " << endl;
                     aus_exec << "echo \"NELM=180                                         #FIX=" << mode << "\" >> INCAR " << endl;
