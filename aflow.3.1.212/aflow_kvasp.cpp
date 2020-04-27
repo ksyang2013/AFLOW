@@ -2050,7 +2050,7 @@ namespace KBIN {
         bool vasp_start=TRUE;
         aurostd::StringstreamClean(aus_exec);
         aurostd::StringstreamClean(aus);
-        int nrun=0,maxrun=15, SCF_maxrun=12, Relax_maxrun = 8;
+        int nrun=0,maxrun = 10, SCF_maxrun = 5, Relax_maxrun = 5;
         int num_CSLOSHING = 0, num_ReachNSW = 0, num_ZBRENT=0, num_EXCCOR=0;
         int fix_NIRMAT=0;
         int kpoints_k1=xvasp.str.kpoints_k1; double kpoints_s1=xvasp.str.kpoints_s1;
@@ -3061,6 +3061,7 @@ namespace KBIN {
                     }
                 }
 
+                //DO NOT CHANGE THE ORDER
                 // ********* CHECK CSLOSHING PROBLEMS ******************; LAST Operation will cover all previous
                 if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [CHECK CSLOSHING PROBLEMS]" << endl;
                 if(!vflags.KBIN_VASP_FORCE_OPTION_IGNORE_AFIX.flag("CSLOSHING") && !xfixed.flag("ALL")) { // check CSLOSHING

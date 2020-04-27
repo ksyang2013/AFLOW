@@ -4857,10 +4857,12 @@ namespace KBIN {
                 aus_exec << "cd " << xvasp.Directory << endl;
                 aus_exec << "cat " << _AFLOWIN_ << " | sed \"s/\\[VASP_FORCE_OPTION\\]ALGO/#\\[VASP_FORCE_OPTION\\]ALGO/g\" | sed \"s/##\\[/#\\[/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl;
                 aus_exec << "cat aflow.in | grep -v 'ALGO=NORMAL      // Self Correction' > aflow.tmp && mv aflow.tmp aflow.in" << endl;
+                aus_exec << "cat INCAR | grep -v 'NELM' > incar.tmp && mv incar.tmp INCAR" << endl; 
                 aus_exec << "echo \"[VASP_FORCE_OPTION]ALGO=NORMAL      // Self Correction\"" << " >> " << _AFLOWIN_ << " " << endl;
+                aus_exec << "echo \"NELM=100                                         #FIX=" << mode << "\" >> INCAR " << endl;
                 aurostd::execute(aus_exec);
             } 
-            if (param_int >=2) {
+            if (param_int == 2) {
                 reload_incar=TRUE;
                 if (KBIN::VASP_isStaticOUTCAR(xvasp.Directory) && not aurostd::substring_present_file_FAST(xvasp.Directory+"/INCAR","ICHARG=11")) {
                     xvasp.aopts.flag("FLAG::CHGCAR_PRESERVED", TRUE);
@@ -4880,14 +4882,23 @@ namespace KBIN {
                 }
             }
             //check spin, if static and not spin, then turn on
-            if (param_int == 3){
+            if (param_int >= 3){
                 if (not KBIN::VASP_isSpinOUTCAR(xvasp.Directory) && KBIN::VASP_isStaticOUTCAR(xvasp.Directory)) {
                     KBIN::XVASP_INCAR_PREPARE_GENERIC("SPIN",xvasp,vflags,"",0,0.0,vflags.KBIN_VASP_FORCE_OPTION_SPIN.option);
                     aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));
                     aus_exec << "cd " << xvasp.Directory << endl;
                     aus_exec << "cat " << _AFLOWIN_ << " | sed \"s/\\[VASP_FORCE_OPTION\\]SPIN/#\\[VASP_FORCE_OPTION\\]SPIN/g\" | sed \"s/##\\[/#\\[/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl;
                     aus_exec << "cat aflow.in | grep -v 'SPIN=ON      // Self Correction' > aflow.tmp && mv aflow.tmp aflow.in" << endl;
+                    aus_exec << "cat INCAR | grep -v 'AMIX' > incar.tmp && mv incar.tmp INCAR" << endl; 
                     aus_exec << "echo \"[VASP_FORCE_OPTION]SPIN=ON      // Self Correction\"" << " >> " << _AFLOWIN_ << " " << endl;
+                    aus_exec << "cat INCAR | grep -v 'ICHARG' > incar.tmp && mv incar.tmp INCAR" << endl; 
+                    aus_exec << "cat INCAR | grep -v 'AMIX' > incar.tmp && mv incar.tmp INCAR" << endl; 
+                    aus_exec << "cat INCAR | grep -v 'BMIX' > incar.tmp && mv incar.tmp INCAR" << endl; 
+                    aus_exec << "cat INCAR | grep -v 'NELM' > incar.tmp && mv incar.tmp INCAR" << endl; 
+                    aus_exec << "echo \"ICHARG=1                                         #FIX=" << mode << "\" >> INCAR " << endl;
+                    aus_exec << "echo \"AMIX=0.01                                         #FIX=" << mode << "\" >> INCAR " << endl;
+                    aus_exec << "echo \"NELMIN=2                                         #FIX=" << mode << "\" >> INCAR " << endl;
+                    aus_exec << "echo \"NELM=200                                         #FIX=" << mode << "\" >> INCAR " << endl;
                     aurostd::execute(aus_exec);
                 }
             }
