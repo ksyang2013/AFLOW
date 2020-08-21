@@ -2761,8 +2761,12 @@ namespace KBIN {
             ss_INCAR << aurostd::PaddedPOST("ENCUT="+aurostd::utype2string(int(xvasp.POTCAR_ENMAX)), _incarpad_) << endl;
         if (!doesKeywordExist(xvasp.INCAR.str(), "EDIFF"))
             ss_INCAR << aurostd::PaddedPOST("EDIFF=1E-4",_incarpad_) << endl;
-        if(vflags.KBIN_VASP_FORCE_OPTION_PREC.preserved==FALSE) 
-            ss_INCAR << aurostd::PaddedPOST("PREC=ACCURATE",_incarpad_) << endl;
+        if(vflags.KBIN_VASP_FORCE_OPTION_PREC.preserved==FALSE) {
+            if (doesKeywordExist(xvasp.INCAR.str(), "LHFCALC"))
+                ss_INCAR << aurostd::PaddedPOST("PREC=Normal",_incarpad_) << endl; //best
+            else
+                ss_INCAR << aurostd::PaddedPOST("PREC=Accurate",_incarpad_) << endl; 
+        }
         ss_INCAR << aurostd::PaddedPOST("IBRION=-1",_incarpad_)       <<  notes  << endl;
         ss_INCAR << aurostd::PaddedPOST("NSW=0",_incarpad_)           <<  notes  << endl;
         ss_INCAR << aurostd::PaddedPOST("NELMIN=2",_incarpad_)        <<  notes  << endl;
@@ -2778,7 +2782,8 @@ namespace KBIN {
         ss_INCAR << aurostd::PaddedPOST("EMAX=  25.0",_incarpad_)     <<  notes  << endl;
         ss_INCAR << aurostd::PaddedPOST("NEDOS= 7001",_incarpad_)     <<  notes  << endl;
         if (RunType == "STATIC"){
-            ss_INCAR << aurostd::PaddedPOST("LCHARG=.TRUE.",_incarpad_)   <<  notes << endl;
+            if (!doesKeywordExist(xvasp.INCAR.str(), "LCHARG"))
+                ss_INCAR << aurostd::PaddedPOST("LCHARG=.TRUE.",_incarpad_)   <<  notes << endl;
             if(vflags.KBIN_VASP_FORCE_OPTION_BADER.isentry && vflags.KBIN_VASP_FORCE_OPTION_BADER.option) {
                 ss_INCAR << aurostd::PaddedPOST("LAECHG=.TRUE.",_incarpad_) << notes << endl;
             } else {
