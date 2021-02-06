@@ -2785,7 +2785,8 @@ namespace KBIN {
             if (!doesKeywordExist(xvasp.INCAR.str(), "LCHARG"))
                 ss_INCAR << aurostd::PaddedPOST("LCHARG=.TRUE.",_incarpad_)   <<  notes << endl;
             if(vflags.KBIN_VASP_FORCE_OPTION_BADER.isentry && vflags.KBIN_VASP_FORCE_OPTION_BADER.option) {
-                ss_INCAR << aurostd::PaddedPOST("LAECHG=.TRUE.",_incarpad_) << notes << endl;
+                //ss_INCAR << aurostd::PaddedPOST("LAECHG=.TRUE.",_incarpad_) << notes << endl;
+                //ss_INCAR << aurostd::PaddedPOST("LAECHG=.TRUE.",_incarpad_) << notes << endl; 
             } else {
                 ss_INCAR << aurostd::PaddedPOST("LAECHG=.FALSE.",_incarpad_) << notes << endl;
             }
