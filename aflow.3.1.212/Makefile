@@ -811,6 +811,7 @@ APL/aflow_scqha_T_freqs.o: APL/aflow_scqha_T_freqs.cpp $(AFLOW_HPP) $(AUROSTD_HP
 
 BIN_tscc = /projects/kyang-group/bin
 BIN_comet = /oasis/projects/nsf/csd416/key021/bin
+BIN_b2 = /ocean/projects/dmr210002p/shared/bin
 ################################################################################################
 install: all
 	cp -f aflow $(BIN)/aflow.$(VERSNUMBER).$(DAY)
@@ -842,6 +843,16 @@ install_comet: all
 	rm -f $(BIN_comet)/aconvasp 
 	ln -s $(BIN_comet)/aflow  $(BIN_comet)/aconvasp
 	ls -las $(BIN_comet)/aconvasp
+	$(MAKE) check
+install_b2: all
+	cp -f aflow $(BIN_b2)/aflow.$(VERSNUMBER).$(DAY)
+	cp -f aflow_data  $(BIN_b2)/
+	ls -las $(BIN_b2)/aflow*
+	rm -f $(BIN_b2)/aflow 
+	ln -s $(BIN_b2)/aflow.$(VERSNUMBER).$(DAY)	 $(BIN_b2)/aflow
+	rm -f $(BIN_b2)/aconvasp 
+	ln -s $(BIN_b2)/aflow  $(BIN_b2)/aconvasp
+	ls -las $(BIN_b2)/aconvasp
 	$(MAKE) check
 install_mac: mac        
 	cp -f aflow $(BIN)/aflow.$(VERSNUMBER).$(DAY)

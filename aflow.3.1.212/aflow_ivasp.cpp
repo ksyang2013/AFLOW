@@ -141,6 +141,7 @@ namespace KBIN{
 // since VASP only read the first key
 namespace KBIN{
     string GetValueOfKey(const string& FileContent, const string& keyword) {
+        string obj;
         if (doesKeywordExist(FileContent, keyword)) {
             int imax; 
             string strline, value, firstLine, stmp;
@@ -158,11 +159,13 @@ namespace KBIN{
             aurostd::string2tokens(stmp, tokens, " ");
             value = tokens.at(0);
             capitalizeString(value);
-            if (value.size() > 0) return (value);
+            if (value.size() > 0) obj = value;
         }
-        else 
+        else {
             cerr << "WARNNING " + keyword + " DOES NOT EXIST!\n" << endl;
-            return ("NONE");
+            obj = "NONE";
+        }
+        return (obj);
     }
 }
 // ***************************************************************************

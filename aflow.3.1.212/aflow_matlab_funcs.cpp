@@ -1,3 +1,5 @@
+#ifndef _AFLOW_MATLAB_FUNCS_CPP_
+#define _AFLOW_MATLAB_FUNCS_CPP_
 // aflow_matlab_funcs.cpp automatic generated from MATLAB/*
 #include <sstream>
 // aflow_matlab_funcs.cpp automatic generated from MATLAB/param.m
@@ -1264,3 +1266,4 @@ std::string MATLAB_FUNCS_plotband(void){
    strstream << "" << std::endl;
    strstream << "exit;" << std::endl;
    strstream << "" << std::endl; return strstream.str();};
+#endif // _AFLOW_MATLAB_FUNCS_CPP_
