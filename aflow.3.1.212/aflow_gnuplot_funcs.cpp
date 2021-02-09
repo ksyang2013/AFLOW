@@ -1,5 +1,3 @@
-#ifndef _AFLOW_GNUPLOT_FUNCS_CPP_
-#define _AFLOW_GNUPLOT_FUNCS_CPP_
 // aflow_gnuplot_funcs.cpp automatic generated from GNUPLOT/*
 #include <sstream>
 // aflow_gnuplot_funcs.cpp automatic generated from GNUPLOT/plotbz.sh
@@ -139,4 +137,3 @@ std::string GNUPLOT_FUNCS_plotbz(void){
    strstream << "" << std::endl;
    strstream << "" << std::endl;
    strstream << "" << std::endl; return strstream.str();};
-#endif // _AFLOW_GNUPLOT_FUNCS_CPP_
