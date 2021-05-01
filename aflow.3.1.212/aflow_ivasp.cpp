@@ -2672,7 +2672,8 @@ namespace KBIN {
             bool setEDIFFG = false; 
             if(doesKeywordExist(FileContent, "EDIFFG")) {
                 double value_ediffg = aurostd::string2utype<double>(GetValueOfKey(FileContent, "EDIFFG"));
-                if (value_ediffg < 0 or value_ediffg > dvalue_EDIFFG ) setEDIFFG = true;
+                if (value_ediffg > dvalue_EDIFFG ) setEDIFFG = true;
+                //if (value_ediffg < 0 or value_ediffg > dvalue_EDIFFG ) setEDIFFG = true;
             }
             if(!doesKeywordExist(FileContent, "EDIFFG")) setEDIFFG = true;
             //-------------------------------------------------------------------------------- 
@@ -2689,7 +2690,7 @@ namespace KBIN {
             xvasp.INCAR << aurostd::PaddedPOST("ISIF="+aurostd::utype2string(isif),_incarpad_) << endl;
             if(setEDIFFG){
                 stringstream stmp;
-                stmp << std::scientific << std::setprecision(2) << std::uppercase << dvalue_EDIFFG;
+                stmp << std::scientific << std::setprecision(0) << std::uppercase << dvalue_EDIFFG;
                 xvasp.INCAR << aurostd::PaddedPOST("EDIFFG=" + stmp.str(), _incarpad_) << "# 0.01meV/atom " << endl;
             }
         }
