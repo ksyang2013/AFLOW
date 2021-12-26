@@ -380,11 +380,11 @@ AFLOW COMMANDS USAGE:
   
   aflow --lattice_type | --lattice | --lattice_crystal < POSCAR
         Returns the lattice type and the conventional lattice type of the CRYSTAL following the tables
-        of Setyawayn-Curtarolo [http://dx.doi.org/10.1016/j.commatsci.2010.05.010].
+        of Setyawayn-Curtarolo [https://doi.org/10.1016/j.commatsci.2010.05.010].
 
   aflow --lattice_lattice_type | --lattice_lattice < POSCAR
         Returns the lattice type and the conventional lattice type of the LATTICE following the tables
-        of Setyawayn-Curtarolo [http://dx.doi.org/10.1016/j.commatsci.2010.05.010].
+        of Setyawayn-Curtarolo [https://doi.org/10.1016/j.commatsci.2010.05.010].
   
   aflow --pearson_symbol | --pearson < POSCAR
         Returns the Pearson symbol of the structure.

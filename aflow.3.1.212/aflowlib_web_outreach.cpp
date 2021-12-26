@@ -12,7 +12,7 @@
 #define TOC 0
 
 #define WEB_PDF  string("http://"+XHOST.AFLOW_MATERIALS_SERVER+"/auro/AUROARTICULA/")
-#define WEB_DOI  string("http://dx.doi.org/")
+#define WEB_DOI  string("https://doi.org/")
 
 #define THRUST_RECENT_ARTICLES  20
 #define THRUST_RECENT_YEARS     5
@@ -248,7 +248,7 @@ ostream& operator<<(ostream& oss,const _outreach& outreach) {
       if(XHOST.vflag_control.flag("PRINT_MODE::DOI") && outreach.doi.length()>0) {
 	string doi="";
 	doi="\\ifthenelse{\\equal{\\hyperlinks}{true}}{";
-	doi+="{\\newline \\sf \\href{http://dx.doi.org/"+outreach.doi+"}{DOI: "+aurostd::html2latex(outreach.doi)+"}}";
+	doi+="{\\newline \\sf \\href{https://doi.org/"+outreach.doi+"}{DOI: "+aurostd::html2latex(outreach.doi)+"}}";
 	doi+="}{{\\newline \\sf DOI: "+aurostd::html2latex(outreach.doi)+"}}";
 	oss << " " << doi;
 	link=TRUE;
@@ -256,7 +256,7 @@ ostream& operator<<(ostream& oss,const _outreach& outreach) {
 	if(outreach.wnumber!=0 && outreach.wnumber!=27 && outreach.wnumber!=14 &&
 	   outreach.wnumber!=11 && outreach.wnumber!=8 && outreach.wnumber!=2 &&
 	   outreach.wnumber!=1) {
-	  string doi=""; // ="{\\newline \\sf \\href{http://dx.doi.org/}{DOI: N/A}}";
+	  string doi=""; // ="{\\newline \\sf \\href{https://doi.org/}{DOI: N/A}}";
 	  oss << " " << doi;
 	  link=TRUE;
 	}
