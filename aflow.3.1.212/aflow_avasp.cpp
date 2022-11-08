@@ -343,7 +343,8 @@ string AVASP_Get_PseudoPotential_PAW_PBE(string species) {
     if(species=="C")  return "C"; // STEFANO, vasp recommends     [PAW_PBE]
     if(species=="Ca") return "Ca_sv"; // STEFANO     [PAW_PBE]
     if(species=="Cd") return "Cd"; // unique choice..     [PAW_PBE]
-    if(species=="Ce") return "Ce"; //WAHYU     [PAW_PBE]
+    if(species=="Ce") return "Ce_3"; //YANG; 2022-11-02
+    //if(species=="Ce") return "Ce"; //WAHYU     [PAW_PBE]
     if(species=="Cl") return "Cl"; //WAHYU     [PAW_PBE]
     if(species=="Co") return "Co"; // unique choice..     [PAW_PBE]
     if(species=="Cr") return "Cr_pv"; // STEFANO     [PAW_PBE]
@@ -381,8 +382,8 @@ string AVASP_Get_PseudoPotential_PAW_PBE(string species) {
     if(species=="Na") return "Na"; // Kesong
     if(species=="N")  return "N"; // vasp recommends     [PAW_PBE]
     if(species=="Nb") return "Nb_sv"; // STEFANO     [PAW_PBE]
-    //  if(species=="Nd") return "Nd_3"; // WAHYU, frozen f     [PAW_PBE]
-    if(species=="Nd") return "Nd"; // WAHYU, with f-states, teragrid project     [PAW_PBE]
+    if(species=="Nd") return "Nd_3"; // WAHYU, frozen f     [PAW_PBE] YANG, 2022-11-02, halide perovskit
+    //if(species=="Nd") return "Nd"; // WAHYU, with f-states, teragrid project     [PAW_PBE]
     if(species=="Ne") return "Ne"; // unique choice...     [PAW_PBE]
     if(species=="Ni") return "Ni_pv"; // STEFANO     [PAW_PBE]
     if(species=="Np") return "Np_s"; // STEFANO NEVER USED JUST FOR COMPLETENESS     [PAW_PBE]
