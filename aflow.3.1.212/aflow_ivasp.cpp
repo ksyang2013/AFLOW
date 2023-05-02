@@ -2776,8 +2776,13 @@ namespace KBIN {
         ss_INCAR << aurostd::PaddedPOST("NELMIN=2",_incarpad_)        <<  notes  << endl;
         ss_INCAR << aurostd::PaddedPOST("NELM=60",_incarpad_)        <<  notes  << endl; //default is good since we can keep restarting
         ss_INCAR << aurostd::PaddedPOST("LREAL=.FALSE.",_incarpad_)   <<  notes  << endl; 
-        if (RunType == "STATIC")
-            ss_INCAR << aurostd::PaddedPOST("ISMEAR=-5",_incarpad_)   <<  notes  << endl; 
+        if (RunType == "STATIC") {
+            if (doesKeywordExist(xvasp.INCAR.str(), "LOPTICS=TRUE") || doesKeywordExist(xvasp.INCAR.str(), "LOPTICS = TRUE") )    
+                //vasp5.x version does not support LOPTICS and ISMEAR=-5 simultaneously
+                ss_INCAR << aurostd::PaddedPOST("ISMEAR=0",_incarpad_)   <<  notes  << endl; 
+            else
+                ss_INCAR << aurostd::PaddedPOST("ISMEAR=-5",_incarpad_)   <<  notes  << endl; 
+        }
         if (RunType == "BANDS")
             ss_INCAR << aurostd::PaddedPOST("ISMEAR=0",_incarpad_)    <<  notes  << endl; 
         ss_INCAR << aurostd::PaddedPOST("SIGMA=0.05",_incarpad_)      <<  notes  << endl;
