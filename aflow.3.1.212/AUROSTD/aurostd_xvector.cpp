@@ -1689,7 +1689,7 @@ namespace aurostd {  // namespace aurostd
       out+=_v1[i]*_v2[i]; // scalar product
     n_v1=modulus(_v1);
     n_v2=modulus(_v2);
-    // cerr << n_v1 << " " << n_v2 << endl;
+    //cerr << n_v1 << " " << n_v2 << endl;
     if(n_v1==0.0) {
       cerr << _AUROSTD_XLIBS_ERROR_ << " XVECTOR.CPP: cos(xvector,xvector)=modulus(v1)=0" << endl;
       exit(0);

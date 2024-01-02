@@ -2769,7 +2769,8 @@ namespace KBIN {
             if (doesKeywordExist(xvasp.INCAR.str(), "LHFCALC"))
                 ss_INCAR << aurostd::PaddedPOST("PREC=Normal",_incarpad_) << endl; //best
             else
-                ss_INCAR << aurostd::PaddedPOST("PREC=Accurate",_incarpad_) << endl; 
+                //ss_INCAR << aurostd::PaddedPOST("PREC=Accurate",_incarpad_) << endl; 
+                ss_INCAR << aurostd::PaddedPOST("PREC=Normal",_incarpad_) << endl; 
         }
         ss_INCAR << aurostd::PaddedPOST("IBRION=-1",_incarpad_)       <<  notes  << endl;
         ss_INCAR << aurostd::PaddedPOST("NSW=0",_incarpad_)           <<  notes  << endl;
