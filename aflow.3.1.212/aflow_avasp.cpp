@@ -409,8 +409,8 @@ string AVASP_Get_PseudoPotential_PAW_PBE(string species) {
     if(species=="Sc") return "Sc_sv"; // unique choice...     [PAW_PBE]
     if(species=="Se") return "Se"; // unique choice...     [PAW_PBE]
     if(species=="Si") return "Si"; // was _h"; //STEFANO,WAHYU     [PAW_PBE]
-    //  if(species=="Sm") return "Sm_3"; // WAHYU, frozen f     [PAW_PBE]
-    if(species=="Sm") return "Sm"; // WAHYU, with f-states, teragrid project     [PAW_PBE]
+    if(species=="Sm") return "Sm_3"; // WAHYU, frozen f     [PAW_PBE] //YANG 2024-02-11
+    //if(species=="Sm") return "Sm"; // WAHYU, with f-states, teragrid project     [PAW_PBE]
     if(species=="Sn") return "Sn";//STEFANO     [PAW_PBE]
     if(species=="Sr") return "Sr_sv"; // unique choice...     [PAW_PBE]
     if(species=="Ta") return "Ta_pv"; // STEFANO     [PAW_PBE]
@@ -420,8 +420,8 @@ string AVASP_Get_PseudoPotential_PAW_PBE(string species) {
     if(species=="Th") return "Th_s"; // STEFANO NEVER USED JUST FOR COMPLETENESS     [PAW_PBE]
     if(species=="Ti") return "Ti_pv"; // STEFANO    //KESONG changes Ti_sv to Ti_pv, 
     if(species=="Tl") return "Tl_d"; // STEFANO     [PAW_PBE]
-    //  if(species=="Tm") return "Tm_3"; // WAHYU, frozen f     [PAW_PBE]
-    if(species=="Tm") return "Tm";  // WAHYU, with f-states, teragrid project     [PAW_PBE]
+    if(species=="Tm") return "Tm_3"; // WAHYU, frozen f     [PAW_PBE] // YANG 2024-02-11
+    //if(species=="Tm") return "Tm";  // WAHYU, with f-states, teragrid project     [PAW_PBE]
     if(species=="U") return "U"; // UNTESTED STEFANO of U,U_s take the hardest one [Wed Nov 23 EST 2011]     [PAW_PBE]
     if(species=="V")  return "V_sv"; // STEFANO     [PAW_PBE]
     if(species=="W")  return "W_pv"; // STEFANO     [PAW_PBE]
