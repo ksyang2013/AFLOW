@@ -374,8 +374,8 @@ string AVASP_Get_PseudoPotential_PAW_PBE(string species) {
     if(species=="Kr") return "Kr"; // unique choice...     [PAW_PBE]
     if(species=="La") return "La"; // STEFANO,WAHYU // LDAU     [PAW_PBE]
     if(species=="Li") return "Li_sv"; // STEFANO     [PAW_PBE]
-    //  if(species=="Lu") return "Lu_3"; // WAHYU, frozen f     [PAW_PBE]
-    if(species=="Lu") return "Lu"; //WAHYU, with f-states,  LDAU     [PAW_PBE]
+    if(species=="Lu") return "Lu_3"; // WAHYU, frozen f     [PAW_PBE]  //Kesong fix convergence issue
+    //if(species=="Lu") return "Lu"; //WAHYU, with f-states,  LDAU     [PAW_PBE]
     if(species=="Mg") return "Mg_pv"; // STEFANO     [PAW_PBE]
     if(species=="Mn") return "Mn_pv"; // STEFANO     [PAW_PBE]
     if(species=="Mo") return "Mo_pv"; // STEFANO     [PAW_PBE]
@@ -427,7 +427,8 @@ string AVASP_Get_PseudoPotential_PAW_PBE(string species) {
     if(species=="W")  return "W_pv"; // STEFANO     [PAW_PBE]
     if(species=="Xe") return "Xe"; // unique choice...     [PAW_PBE]
     if(species=="Y")  return "Y_sv"; // unique choice...     [PAW_PBE]
-    if(species=="Yb") return "Yb_2"; // WAHYU, frozen f     [PAW_PBE]  //YANG 2024-02-1
+    if(species=="Yb") return "Yb_3"; // WAHYU, frozen f     [PAW_PBE]  //YANG 2024-02-17
+    //if(species=="Yb") return "Yb_2"; // WAHYU, frozen f     [PAW_PBE]  //YANG 2024-02-1
     //if(species=="Yb") return "Yb";  // WAHYU, with f-states, teragrid project     [PAW_PBE]
     if(species=="Zn") return "Zn"; // unique choice...     [PAW_PBE]
     if(species=="Zr") return "Zr_sv"; // STEFANO     [PAW_PBE]
