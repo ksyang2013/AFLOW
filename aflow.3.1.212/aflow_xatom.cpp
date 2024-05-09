@@ -2430,7 +2430,7 @@ ostream& operator<<(ostream& oss,const xstructure& a) { // operator<<
             oss << endl;
         }
         oss << "natom " << a.atoms.size() << endl;
-        oss << "ntypat " << a.num_each_type.size() << endl;   //Add ntypat for abiniti, //K. Yang 2024-0508
+        oss << "ntypat " << a.num_each_type.size() << endl;   //Add ntypat for abiniti, //Kesong YANG 2024-0508
         oss << "typat ";
         for(uint i=0;i<a.atoms.size();i++)
             oss << a.atoms.at(i).type+1 << " ";
