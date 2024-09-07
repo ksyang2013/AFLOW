@@ -3487,6 +3487,7 @@ namespace KBIN {
                 strline=aurostd::GetLineString(FileContent,i);
                 if(aurostd::substring2bool(strline,"LSORBIT",TRUE) || aurostd::substring2bool(strline,"#LSORBIT",TRUE) ||
                         aurostd::substring2bool(strline,"LNONCOLLINEAR",TRUE) || aurostd::substring2bool(strline,"#LNONCOLLINEAR",TRUE) ||
+                        aurostd::substring2bool(strline,"SPIN",TRUE) || aurostd::substring2bool(strline,"#SPIN",TRUE) ||
                         aurostd::substring2bool(strline,"MAGMOM",TRUE) || aurostd::substring2bool(strline,"#MAGMOM",TRUE)) {
                     xvasp.INCAR << "";
                 } else {
@@ -3495,7 +3496,6 @@ namespace KBIN {
             }
             if(OPTION==ON ) xvasp.INCAR << aurostd::PaddedPOST("LSORBIT=.TRUE.",_incarpad_) << "# LSORBIT=ON" << endl;
             if(OPTION==ON ) xvasp.INCAR << aurostd::PaddedPOST("LNONCOLLINEAR=.TRUE.",_incarpad_) << "# LNONCOLLINEAR=ON" << endl;
-            cout << FileContent << endl;
             if(doesKeywordExist(FileContent, "MAGMOM")) {  //KSY: if user specifies MAGMOM in aflow.in, do not generate new MAGMOM
                 xvasp.INCAR << GetLineWithKeyword(FileContent, "MAGMOM") << endl;
             } else {
@@ -3510,25 +3510,26 @@ namespace KBIN {
             if(vflags.KBIN_VASP_INCAR_VERBOSE && OPTION==OFF) xvasp.INCAR << "# Performing LSCOUPLING=OFF [AFLOW] end " << endl;
             if(vflags.KBIN_VASP_FORCE_OPTION_LSCOUPLING.option==FALSE) {;} // dummy
             DONE=TRUE;
+            //cout << xvasp.INCAR.str() << endl;
         }
 
         // ***************************************************************************
         // AUTO_MAGMOM 
         if(command=="AUTO_MAGMOM") {
-            //KSY: if user specifies MAGMOM in aflow.in, do not generate new MAGMOM
-            // User's customization has a higher priority, 2024-09-06
-            if(doesKeywordExist(xvasp.INCAR_orig.str(), "MAGMOM")) {  
-                xvasp.INCAR << GetLineWithKeyword(xvasp.INCAR_orig.str(), "MAGMOM") << endl;
-            } else {
-                for(int i=1;i<=imax;i++) {
-                    strline=aurostd::GetLineString(FileContent,i);
-                    if(OPTION && (aurostd::substring2bool(strline,"MAGMOM",TRUE) || aurostd::substring2bool(strline,"#MAGMOM",TRUE))) { //corey
-                        xvasp.INCAR << "";
-                    } else {
-                        xvasp.INCAR << strline << endl;
-                    }
+            for(int i=1;i<=imax;i++) {
+                strline=aurostd::GetLineString(FileContent,i);
+                if(OPTION && (aurostd::substring2bool(strline,"MAGMOM",TRUE) || aurostd::substring2bool(strline,"#MAGMOM",TRUE))) { //corey
+                    xvasp.INCAR << "";
+                } else {
+                    xvasp.INCAR << strline << endl;
                 }
-                if(OPTION==ON) {
+            }
+            if(OPTION==ON) {
+                //KSY: if user specifies MAGMOM in aflow.in, do not generate new MAGMOM
+                // User's customization has a higher priority, 2024-09-06
+                if(doesKeywordExist(xvasp.INCAR_orig.str(), "MAGMOM")) {  
+                    xvasp.INCAR << GetLineWithKeyword(xvasp.INCAR_orig.str(), "MAGMOM") << endl;
+                } else {
                     xvasp.INCAR << "MAGMOM= ";
                     for(uint i=0;i<xvasp.str.atoms.size();i++) {
                         if(xvasp.str.atoms.at(i).order_parameter_atom==FALSE) xvasp.INCAR << " 5"; 
