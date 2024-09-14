@@ -2785,8 +2785,7 @@ namespace KBIN {
             if (doesKeywordExist(xvasp.INCAR.str(), "LHFCALC"))
                 ss_INCAR << aurostd::PaddedPOST("PREC=Normal",_incarpad_) << endl; //best
             else
-                //ss_INCAR << aurostd::PaddedPOST("PREC=Accurate",_incarpad_) << endl; 
-                ss_INCAR << aurostd::PaddedPOST("PREC=Normal",_incarpad_) << endl; 
+                ss_INCAR << aurostd::PaddedPOST("PREC=Accurate",_incarpad_) << endl; 
         }
         ss_INCAR << aurostd::PaddedPOST("IBRION=-1",_incarpad_)       <<  notes  << endl;
         ss_INCAR << aurostd::PaddedPOST("NSW=0",_incarpad_)           <<  notes  << endl;
@@ -3496,10 +3495,12 @@ namespace KBIN {
             }
             if(OPTION==ON ) xvasp.INCAR << aurostd::PaddedPOST("LSORBIT=.TRUE.",_incarpad_) << "# LSORBIT=ON" << endl;
             if(OPTION==ON ) xvasp.INCAR << aurostd::PaddedPOST("LNONCOLLINEAR=.TRUE.",_incarpad_) << "# LNONCOLLINEAR=ON" << endl;
-            if(doesKeywordExist(FileContent, "MAGMOM")) {  //KSY: if user specifies MAGMOM in aflow.in, do not generate new MAGMOM
-                xvasp.INCAR << GetLineWithKeyword(FileContent, "MAGMOM") << endl;
+            //KSY: if user specifies MAGMOM in aflow.in, do not generate new MAGMOM
+            if(doesKeywordExist(xvasp.INCAR_orig.str(), "MAGMOM")) {  
+                xvasp.INCAR << GetLineWithKeyword(xvasp.INCAR_orig.str(), "MAGMOM") << endl;
             } else {
                 if(OPTION==ON ) {
+                    cout << "here test1" << endl;
                     xvasp.INCAR << "MAGMOM= ";
                     for(uint i=0;i<xvasp.str.atoms.size();i++) xvasp.INCAR << " 0 0 5";
                     xvasp.INCAR << " \t# " << xvasp.str.atoms.size() << " 3*atoms " << endl;
@@ -3510,9 +3511,8 @@ namespace KBIN {
             if(vflags.KBIN_VASP_INCAR_VERBOSE && OPTION==OFF) xvasp.INCAR << "# Performing LSCOUPLING=OFF [AFLOW] end " << endl;
             if(vflags.KBIN_VASP_FORCE_OPTION_LSCOUPLING.option==FALSE) {;} // dummy
             DONE=TRUE;
-            //cout << xvasp.INCAR.str() << endl;
         }
-
+        
         // ***************************************************************************
         // AUTO_MAGMOM 
         if(command=="AUTO_MAGMOM") {
