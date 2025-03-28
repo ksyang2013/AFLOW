@@ -2793,9 +2793,9 @@ namespace KBIN {
         ss_INCAR << aurostd::PaddedPOST("NELM=120",_incarpad_)        <<  notes  << endl; //default is good since we can keep restarting
         ss_INCAR << aurostd::PaddedPOST("LREAL=.FALSE.",_incarpad_)   <<  notes  << endl; 
         if (RunType == "STATIC") {
-            if (doesKeywordExist(xvasp.INCAR.str(), "LOPTICS=TRUE") || doesKeywordExist(xvasp.INCAR.str(), "LOPTICS = TRUE") )    
+            if ( (doesKeywordExist(xvasp.INCAR.str(), "LOPTICS=TRUE") || doesKeywordExist(xvasp.INCAR.str(), "LOPTICS = TRUE"))  && !doesKeywordExist(xvasp.INCAR.str(), "#LOPTICS"))
                 //vasp5.x version does not support LOPTICS and ISMEAR=-5 simultaneously
-                ss_INCAR << aurostd::PaddedPOST("ISMEAR=0",_incarpad_)   <<  notes  << endl; 
+                ss_INCAR << aurostd::PaddedPOST("ISMEAR=0",_incarpad_)   <<  notes  << endl;  //2025-03-27
             else
                 ss_INCAR << aurostd::PaddedPOST("ISMEAR=-5",_incarpad_)   <<  notes  << endl; 
         }
@@ -3249,7 +3249,6 @@ namespace KBIN {
 //Instruction: to call POSCAR/xstructure, use xvasp.str, for example, xvasp.str.atoms.size()
 namespace KBIN {
     bool XVASP_INCAR_PREPARE_GENERIC(string command,_xvasp& xvasp,_vflags& vflags,string svalue,int ivalue,double dvalue,bool OPTION) {
-        if (0) cerr << dvalue << endl;
         bool DONE=FALSE;
         string FileContent,strline;
         FileContent=xvasp.INCAR.str();
@@ -3339,11 +3338,13 @@ namespace KBIN {
 
         // ***************************************************************************
         // TYPE 
-        if(command=="TYPE") {
+        if(command=="TYPE"  && ! vflags.KBIN_VASP_FORCE_OPTION_NOTUNE.isentry) {
             for(int i=1;i<=imax;i++) {
                 strline=aurostd::GetLineString(FileContent,i);
-                if(aurostd::substring2bool(strline,"ISMEAR",TRUE) || aurostd::substring2bool(strline,"#ISMEAR",TRUE) ||
-                        aurostd::substring2bool(strline,"SIGMA",TRUE) || aurostd::substring2bool(strline,"#SIGMA",TRUE)) {
+                if(//aurostd::substring2bool(strline,"ISMEAR",TRUE) || 
+                        aurostd::substring2bool(strline,"#ISMEAR",TRUE) ||
+                       // aurostd::substring2bool(strline,"SIGMA",TRUE) || 
+                        aurostd::substring2bool(strline,"#SIGMA",TRUE)) {
                     xvasp.INCAR << "";
                 } else {
                     if(strline.length()) xvasp.INCAR << strline << endl;
@@ -3456,8 +3457,11 @@ namespace KBIN {
             bool MAGMOM_ALREADY_SPECIFIED=FALSE;    //corey
             for(int i=1;i<=imax;i++) {
                 strline=aurostd::GetLineString(FileContent,i);
-                if(aurostd::substring2bool(strline,"ISPIND",TRUE) || aurostd::substring2bool(strline,"#ISPIND",TRUE) ||
-                        aurostd::substring2bool(strline,"ISPIN",TRUE) || aurostd::substring2bool(strline,"#ISPIN",TRUE) ||
+                if(
+                       // aurostd::substring2bool(strline,"ISPIND",TRUE) || 
+                        aurostd::substring2bool(strline,"#ISPIND",TRUE) ||
+                        //aurostd::substring2bool(strline,"ISPIN",TRUE) 
+                        aurostd::substring2bool(strline,"#ISPIN",TRUE) ||
                         ((vflags.KBIN_VASP_FORCE_OPTION_AUTO_MAGMOM.isentry && vflags.KBIN_VASP_FORCE_OPTION_AUTO_MAGMOM.option)    //corey
                          && (aurostd::substring2bool(strline,"MAGMOM",TRUE) || aurostd::substring2bool(strline,"#MAGMOM",TRUE)))) { //corey
                     xvasp.INCAR << "";
