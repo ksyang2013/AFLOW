@@ -2795,7 +2795,8 @@ namespace KBIN {
         if (RunType == "STATIC") {
             if ( (doesKeywordExist(xvasp.INCAR.str(), "LOPTICS=TRUE") || doesKeywordExist(xvasp.INCAR.str(), "LOPTICS = TRUE"))  && !doesKeywordExist(xvasp.INCAR.str(), "#LOPTICS"))
                 //vasp5.x version does not support LOPTICS and ISMEAR=-5 simultaneously
-                ss_INCAR << aurostd::PaddedPOST("ISMEAR=0",_incarpad_)   <<  notes  << endl;  //2025-03-27
+                //ss_INCAR << aurostd::PaddedPOST("ISMEAR=0",_incarpad_)   <<  notes  << endl;  //2025-03-27
+                ss_INCAR << aurostd::PaddedPOST("",_incarpad_)   <<  notes  << endl;  //2025-03-27 supported now in vasp6.3
             else
                 ss_INCAR << aurostd::PaddedPOST("ISMEAR=-5",_incarpad_)   <<  notes  << endl; 
         }
