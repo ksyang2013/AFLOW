@@ -520,20 +520,26 @@ namespace KBIN {
         }
         // EXPLICIT ************************************************** INCAR
         if(Krun && vflags.KBIN_VASP_INCAR_MODE.flag("EXPLICIT")) {  // [VASP_INCAR_MODE_EXPLICIT] construction
-            if(vflags.KBIN_VASP_INCAR_FILE.flag("KEYWORD") && !vflags.KBIN_VASP_INCAR_MODE.flag("EXPLICIT_START_STOP")) {
-                aus << "00000  MESSAGE INCAR   generation EXPLICIT file from " << _AFLOWIN_ << " " << Message(aflags,"user,host,time") << endl;
-                aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
-                aurostd::ExtractToStringstreamEXPLICIT(AflowIn,xvasp.INCAR,"[VASP_INCAR_FILE]");
-            } else if(!vflags.KBIN_VASP_INCAR_FILE.flag("KEYWORD") && vflags.KBIN_VASP_INCAR_MODE.flag("EXPLICIT_START_STOP")) {
-                aus << "00000  MESSAGE INCAR   generation EXPLICIT file from " << _AFLOWIN_ << " with START/STOP  " << Message(aflags,"user,host,time") << endl;
-                aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
-                if(aurostd::substring2bool(AflowIn,"[VASP_INCAR_MODE_EXPLICIT]START") && aurostd::substring2bool(AflowIn,"[VASP_INCAR_MODE_EXPLICIT]STOP"))
-                    aurostd::ExtractToStringstreamEXPLICIT(AflowIn,xvasp.INCAR,"[VASP_INCAR_MODE_EXPLICIT]START","[VASP_INCAR_MODE_EXPLICIT]STOP");
-                //user set of INCAR
-                //cerr << xvasp.INCAR.str() << endl;
-                //cerr << "hi1" << endl;
-                //exit(0);
-            } else {
+            if (vflags.KBIN_VASP_INCAR_FILE.flag("KEYWORD") && !vflags.KBIN_VASP_INCAR_MODE.flag("EXPLICIT_START_STOP")) {
+                aus << "00000  MESSAGE INCAR   generation EXPLICIT file from " << _AFLOWIN_ << " " << Message(aflags, "user,host,time") << endl;
+                aurostd::PrintMessageStream(FileMESSAGE, aus, XHOST.QUIET);
+                aurostd::ExtractToStringstreamEXPLICIT(AflowIn, xvasp.INCAR, "[VASP_INCAR_FILE]");
+            } 
+            else if (!vflags.KBIN_VASP_INCAR_FILE.flag("KEYWORD") && vflags.KBIN_VASP_INCAR_MODE.flag("EXPLICIT_START_STOP")) {
+                aus << "00000  MESSAGE INCAR   generation EXPLICIT file from " << _AFLOWIN_ << " with START/STOP  " << Message(aflags, "user,host,time") << endl;
+                aurostd::PrintMessageStream(FileMESSAGE, aus, XHOST.QUIET);
+                if (aurostd::substring2bool(AflowIn, "[VASP_INCAR_MODE_EXPLICIT]START") && 
+                        aurostd::substring2bool(AflowIn, "[VASP_INCAR_MODE_EXPLICIT]STOP"))
+                    aurostd::ExtractToStringstreamEXPLICIT(AflowIn, xvasp.INCAR, 
+                            "[VASP_INCAR_MODE_EXPLICIT]START", 
+                            "[VASP_INCAR_MODE_EXPLICIT]STOP");
+                // user set of INCAR
+                // cerr << xvasp.INCAR.str() << endl;
+                // cerr << "hi1" << endl;
+                // cerr << "NOTUNE" << vflags.KBIN_VASP_FORCE_OPTION_NOTUNE.isentry << endl;
+                // exit(0);
+            }
+            else {
                 aus << "EEEEE  [VASP_INCAR_MODE_EXPLICIT] do not confuse aflow !!" << Message(aflags,"user,host,time") << endl;
                 aus << "EEEEE  [VASP_INCAR_MODE_EXPLICIT] Possible modes " << Message(aflags,"user,host,time") << endl;
                 aus << "----------------------------------------------------------------------------------------------------" << endl;
@@ -648,7 +654,7 @@ namespace KBIN {
         double max_latt = max(xvasp.str.a, xvasp.str.b, xvasp.str.c);
         if (max_latt >= 50)
             xvasp.INCAR << aurostd::PaddedPOST("AMIN=0.01", _incarpad_) <<  "# if c > 50 Angstrom, set 0.01" <<  endl;
-
+        
         return Krun;
     };  
 }
@@ -2793,12 +2799,15 @@ namespace KBIN {
         ss_INCAR << aurostd::PaddedPOST("NELM=120",_incarpad_)        <<  notes  << endl; //default is good since we can keep restarting
         ss_INCAR << aurostd::PaddedPOST("LREAL=.FALSE.",_incarpad_)   <<  notes  << endl; 
         if (RunType == "STATIC") {
-            if ( (doesKeywordExist(xvasp.INCAR.str(), "LOPTICS=TRUE") || doesKeywordExist(xvasp.INCAR.str(), "LOPTICS = TRUE"))  && !doesKeywordExist(xvasp.INCAR.str(), "#LOPTICS"))
+            if ((doesKeywordExist(xvasp.INCAR.str(), "LOPTICS=TRUE") || 
+                 doesKeywordExist(xvasp.INCAR.str(), "LOPTICS = TRUE"))  && 
+                !doesKeywordExist(xvasp.INCAR.str(), "#LOPTICS")) {
                 //vasp5.x version does not support LOPTICS and ISMEAR=-5 simultaneously
-                //ss_INCAR << aurostd::PaddedPOST("ISMEAR=0",_incarpad_)   <<  notes  << endl;  //2025-03-27
-                ss_INCAR << aurostd::PaddedPOST("",_incarpad_)   <<  notes  << endl;  //2025-03-27 supported now in vasp6.3
-            else
+                //ss_INCAR << aurostd::PaddedPOST("ISMEAR=0",_incarpad_)   <<  notes  << endl;  
+                ss_INCAR << aurostd::PaddedPOST("ISMEAR=-5",_incarpad_)   <<  notes  << endl;  //2025-03-27 now supported 
+            } else {
                 ss_INCAR << aurostd::PaddedPOST("ISMEAR=-5",_incarpad_)   <<  notes  << endl; 
+            }
         }
         if (RunType == "BANDS")
             ss_INCAR << aurostd::PaddedPOST("ISMEAR=0",_incarpad_)    <<  notes  << endl; 
