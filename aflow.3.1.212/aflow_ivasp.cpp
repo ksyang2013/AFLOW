@@ -2779,7 +2779,7 @@ namespace KBIN {
         stringstream ss_INCAR; ss_INCAR.str(std::string());
         if (!doesKeywordExist(xvasp.INCAR.str(), "ENCUT"))
             ss_INCAR << aurostd::PaddedPOST("ENCUT="+aurostd::utype2string(int(xvasp.POTCAR_ENMAX)), _incarpad_) << endl;
-        if (!doesKeywordExist(xvasp.INCAR.str(), "EDIFF"))
+        if (!doesKeywordExist(xvasp.INCAR.str(), "EDIFF="))
             ss_INCAR << aurostd::PaddedPOST("EDIFF=1E-4",_incarpad_) << endl;
         if(vflags.KBIN_VASP_FORCE_OPTION_PREC.preserved==FALSE) {
             if (doesKeywordExist(xvasp.INCAR.str(), "LHFCALC"))
@@ -3071,14 +3071,15 @@ namespace KBIN {
         }
         if(vflags.KBIN_VASP_FORCE_OPTION_PREC.xscheme=="ACCURATE") {
             xvasp.INCAR << aurostd::PaddedPOST("PREC=Accurate",_incarpad_) << endl;
-            if (!doesKeywordExist(xvasp.INCAR.str(), "ENCUT"))
+            if (!doesKeywordExist(xvasp.INCAR_orig.str(), "ENCUT"))
                 xvasp.INCAR << aurostd::PaddedPOST("ENCUT="+aurostd::utype2string(xvasp.POTCAR_ENMAX*DEFAULT_VASP_PREC_ENMAX_ACCURATE,_IVASP_DOUBLE2STRING_PRECISION_),_incarpad_) << "# " << DEFAULT_VASP_PREC_ENMAX_ACCURATE << "*ENCUT (" << xvasp.POTCAR_ENMAX << ") of pseudopotentials " << endl;
-            xvasp.INCAR << aurostd::PaddedPOST("EDIFF=1E-6",_incarpad_) << endl;
+            if (doesKeywordExist(xvasp.INCAR_orig.str(), "EDIFF="))
+                xvasp.INCAR << GetLineWithKeyword(xvasp.INCAR_orig.str(), "EDIFF=") << endl;  //KSY sets, if user set EDIFF=, then will use user's setting
             if(vflags.KBIN_VASP_FORCE_OPTION_RELAX_MODE.xscheme=="ENERGY"){
                 //will put it into a single function in future
                 stringstream stmp;
                 double dvalue_EDIFFG = 1E-6*xvasp.str.atoms.size()*0.9;
-                stmp << std::scientific << std::setprecision(2) << std::uppercase << dvalue_EDIFFG;
+                stmp << std::scientific << std::setprecision(0) << std::uppercase << dvalue_EDIFFG;
                 xvasp.INCAR << aurostd::PaddedPOST("EDIFFG=" + stmp.str(), _incarpad_) << "# 0.001meV/atom [PREC=ACCURATE] " << endl;
             }
             if(vflags.KBIN_VASP_FORCE_OPTION_RELAX_MODE.xscheme=="FORCES") {
