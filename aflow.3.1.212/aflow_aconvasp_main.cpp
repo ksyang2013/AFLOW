@@ -1719,7 +1719,7 @@ void DEVELOP(vector<string> argv) {
     string FileContent1 = ssINCAR.str();
     cout << FileContent1 << endl;
     cout << "---" << endl;
-    cout << KBIN::RemoveEmptyLines(FileContent1);
+    //cout << KBIN::RemoveEmptyLines(FileContent1);
     exit(0);
     //vector<string> vlines;
     //aurostd::string2vectorstring(ssINCAR.str(),vlines);

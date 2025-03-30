@@ -197,7 +197,7 @@ extern uint LIBRARY_ICSD,LIBRARY_LIB1,LIBRARY_LIB2,LIBRARY_LIB3,LIBRARY_LIB4,LIB
 
 #define NANOPARTICLE_RADIUS_DEFAULT   10.0
 #define NANOPARTICLE_DISTANCE_DEFAULT 10.0
-  using aurostd::min;
+using aurostd::min;
 using aurostd::max;
 using aurostd::mod;
 using aurostd::_isodd;

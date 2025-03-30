@@ -5658,6 +5658,201 @@ namespace aurostd {
 }  // namespace aurostd
 //CO - END
 
+
+// ***************************************************************************
+//KY -START
+// ***************************************************************************
+namespace aurostd {
+
+    bool doesKeywordExist(const string& FileContent, const string& keyword) {
+        bool FLAG = FALSE;
+        int imax; 
+        string strline;
+        imax=aurostd::GetNLinesString(FileContent);
+        for(int i=1;i<=imax;i++) {
+            strline=aurostd::GetLineString(FileContent,i);
+            if(aurostd::substring2bool(strline,keyword,TRUE)) FLAG = TRUE;
+        }
+        return (FLAG);
+    }
+
+    string GetLineWithKeyword(const string& FileContent, const string& keyword) {
+        int imax; 
+        string strline, ostr="";
+        imax=aurostd::GetNLinesString(FileContent);
+        for(int i=1;i<=imax;i++) {
+            strline=aurostd::GetLineString(FileContent,i);
+            if(aurostd::substring2bool(strline,keyword,TRUE)) {
+                ostr = strline;
+                break;
+            }
+        }
+        return (ostr);
+    }
+
+    bool doesKeywordExistLine(const string& strline, const string& keyword) {
+        bool FLAG = FALSE;
+        if(aurostd::substring2bool(strline,keyword,TRUE)) FLAG = TRUE;
+        return (FLAG);
+    }
+
+    void capitalizeString(string& s){
+        for (unsigned int i=0; i<s.length(); i++){
+            s[i] = toupper(s[i]);
+        }
+    }
+
+    string RemoveEmptyLines(const string& FileContent){
+        string strline;
+        ostringstream oss; oss.str("");
+        vector<string> vlines;
+        int imax=aurostd::GetNLinesString(FileContent);
+        for(int i=1;i<=imax;i++) {
+            strline=aurostd::GetLineString(FileContent,i);
+            if(strline.length()) oss << strline << endl;
+        }
+        return (oss.str());
+    }
+
+    string getUniquePart(const std::string& line) {
+        size_t pos = line.find('#');
+        std::string unique_part = (pos != std::string::npos) ? line.substr(0, pos) : line;
+        unique_part.erase(std::remove_if(unique_part.begin(), unique_part.end(), ::isspace), unique_part.end());
+        return unique_part;
+    }
+
+    string RemoveDuplicateLines(const std::string& FileContent) {
+        std::string strline;
+        std::ostringstream oss;
+        std::unordered_set<std::string> uniqueLines;
+        int imax = aurostd::GetNLinesString(FileContent);
+
+        for (int i = 1; i <= imax; i++) {
+            strline = aurostd::GetLineString(FileContent, i);
+            std::string unique_part = getUniquePart(strline);
+            if (uniqueLines.find(unique_part) == uniqueLines.end()) {
+                uniqueLines.insert(unique_part);
+                oss << strline << std::endl;
+            }
+        }
+
+        return oss.str();
+    }
+
+    string SortLinesAlphabetically(const std::string& FileContent) {
+        std::string strline;
+        std::ostringstream oss;
+        oss.str("");
+        std::vector<std::string> vlines;
+        int imax = aurostd::GetNLinesString(FileContent);
+
+        for (int i = 1; i <= imax; i++) {
+            strline = aurostd::GetLineString(FileContent, i);
+            vlines.push_back(strline);
+        }
+
+        // Sort the lines alphabetically
+        std::sort(vlines.begin(), vlines.end());
+
+        for (const auto& line : vlines) {
+            oss << line << std::endl;
+        }
+
+        return oss.str();
+    }
+
+    string RemoveCommentLines(const std::string& FileContent) {
+        std::string strline;
+        std::ostringstream oss;
+        oss.str("");
+        std::vector<std::string> vlines;
+        int imax = aurostd::GetNLinesString(FileContent);
+
+        for (int i = 1; i <= imax; i++) {
+            strline = aurostd::GetLineString(FileContent, i);
+            if (!strline.empty() && strline[0] != '#') {
+                oss << strline << std::endl;
+            }
+        }
+
+        return oss.str();
+    }
+
+    // ***************************************************************************
+    // Remove keyword lines from file string 
+    // very serious bug in aurostd::substring2bool, which cannot not find comment "#NSW" 
+    // fix it in future
+    string RemoveLineWithKeyword(const string& FileContent, const string& keyword, bool CleanBlankLine){
+        string strline;
+        ostringstream outstr;
+        int imax=aurostd::GetNLinesString(FileContent);
+        for(int i=1;i<=imax;i++) {
+            strline=aurostd::GetLineString(FileContent,i);
+            if (not aurostd::substring2bool(strline,keyword,TRUE)) {
+                if (CleanBlankLine) {
+                    if(strline.length()) outstr << strline << endl;
+                } else {
+                    outstr << strline << endl;
+                }
+            }
+        }
+        return (outstr.str());
+    }
+
+    string RemoveLineWithKeyword(const string& FileContent, const vector<string>& vkeyword, bool CleanBlankLine) {
+        string ostr=FileContent, keyword="";
+        for (uint i=0; i<vkeyword.size(); i++){
+            keyword = aurostd::RemoveWhiteSpaces(vkeyword.at(i)); 
+            ostr = RemoveLineWithKeyword(ostr, keyword, CleanBlankLine);
+        }
+        return (ostr);
+    }
+
+    string RemoveLineWithMultipleKeywords(const string& FileContent, const string& keywords, bool CleanBlankLine) {
+        string ostr = "";
+        vector<string> vkey; 
+        aurostd::string2tokens(keywords, vkey, ";");
+        ostr = RemoveLineWithKeyword(FileContent, vkey, CleanBlankLine); 
+        return (ostr);
+    }
+
+    // ***************************************************************************
+    // if multiple keywords exist; then return the first effective one (without #)
+    // since VASP only read the first key
+    string GetValueOfKey(const string& FileContent, const string& keyword) {
+        string obj;
+        if (aurostd::doesKeywordExist(FileContent, keyword)) {
+            int imax; 
+            string strline, value, firstLine, stmp;
+            imax=aurostd::GetNLinesString(FileContent);
+            vector<string> targetLines, tokens;
+            for(int i=0;i<=imax;i++) {
+                strline=aurostd::GetLineString(FileContent,i);
+                if(aurostd::substring2bool(strline,keyword,TRUE) && !aurostd::substring2bool(strline,"#" + keyword,TRUE)) {
+                    targetLines.push_back(strline);
+                }
+            }
+            firstLine = targetLines.at(0);
+            aurostd::string2tokens(firstLine, tokens, "=");
+            stmp = tokens.at(1);
+            aurostd::string2tokens(stmp, tokens, " ");
+            value = tokens.at(0);
+            capitalizeString(value);
+            if (value.size() > 0) obj = value;
+        }
+        else {
+            cerr << "WARNNING " + keyword + " DOES NOT EXIST!\n" << endl;
+            obj = "NONE";
+        }
+        return (obj);
+    }
+
+}
+// ***************************************************************************
+//KY -END
+// ***************************************************************************
+
+
 #endif  // _AURO_IMPLEMENTATIONS_
 
 // ***************************************************************************

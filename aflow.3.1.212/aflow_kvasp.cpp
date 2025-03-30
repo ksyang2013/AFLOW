@@ -1573,8 +1573,10 @@ namespace KBIN {
                                     KBIN::XVASP_INCAR_Relax_Static_ON(xvasp,vflags);     // FIX
                                     // do the RWIGS ON
                                     if(vflags.KBIN_VASP_FORCE_OPTION_RWIGS_STATIC) KBIN::XVASP_INCAR_RWIGS_Static(xvasp,vflags,FileMESSAGE,ON);
-                                    // done write INCAR
-                                    aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));
+                                    // done write INCAR; KESONG 2025-03-29 
+                                    string stmp = aurostd::RemoveCommentLines(aurostd::RemoveEmptyLines(aurostd::SortLinesAlphabetically(aurostd::RemoveDuplicateLines(xvasp.INCAR.str())))); 
+                                    aurostd::string2file(stmp,string(xvasp.Directory+"/INCAR"));
+                                    //aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));
                                     // NOW DO THE STATIC RUN
                                     if(vflags.KBIN_VASP_RUN.flag("STATIC_BANDS")) xvasp.NRELAXING=xvasp.NRELAX; //0;
                                     if(vflags.KBIN_VASP_RUN.flag("STATIC")) xvasp.NRELAXING=xvasp.NRELAX; // 0;

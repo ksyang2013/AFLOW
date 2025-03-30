@@ -47,6 +47,7 @@
 #include <time.h>
 #include <typeinfo>
 #include <unistd.h>
+#include <unordered_set>    //2025-03-28 YANG
 #include <vector>
 #include <list> //CO 170806 - need for POCC
 #include <netdb.h>  //CO 180321 - frisco needs for AFLUX
@@ -1282,10 +1283,34 @@ namespace aurostd {
 
 //binary to base64 conversion
 const std::string base64_chars = 
-  "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-  "abcdefghijklmnopqrstuvwxyz"
-  "0123456789+/";
+"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+"abcdefghijklmnopqrstuvwxyz"
+"0123456789+/";
 //CO - END
+
+
+// ***************************************************************************
+//KY 
+// ***************************************************************************
+namespace aurostd {
+    bool doesKeywordExist(const string& FileContent, const string& keyword);
+    string GetLineWithKeyword(const string& FileContent, const string& keyword);
+    bool doesKeywordExistLine(const string& strline, const string& keyword);
+    void capitalizeString(string& s);
+    string RemoveEmptyLines(const string& FileContent);
+    string getUniquePart(const std::string& line);
+    string RemoveDuplicateLines(const std::string& FileContent);
+    string SortLinesAlphabetically(const std::string& FileContent);
+    string RemoveCommentLines(const std::string& FileContent);
+    string RemoveLineWithKeyword(const string& FileContent, const string& keyword, bool CleanBlankLine);
+    string RemoveLineWithKeyword(const string& FileContent, const vector<string>& vkeyword, bool CleanBlankLine);
+    string RemoveLineWithMultipleKeywords(const string& FileContent, const string& keywords, bool CleanBlankLine);
+    string GetValueOfKey(const string& FileContent, const string& keyword);
+}
+// ***************************************************************************
+//KY 
+// ***************************************************************************
+
 
 #endif
 
