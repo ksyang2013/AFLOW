@@ -18,7 +18,6 @@
 #define DEFAULT_EFIELD_PEAD 0.001
 
 // ***************************************************************************
-
 using aurostd::doesKeywordExist;
 using aurostd::GetLineWithKeyword;
 using aurostd::doesKeywordExistLine;
