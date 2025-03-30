@@ -2674,12 +2674,16 @@ namespace KBIN {
         else  
             ss_INCAR << aurostd::PaddedPOST("NELM=120",_incarpad_)        <<  notes  << endl; //default is good since we can keep restarting
         
+        //cerr << RunType << endl;
+        //exit(0);
         if (RunType == "STATIC") {
+            ss_INCAR << aurostd::PaddedPOST("ISMEAR=-5",_incarpad_)   <<  notes  << endl; 
             //cerr << xvasp.INCAR_orig.str() << endl;   2025-03-28, Yang
             if (aurostd::doesKeywordExist(xvasp.INCAR_orig.str(), "ISMEAR")) {
-                xvasp.INCAR << GetLineWithKeyword(xvasp.INCAR_orig.str(), "ISMEAR") << endl;
+                //xvasp.INCAR << GetLineWithKeyword(xvasp.INCAR_orig.str(), "ISMEAR") << endl;
+                //ss_INCAR << aurostd::PaddedPOST("ISMEAR=-5",_incarpad_)   <<  notes  << endl; 
             } else {
-                ss_INCAR << aurostd::PaddedPOST("ISMEAR=-5",_incarpad_)   <<  notes  << endl; 
+                //ss_INCAR << aurostd::PaddedPOST("ISMEAR=-5",_incarpad_)   <<  notes  << endl; 
             }
             if (!aurostd::doesKeywordExist(xvasp.INCAR.str(), "LCHARG"))
                 ss_INCAR << aurostd::PaddedPOST("LCHARG=.TRUE.",_incarpad_)   <<  notes << endl;
