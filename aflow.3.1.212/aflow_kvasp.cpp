@@ -2546,7 +2546,9 @@ namespace KBIN {
                             aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","VERY BAD NEWS! internal error in subroutine IBZKPT") && 
                             (!aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Tetrahedron method fails for NKPT<4."))
                             ));
-                xwarning.flag("IBZKPT_KNPT", aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Tetrahedron method fails for NKPT<4."));
+                xwarning.flag("IBZKPT_KNPT", (aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Tetrahedron method fails for NKPT<4.")) ||
+                        (aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","IBZKPT: tetrahedron method fails for NKPT<4"))  //KESONG, 2025-03-30, VASP64 format
+                        );
                 //xwarning.flag("EDDRMM",( (!xmessage.flag("REACHED_ACCURACY") || !isConverged) && 
                 //            aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING in EDDRMM: call to ZHEGV failed, returncode")) ); // && !xwarning.flag("ZPOTRF");
                 xwarning.flag("EDDRMM", aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING in EDDRMM: call to ZHEGV failed, returncode")); 
