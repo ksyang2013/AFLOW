@@ -29,7 +29,7 @@ VERSNUMBER=3.1.212
 # FOR FROZSL -lmkl_lapack95_ilp64 -lmkl_core -lmkl_intel_lp64 -lmkl_sequential
 
 # for aflow
-CPP=g++
+CPP=g++  #-std=c++17  -DAFLOW_MULTITHREADS_ENABLE
 #-O2 -frepo
 # for sqllite
 CC=gcc
