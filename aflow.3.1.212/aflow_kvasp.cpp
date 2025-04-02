@@ -3081,7 +3081,7 @@ namespace KBIN {
 
                 // ********* VASP TO BE RESTARTED *********
                 if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [DONE WIHT CHECKS]" << endl;
-                cout << "xfixed.flag" << xfixed.flag("ALL") << endl;
+                //cout << "xfixed.flag" << xfixed.flag("ALL") << endl;
                 if(xfixed.flag("ALL")) vasp_start=TRUE;
                 if(vasp_start) {
                     if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [VASP TO BE RESTARTED]" << endl;
