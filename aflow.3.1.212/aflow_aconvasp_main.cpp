@@ -10429,8 +10429,6 @@ namespace pflow {
     if(LDEBUG) cerr << "pflow::PEARSON_SYMBOL: BEGIN" << endl;
     stringstream sss;
     xstructure a(input,IOAFLOW_AUTO);
-    //  cerr << a << endl;
-    //  cerr << "here" << endl;
     if(LDEBUG) cerr << "pflow::PEARSON_SYMBOL: X1" << endl;
     // DX 8/24/17 [OBSOLETE] a.GetLatticeType();
     xstructure str_sp,str_sc;

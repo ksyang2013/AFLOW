@@ -2479,7 +2479,7 @@ namespace KBIN {
 // ***************************************************************************
 namespace KBIN {
     void XVASP_INCAR_System_Auto(_xvasp& xvasp, bool VERBOSE) {        // AFLOW_FUNCTION_IMPLEMENTATION
-        if (VERBOSE) cerr << VERBOSE << endl;   
+        if (VERBOSE) VERBOSE = true; //cerr << VERBOSE << endl;  do nothing 
         string FileContent,strline;
         FileContent=xvasp.INCAR.str();
         xvasp.INCAR.str(std::string());
@@ -3581,10 +3581,8 @@ namespace KBIN {
                 if(!VERBOSE && strline.length()) xvasp.INCAR << strline << endl;
                 if(VERBOSE) xvasp.INCAR << strline << endl;
             }
-        } // xvasp.INCAR << endl;
-        //if(VERBOSE) xvasp.INCAR << "# Performing LDAU=OFF [AFLOW] begin" << endl;
+        } 
         xvasp.INCAR << aurostd::PaddedPOST("LDAU=.FALSE.",_incarpad_) << "# LDAU=OFF" << endl;
-        //if(VERBOSE) xvasp.INCAR << "# Performing LDAU=OFF [AFLOW] end " << endl;
     }
 }
 

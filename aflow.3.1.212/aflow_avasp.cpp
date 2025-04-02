@@ -2453,7 +2453,7 @@ bool AVASP_MakePrototype_AFLOWIN_LOOP(deque<_xvasp>& dxvasp,bool flag_WRITE) {
     AFLOW_PTHREADS::Clean_Threads();      
     int NUM_THREADS=min(8,XHOST.CPU_Cores);  
     deque<_xvasp> dxvasp_local;
-    cerr << dxvasp.size() << endl;
+    //cerr << dxvasp.size() << endl;  
     uint _MOD=AVASP_AFLOWIN_MAX_JOBS;
     _threaded_AVASP_AFLOWIN_params params[MAX_ALLOCATABLE_PTHREADS];                 // prepare
     for(uint i=0;i<dxvasp.size();i+=_MOD) {   //   cerr << i << endl;

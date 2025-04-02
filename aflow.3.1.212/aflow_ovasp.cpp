@@ -1069,8 +1069,9 @@ bool xOUTCAR::GetProperties(const stringstream& stringstreamIN,bool QUIET) {
                     if(!aurostd::substring2bool(vcontent.at(iline),"SYSTEM"))
                         vline.push_back(vcontent.at(iline));
 
+    //Kesong 2025
     //smart setting using vline.size()
-    //vasp64 version writes input parameters in the OUTCAR, using "!=0" will lead to bug if one writes LDAU = F,  kesong 2025
+    //vasp64 version writes input parameters in the OUTCAR, using "!=0" will lead to bug if one writes LDAU = F  
     if(vline.size()>1) {  
         if(LVERBOSE) cout << "xOUTCAR::GetProperties: LDAU calculation in OUTCAR" << endl;
         int LDAUT=0;
