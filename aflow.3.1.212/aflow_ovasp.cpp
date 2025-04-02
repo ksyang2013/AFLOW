@@ -1009,7 +1009,6 @@ bool xOUTCAR::GetProperties(const stringstream& stringstreamIN,bool QUIET) {
     if(LVERBOSE) cerr << "xOUTCAR::GetProperties: isKIN=" << isKIN << endl;
     if(LVERBOSE) cerr << "xOUTCAR::GetProperties: isMETAGGA=" << isMETAGGA << endl;
     if(LVERBOSE) cerr << "xOUTCAR::GetProperties: METAGGA=" << METAGGA << endl;
-
     // ----------------------------------------------------------------------
     // PSEUDOPOTENTIAL DATA
     if(LVERBOSE) cerr << "xOUTCAR::GetProperties: ---------------------------------" << endl;
@@ -1070,7 +1069,9 @@ bool xOUTCAR::GetProperties(const stringstream& stringstreamIN,bool QUIET) {
                     if(!aurostd::substring2bool(vcontent.at(iline),"SYSTEM"))
                         vline.push_back(vcontent.at(iline));
 
-    if(vline.size()!=0) {
+    //smart setting using vline.size()
+    //vasp64 version writes input parameters in the OUTCAR, using "!=0" will lead to bug if one writes LDAU = F,  kesong 2025
+    if(vline.size()>1) {  
         if(LVERBOSE) cout << "xOUTCAR::GetProperties: LDAU calculation in OUTCAR" << endl;
         int LDAUT=0;
         vector<int> vLDAUL;vector<double> vLDAUU,vLDAUJ;

@@ -2513,9 +2513,9 @@ namespace KBIN {
             //check OUTCAR converged? KESONG 2019-07-13 // **************************************** 
             bool isConverged = FALSE;
             xOUTCAR outcar(xvasp.Directory+"/OUTCAR");
-            if (abs(outcar.total_energy_change) < outcar.EDIFF) {
-                isConverged = TRUE;
-            }
+            //if (abs(outcar.total_energy_change) < outcar.EDIFF) {
+            //    isConverged = TRUE;
+            //}
             // **************************************** 
 
             if(nrun<maxrun) {  

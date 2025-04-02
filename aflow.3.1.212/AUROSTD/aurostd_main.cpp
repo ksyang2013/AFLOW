@@ -5715,7 +5715,7 @@ namespace aurostd {
     }
 
     string getUniquePart(const std::string& line) {
-        size_t pos = line.find('#');
+        size_t pos = line.find('=');
         std::string unique_part = (pos != std::string::npos) ? line.substr(0, pos) : line;
         unique_part.erase(std::remove_if(unique_part.begin(), unique_part.end(), ::isspace), unique_part.end());
         return unique_part;

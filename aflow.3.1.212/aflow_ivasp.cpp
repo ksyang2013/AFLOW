@@ -385,11 +385,6 @@ namespace KBIN {
                     aurostd::ExtractToStringstreamEXPLICIT(AflowIn, xvasp.INCAR, 
                             "[VASP_INCAR_MODE_EXPLICIT]START", 
                             "[VASP_INCAR_MODE_EXPLICIT]STOP");
-                // user set of INCAR
-                // cerr << xvasp.INCAR.str() << endl;
-                // cerr << "hi1" << endl;
-                // cerr << "NOTUNE" << vflags.KBIN_VASP_FORCE_OPTION_NOTUNE.isentry << endl;
-                // exit(0);
             }
             else {
                 aus << "EEEEE  [VASP_INCAR_MODE_EXPLICIT] do not confuse aflow !!" << Message(aflags,"user,host,time") << endl;
@@ -996,8 +991,6 @@ namespace KBIN {
                             volumeABC.push_back(aurostd::string2utype<double>(tokens2[j]));
                     }
                 }
-                // for(uint j=0;j<atomABC.size();j++) cerr << atomABC.at(j) << endl;
-                // for(uint j=0;j<volumeABC.size();j++) cerr << volumeABC.at(j) << endl;
                 bool done=FALSE;
                 if(atomABC.size()==2 && volumeABC.size()==0) {
                     done=TRUE;
@@ -2486,7 +2479,7 @@ namespace KBIN {
 // ***************************************************************************
 namespace KBIN {
     void XVASP_INCAR_System_Auto(_xvasp& xvasp, bool VERBOSE) {        // AFLOW_FUNCTION_IMPLEMENTATION
-        if (VERBOSE) cerr << VERBOSE << endl;
+        if (VERBOSE) cerr << VERBOSE << endl;   
         string FileContent,strline;
         FileContent=xvasp.INCAR.str();
         xvasp.INCAR.str(std::string());
@@ -2661,29 +2654,30 @@ namespace KBIN {
                 ss_INCAR << aurostd::PaddedPOST("PREC=Accurate",_incarpad_) << endl; 
         }
 
+        ////TEST, will be removed in future
+        //if (aurostd::doesKeywordExist(xvasp.INCAR_orig.str(), "LREAL ") || aurostd::doesKeywordExist(xvasp.INCAR_orig.str(), "LREAL=")  ||
+        //        aurostd::doesKeywordExist(aurostd::file2string(xvasp.Directory+"/aflow.in"), "LREAL ") || 
+        //        aurostd::doesKeywordExist(aurostd::file2string(xvasp.Directory+"/aflow.in"), "LREAL=") 
+        //   ) {
+        //    xvasp.INCAR << GetLineWithKeyword(xvasp.INCAR_orig.str(), "LREAL") << endl;
+        //    xvasp.INCAR << GetLineWithKeyword(aurostd::file2string(xvasp.Directory+"/aflow.in"), "LREAL") << endl;
+        //}
+
         if (aurostd::doesKeywordExist(xvasp.INCAR_orig.str(), "NELM ") || aurostd::doesKeywordExist(xvasp.INCAR_orig.str(), "NELM=")  ||
                 aurostd::doesKeywordExist(aurostd::file2string(xvasp.Directory+"/aflow.in"), "NELM ") || 
                 aurostd::doesKeywordExist(aurostd::file2string(xvasp.Directory+"/aflow.in"), "NELM=") 
                 ) {
             xvasp.INCAR << GetLineWithKeyword(xvasp.INCAR_orig.str(), "NELM") << endl;
             xvasp.INCAR << GetLineWithKeyword(aurostd::file2string(xvasp.Directory+"/aflow.in"), "NELM") << endl;
-            //cerr << GetLineWithKeyword(xvasp.INCAR_orig.str(), "NELM") << endl;
-            //cerr << xvasp.INCAR_orig.str() << endl;
-            //exit(0);
         }
         else  
             ss_INCAR << aurostd::PaddedPOST("NELM=120",_incarpad_)        <<  notes  << endl; //default is good since we can keep restarting
         
-        //cerr << RunType << endl;
-        //exit(0);
         if (RunType == "STATIC") {
-            ss_INCAR << aurostd::PaddedPOST("ISMEAR=-5",_incarpad_)   <<  notes  << endl; 
-            //cerr << xvasp.INCAR_orig.str() << endl;   2025-03-28, Yang
             if (aurostd::doesKeywordExist(xvasp.INCAR_orig.str(), "ISMEAR")) {
-                //xvasp.INCAR << GetLineWithKeyword(xvasp.INCAR_orig.str(), "ISMEAR") << endl;
-                //ss_INCAR << aurostd::PaddedPOST("ISMEAR=-5",_incarpad_)   <<  notes  << endl; 
+                xvasp.INCAR << GetLineWithKeyword(xvasp.INCAR_orig.str(), "ISMEAR") << endl;  //somtimes, one want to use ISMEAR=0 to produce DOS
             } else {
-                //ss_INCAR << aurostd::PaddedPOST("ISMEAR=-5",_incarpad_)   <<  notes  << endl; 
+                ss_INCAR << aurostd::PaddedPOST("ISMEAR=-5",_incarpad_)   <<  notes  << endl; 
             }
             if (!aurostd::doesKeywordExist(xvasp.INCAR.str(), "LCHARG"))
                 ss_INCAR << aurostd::PaddedPOST("LCHARG=.TRUE.",_incarpad_)   <<  notes << endl;
@@ -2785,7 +2779,6 @@ namespace KBIN {
 // KBIN::XVASP_INCAR_RWIGS_Static
 namespace KBIN {
     void XVASP_INCAR_RWIGS_Static(_xvasp& xvasp,_vflags& vflags,ofstream &FileMESSAGE,bool OPERATION) {        // AFLOW_FUNCTION_IMPLEMENTATION
-        // cerr << "DEBUG RWIGS" << endl;
         ostringstream aus;
         string FileContent,strline;
         int imax;
@@ -3007,7 +3000,6 @@ namespace KBIN {
     void XVASP_INCAR_Ivdw(_xvasp& xvasp,_vflags& vflags) {        // AFLOW_FUNCTION_IMPLEMENTATION   number_for_VASP_see_manual_for_IVDW | 0
         string FileContent,strline;
         int imax;
-        // cerr << xvasp.INCAR.str() << endl; exit(0);
         FileContent=xvasp.INCAR.str();
         xvasp.INCAR.str(std::string());
         xvasp.aopts.flag("FLAG::XVASP_INCAR_changed",TRUE);
@@ -3127,7 +3119,7 @@ namespace KBIN {
         FileContent=xvasp.INCAR.str();
         xvasp.INCAR.str(std::string());
         xvasp.aopts.flag("FLAG::XVASP_INCAR_changed",TRUE);
-        cerr << dvalue  << endl;
+        dvalue = dvalue * 1;  //not used 
         int imax=aurostd::GetNLinesString(FileContent);
         if (aurostd::doesKeywordExist(FileContent, "ALGO")) vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme = aurostd::GetValueOfKey(FileContent, "ALGO"); //KESONG, get ALGO from user's INCAR, 2020-03-12
 
