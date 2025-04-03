@@ -2350,6 +2350,7 @@ ostream& operator<<(ostream& oss,const xstructure& a) { // operator<<
 
         // --- &control namelist ---
         oss << "! AFLOW::QE BEGIN " << endl;
+        oss << "! Originally written by AFLOW Consortium; Refined by Prof. Kesong YANG for Class NANO115L & NANO110; 2025-04" << endl;
         if (a_iomode == IOQE_AUTO || a_iomode == IOQE_GEOM) {
             oss << "! " << a.title << std::endl;
         }
@@ -2443,7 +2444,7 @@ ostream& operator<<(ostream& oss,const xstructure& a) { // operator<<
         oss << kpoints[0] << " " << kpoints[1] << " " << kpoints[2] << " 0 0 0" << std::endl;
 
 
-        oss << "# AFLOW::QE END " << endl;
+        oss << "! AFLOW::QE END " << endl;
         return oss;
     }
     // ----------------------------------------------------------------------
