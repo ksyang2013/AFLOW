@@ -956,6 +956,7 @@ class _atom { // simple class.. nothing fancy
   // constructor destructor                              // constructor/destructor
   _atom();                                               // default, just allocate
   ~_atom();                                              // kill everything
+  _atom(const _atom &b);
   const _atom& operator=(const _atom &b);                // copy
   void clear();
   // content                                             // content

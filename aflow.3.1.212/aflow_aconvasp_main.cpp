@@ -4855,28 +4855,6 @@ namespace pflow {
     xstructure a(input,IOAFLOW_AUTO);
     a.AddCorners();
     return a;
-
-    if(0) {
-      xstructure a(input,IOAFLOW_AUTO),b;
-      a.BringInCell();b=a;
-      while(a.atoms.size()) a.RemoveAtom(0); 
-      for(uint iat=0;iat<b.atoms.size();iat++) {
-	for(double i=0;i<=1;i+=0.99) {
-	  for(double j=0;j<=1;j+=0.99) {
-	    for(double k=0;k<=1;k+=0.99) {
-	      _atom atom=b.atoms.at(iat);
-	      atom.fpos[1]+=i;atom.fpos[2]+=j;atom.fpos[3]+=k;
-	      atom.cpos=F2C(a.lattice,atom.fpos);
-	      if(atom.fpos[1]<=1.0 && atom.fpos[2]<=1.0 && atom.fpos[3]<=1.0) a.AddAtom(atom);
-	      //	    if(aurostd::isequal(atom.fpos[1],1.0,0.02) && atom.fpos[2]<1.0 && atom.fpos[3]<1.0)   a.AddAtom(atom);	    //a.AddAtom(atom);
-	    }
-	  }
-	}
-      }
-      a.title=a.title+" with_corners";
-      return a;
-    }
-    return a;
   }
 } // namespace pflow
 
