@@ -3733,6 +3733,12 @@ void wa(_atom& a,xstructure &str);
 xstructure WyckoffPOSITIONS(uint spacegroup, xstructure strin);
 xstructure WyckoffPOSITIONS(uint spacegroup, uint option, xstructure strin);
 
+// Kesong Yang for QE 2025
+std::string getPseudoPotentialFileName(const std::string& element); // Declaration
+
+
+
+
 // ----------------------------------------------------------------------------
 // aflow_apennsy stuff
 #include "aflow_apennsy.h"

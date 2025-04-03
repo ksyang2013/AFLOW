@@ -29,6 +29,7 @@
 #include <pthread.h>
 #include <pwd.h>
 #include <queue>
+#include <set>
 #include <sstream>
 #include <stdarg.h>
 #include <stdexcept>
