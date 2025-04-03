@@ -1464,18 +1464,6 @@ namespace pflow {
       if(vpflow.flag("SHIFT")) {cout << pflow::SHIFT(vpflow.getattachedscheme("SHIFT"),cin); _PROGRAMRUN=true;}
       if(vpflow.flag("SLAB")) {cout << slab::MAKE_SLAB(vpflow.getattachedscheme("SLAB"),cin); _PROGRAMRUN=true;}
       if(vpflow.flag("STATDIEL")) {pflow::STATDIEL(argv) ; _PROGRAMRUN=true ;} // CAMILO
-      // DX 9/21/17 [OBSOLETE] if(vpflow.flag("SG::AFLOW") && argv.size()>=2) {cout << pflow::SG(vpflow.getattachedscheme("SG::AFLOW"),cin,"AFLOW","ALL") << endl; _PROGRAMRUN=true;}
-      // DX 9/21/17 [OBSOLETE] if(vpflow.flag("SG::AFLOW_LABEL") && argv.size()>=2) {cout << pflow::SG(vpflow.getattachedscheme("SG::AFLOW_LABEL"),cin,"AFLOW","LABEL") << endl; _PROGRAMRUN=true;}
-      // DX 9/21/17 [OBSOLETE] if(vpflow.flag("SG::AFLOW_NUMBER") && argv.size()>=2) {cout << pflow::SG(vpflow.getattachedscheme("SG::AFLOW_NUMBER"),cin,"AFLOW","NUMBER") << endl; _PROGRAMRUN=true;}
-      // DX 9/21/17 [OBSOLETE] if(vpflow.flag("SG::PLATON") && argv.size()>=2) {cout << pflow::SG(vpflow.getattachedscheme("SG::PLATON"),cin,"PLATON","ALL") << endl; _PROGRAMRUN=true;}
-      // DX 9/21/17 [OBSOLETE] if(vpflow.flag("SG::PLATON_LABEL") && argv.size()>=2) {cout << pflow::SG(vpflow.getattachedscheme("SG::PLATON_LABEL"),cin,"PLATON","LABEL") << endl; _PROGRAMRUN=true;}
-      // DX 9/21/17 [OBSOLETE] if(vpflow.flag("SG::PLATON_NUMBER") && argv.size()>=2) {cout << pflow::SG(vpflow.getattachedscheme("SG::PLATON_NUMBER"),cin,"PLATON","NUMBER") << endl; _PROGRAMRUN=true;}
-      // DX 9/21/17 [OBSOLETE] if(vpflow.flag("SG::FINDSYM") && argv.size()>=2) {cout << pflow::SG(vpflow.getattachedscheme("SG::FINDSYM"),cin,"FINDSYM","ALL") << endl; _PROGRAMRUN=true;}
-      // DX 9/21/17 [OBSOLETE] if(vpflow.flag("SG::FINDSYM_LABEL") && argv.size()>=2) {cout << pflow::SG(vpflow.getattachedscheme("SG::FINDSYM_LABEL"),cin,"FINDSYM","LABEL") << endl; _PROGRAMRUN=true;}
-      // DX 9/21/17 [OBSOLETE] if(vpflow.flag("SG::FINDSYM_NUMBER") && argv.size()>=2) {cout << pflow::SG(vpflow.getattachedscheme("SG::FINDSYM_NUMBER"),cin,"FINDSYM","NUMBER") << endl; _PROGRAMRUN=true;}
-
-      // DX 9/21/17 [OBSOLETE] if(vpflow.flag("SG::FINDSYM_PRINT")) {pflow::FINDSYM(vpflow.getattachedscheme("SG::FINDSYM_PRINT"),0,cin); _PROGRAMRUN=true;}
-      // DX 9/21/17 [OBSOLETE] if(vpflow.flag("SG::FINDSYM_EXEC")) {pflow::FINDSYM(vpflow.getattachedscheme("SG::FINDSYM_EXEC"),1,cin); _PROGRAMRUN=true;}
       
       if(vpflow.flag("SG::AFLOW") && argv.size()>=2) {cout << pflow::SG(vpflow,cin,"AFLOW","ALL") << endl; _PROGRAMRUN=true;} // DX 9/26/17
       if(vpflow.flag("SG::AFLOW_LABEL") && argv.size()>=2) {cout << pflow::SG(vpflow,cin,"AFLOW","LABEL") << endl; _PROGRAMRUN=true;} // DX 9/26/17
@@ -1496,16 +1484,12 @@ namespace pflow {
       if(vpflow.flag("SD") && argv.size()>=2) {cout << pflow::SD(argv,cin); _PROGRAMRUN=true;}
       if(vpflow.flag("SG")) {pflow::SG(cin); _PROGRAMRUN=true;}
       if(vpflow.flag("SGDATA")) {pflow::SGDATA(cin,vpflow,cout); _PROGRAMRUN=true;} // DX 8/18/17
-      // DX 8/18/17 [OBSOLETE] if(vpflow.flag("SGROUP")) {pflow::SGROUP(aflags,cin,KBIN_SYMMETRY_SGROUP_RADIUS_DEFAULT); _PROGRAMRUN=true;}
       if(vpflow.flag("SGROUP")) {pflow::SYMMETRY_GROUPS(aflags,cin,vpflow,cout); _PROGRAMRUN=true;} // DX 8/18/17
       if(vpflow.flag("SPECIES")) {cout << pflow::SPECIES(cin); _PROGRAMRUN=true;}
       if(vpflow.flag("STDCONVCELL")) {cout << GetStandardConventional(xstructure(cin,IOAFLOW_AUTO)); _PROGRAMRUN=true;}
       if(vpflow.flag("STDPRIMCELL")) {cout << GetStandardPrimitive(xstructure(cin,IOAFLOW_AUTO)); _PROGRAMRUN=true;}
       if(vpflow.flag("SCALE")) {cout << pflow::SCALE(vpflow.getattachedscheme("SCALE"),cin); _PROGRAMRUN=true;}
 
-      // T
-      // [OBSOLETE] [JUNKAI] if(vpflow.flag("TERDATA")) {INPUTDATAFORTERPHASE(argv); _PROGRAMRUN=true;}
-      // [OBSOLETE] [JUNKAI] if(vpflow.flag("TERDATA_EXIST")) {GENERATESTABLELIST(argv); _PROGRAMRUN=true;}
       // U
       if(vpflow.flag("UFFENERGY")) {pocc::UFFENERGY(cin); _PROGRAMRUN=true;}
       // V
@@ -1531,74 +1515,26 @@ namespace pflow {
         //[OBSOLETE] SetTolerance(argv);
         xstructure str(cin);
         str.GetPrimitiveCell(); cout << str << endl;_PROGRAMRUN=true;}
-      //SPACEGROUP FUNCTIONS (AUTO AND MANUAL) (SEE README)
-      //[OBSOLETE] (DX) if(vpflow.flag("SPACEGROUP_RHT")) {
-      //[OBSOLETE] (DX)  //[OBSOLETE] initsymmats();initglides();initsymops();SetTolerance(argv); 
-      //[OBSOLETE] (DX)  xstructure str(cin); double tolerance=SYM::defaultTolerance(str); if(argv.size()==2) {tolerance=SYM::defaultTolerance(str);}; if(argv.size()>=3) {tolerance=atof(argv.at(2).c_str());}; uint sgroup=str.SpaceGroup_ITC(tolerance); cout << GetSpaceGroupName(sgroup) << " " << aurostd::utype2string(sgroup) << endl; _PROGRAMRUN=true;}
-      //[OBSOLETE] (DX)if(vpflow.flag("SPACEGROUP_MANUAL_RHT")) {
-      //[OBSOLETE] (DX)  //[OBSOLETE] initsymmats();initglides();initsymops();SetTolerance(argv);
-      //[OBSOLETE] (DX)  xstructure str(cin); double tolerance=SYM::defaultTolerance(str); int man_int=-1; if(argv.size()==2) {tolerance=SYM::defaultTolerance(str);}; if(argv.size()>=3) {tolerance=atof(argv.at(2).c_str()); man_int=atof(argv.at(3).c_str());}; uint sgroup=str.SpaceGroup_ITC(tolerance,man_int); cout << GetSpaceGroupName(sgroup) << " " << aurostd::utype2string(sgroup) << endl; _PROGRAMRUN=true;}
-      //RETURNS SPACE GROUP
-      // [OBSOLETE]   if(vpflow.flag("SG::AFLOW") || vpflow.flag("SG::AFLOW_LABEL") || vpflow.flag("SG::AFLOW_NUMBER")) {
-      // [OBSOLETE]   initsymmats();initglides();initsymops();SetTolerance(argv);
-      // [OBSOLETE]   xstructure str(cin);
-      // [OBSOLETE]   if(vpflow.flag("SG::AFLOW")) cout << GetSpaceGroupName(str.SpaceGroup_ITC(false,argv)) << " #" << str.SpaceGroup_ITC(false,argv) << endl;
-      // [OBSOLETE]   if(vpflow.flag("SG::AFLOW_LABEL")) cout << GetSpaceGroupName(str.SpaceGroup_ITC(false,argv)) << endl;
-      // [OBSOLETE]   if(vpflow.flag("SG::AFLOW_NUMBER")) cout << str.SpaceGroup_ITC(false,argv) << endl;
-      // [OBSOLETE]   _PROGRAMRUN=true;}
-      //TO CHANGE THE FORMAT OF WYCCAR GO TO SPACEGROUP_ITC FUNCTION AND CHANGE WSS
-      //DX 20180807 [OBSOLETE] aflags.QUIET=TRUE;
-      // [OBSOLETE]       bool WRITE=TRUE;
-      //DX 20180807 [OBSOLETE] ofstream File("/dev/null");
-      //DX 20180807 [OBSOLETE] bool verbose=TRUE;
-      // DX - START 
-      //WYCCAR FUNCTIONS (AUTO and MANUAL)
-      // [OBSOLETE]      if(vpflow.flag("WYCCAR_RHT")) {initsymmats();initglides();initsymops();SetTolerance(argv);
-      // [OBSOLETE]   xstructure str(cin); str.SpaceGroup_ITC(false,argv);printWyccar(File,str,aflags,WRITE,verbose,cout); _PROGRAMRUN=true;}
-      // [OBSOLETE]       if(vpflow.flag("WYCCAR_MANUAL_RHT")) {initsymmats();initglides();initsymops();SetTolerance(argv);
-      // [OBSOLETE]   xstructure str(cin); str.SpaceGroup_ITC(true,argv);printWyccar(File,str,aflags,WRITE,verbose,cout); _PROGRAMRUN=true;}
 
       if(vpflow.flag("WYCCAR")) {cout << pflow::WYCCAR(vpflow,cin) << endl; _PROGRAMRUN=true;} //DX 20180807 - put into pflow function
-      //[OBSOLETE] (DX)if(vpflow.flag("WYCCAR_MANUAL_RHT")) {// [OBSOLETE] initsymmats();initglides();initsymops();SetTolerance(argv);
-      //[OBSOLETE] (DX)  xstructure str(cin); double tolerance=0.001; int man_int=-1; if(argv.size()==2) {tolerance=0.001;}; if(argv.size()>=3) {tolerance=atof(argv.at(2).c_str()); man_int=atof(argv.at(3).c_str());}; str.SpaceGroup_ITC(tolerance,man_int); printWyccar(File,str,verbose,cout); _PROGRAMRUN=true;}
-      //End Richard's Functions
-      // DX - END
-    
     }
     // *********************************************************************
     if(argv.size()==3 && !_PROGRAMRUN) {
-      // [OBSOLETE] if(vpflow.flag("ANGLES")) {pflow::ANGLES(cin,aurostd::args2utype(argv,"--angle",0.0)); _PROGRAMRUN=true;}
-      // [OBSOLETE] if(vpflow.flag("BANDS")) {pflow::BANDS(argv,cin); _PROGRAMRUN=true;}
-      // [OBSOLETE] if(vpflow.flag("BZDIRECTION")) {cout << pflow::BZDirectionsLATTICE(argv); _PROGRAMRUN=true;}
-      // [OBSOLETE] if(vpflow.flag("CAGES") && !AFLOW_PTHREADS::FLAG) {pflow::CAGES(aflags,cin,aurostd::args2utype(argv,"--cages",-1.0)); _PROGRAMRUN=true;}
-      // [OBSOLETE] if(vpflow.flag("CAGES") && AFLOW_PTHREADS::FLAG) { pflow::CAGES(aflags,cin,aurostd::args2utype(argv,"--cages",-1.0)); _PROGRAMRUN=true;}  // fix around Thu Apr 18 23:29:43 EDT 2013
       if(vpflow.flag("CHGINT")) {pflow::CHGINT(argv); _PROGRAMRUN=true;}
-      // [OBSOLETE] if(vpflow.flag("DATA1")) {pflow::DATA1(argv,cin); _PROGRAMRUN=true;}
-      // [OBSOLETE] if(vpflow.flag("DISP")) {pflow::DISP(cin,aurostd::args2utype(argv,"--disp",0.0)); _PROGRAMRUN=true;}
-      // [OBSOLETE] if(vpflow.flag("DIST")) {pflow::DIST(cin,aurostd::args2utype(argv,"--dist",0.0)); _PROGRAMRUN=true;}
-      // [OBSOLETE] if(vpflow.flag("EWALD")) {pflow::EWALD(argv,cin); _PROGRAMRUN=true;}
       if(EXTRACT_KPOINTS!="nan") {cout << pflow::EXTRACT_xcar(aflags,argv,"KPOINTS",EXTRACT_KPOINTS); _PROGRAMRUN=true;}
       if(EXTRACT_INCAR!="nan") {cout << pflow::EXTRACT_xcar(aflags,argv,"INCAR",EXTRACT_INCAR); _PROGRAMRUN=true;}
       if(EXTRACT_POSCAR!="nan") {cout << pflow::EXTRACT_xcar(aflags,argv,"POSCAR",EXTRACT_POSCAR); _PROGRAMRUN=true;}
       if(EXTRACT_POTCAR!="nan") {cout << pflow::EXTRACT_xcar(aflags,argv,"POTCAR",EXTRACT_POTCAR); _PROGRAMRUN=true;}
       if(vpflow.flag("EXTRACT_SYMMETRY")) {cout << pflow::EXTRACT_Symmetry(aflags,argv); _PROGRAMRUN=true;}
-      // [OBSOLETE] if(vpflow.flag("SG::FINDSYM_PRINT")) {pflow::FINDSYM(argv,0,cin); _PROGRAMRUN=true;}
-      // [OBSOLETE] if(vpflow.flag("SG::FINDSYM_EXEC")) {pflow::FINDSYM(argv,1,cin); _PROGRAMRUN=true;}
       if(vpflow.flag("HNF")) {pflow::HNF(argv,cin,cout); _PROGRAMRUN=true;}
       if(vpflow.flag("HNFTOL")) {pflow::HNFTOL(argv,cin,cout); _PROGRAMRUN=true;}
       if(vpflow.flag("KPATH")) {pflow::KPATH(cin,aurostd::args2attachedutype<double>(argv,"--grid=",16.0),vpflow.flag("WWW")); _PROGRAMRUN=true;}
-      // [OBSOLETE] if(vpflow.flag("INFLATE_LATTICE")) {cout << pflow::INFLATE_LATTICE(cin,aurostd::args2utype(argv,"--inflate_lattice|--ilattice",1.0)); _PROGRAMRUN=true;}
-      // [OBSOLETE] if(vpflow.flag("INFLATE_VOLUME")) {cout << pflow::INFLATE_VOLUME(cin,aurostd::args2utype(argv,"--inflate_volume|--ivolume",1.0)); _PROGRAMRUN=true;}
       if(vpflow.flag("JMOLGIF")) {pflow::JMOLAnimation(cin,argv); _PROGRAMRUN=true;}
       if(vpflow.flag("INSPHERE")) {pflow::XYZINSPHERE(cin,aurostd::args2utype(argv,"--insphere",0.0)); _PROGRAMRUN=true;}
-      // [OBSOLETE] if(vpflow.flag("MAXATOMS")) {cout << pflow::ATOMSMAX(argv,cin); _PROGRAMRUN=true;}
       if(vpflow.flag("NANOPARTICLE")) {cout << pflow::NANOPARTICLE(cin,aurostd::args2xvectorutype<double>(argv,"--nanoparticle",argv.size()-2)); _PROGRAMRUN=true;}
       if(vpflow.flag("POCC")) {pflow::POCC(argv); _PROGRAMRUN=true;}
-      // [OBSOLETE] if(vpflow.flag("PROTO")) {cout << pflow::PROTO_LIBRARIES(argv); _PROGRAMRUN=true;} // some options...
-      // [OBSOLETE CO 180703]if(vpflow.flag("QMVASP")) {pflow::QMVASP(vpflow); _PROGRAMRUN=true;}
     
       if(vpflow.flag("RAYTRACE")) {pflow::RAYTRACE(argv); _PROGRAMRUN=true;}
-      // [OBSOLETE] if(vpflow.flag("SCALE")) {cout << pflow::SCALE(vpflow.getattachedscheme("SCALE"),cin); _PROGRAMRUN=true;}
       if(vpflow.flag("SETORIGIN")) {cout << pflow::SETORIGIN(cin,(uint) aurostd::string2utype<int>(argv.at(2))); _PROGRAMRUN=true;}
       if(vpflow.flag("SEWALD")) {pflow::SEWALD(argv,cin); _PROGRAMRUN=true;}
       if(vpflow.flag("SGROUP")) { pflow::SGROUP(aflags,cin,aurostd::args2utype(argv,"--sgroup|--spacegroup",KBIN_SYMMETRY_SGROUP_RADIUS_DEFAULT)); _PROGRAMRUN=true;}
@@ -1608,23 +1544,18 @@ namespace pflow {
     }
     // *********************************************************************
     if(argv.size()>=3 && !_PROGRAMRUN) {
-      // [OBSOLETE]  if(vpflow.flag("ALPHA_COMPOUND")) {cout << pflow::ALPHACompound(argv); _PROGRAMRUN=true;}
-      // [OBSOLETE] if(vpflow.flag("ALPHA_SPECIES")) {cout << pflow::ALPHASpecies(argv); _PROGRAMRUN=true;}
       if(vpflow.flag("MISCIBILITY")) {cout << pflow::MISCIBILITY(argv); _PROGRAMRUN=true;}
-      // [OBSOLETE] if(vpflow.flag("CE::SQS")) {pflow::SQS(argv); _PROGRAMRUN=true;}
       // calculated stuff
       if(vpflow.flag("XPLUG")) {aflowlib::XPLUG(argv); _PROGRAMRUN=true;}
     }
     // *********************************************************************
     if(argv.size()==4 && !_PROGRAMRUN) {
-      // [OBSOLETE] if(vpflow.flag("CAGES") && AFLOW_PTHREADS::FLAG) {pflow::CAGES(aflags,cin,-1.0); _PROGRAMRUN=true;}
       if(vpflow.flag("JOINSTRLIST")) {pflow::JOINSTRLIST(argv); _PROGRAMRUN=true;}
       if(vpflow.flag("MAKESTRLIST")) {pflow::MAKESTRLIST(argv); _PROGRAMRUN=true;}
       if(vpflow.flag("NANOPARTICLE")) {cout << pflow::NANOPARTICLE(cin,aurostd::args2xvectorutype<double>(argv,"--nanoparticle",argv.size()-2)); _PROGRAMRUN=true;}
       if(vpflow.flag("PDOS")) {pflow::PDOS(argv); _PROGRAMRUN=true;}
       if(vpflow.flag("PLANEDENS")) {pflow::PLANEDENS(argv); _PROGRAMRUN=true;}
       if(vpflow.flag("PRIM") && AFLOW_PTHREADS::FLAG) {cout << pflow::PRIM(cin,0); _PROGRAMRUN=true;}
-      // [OBSOLETE CO 180703]if(vpflow.flag("QMVASP")) {pflow::QMVASP(argv); _PROGRAMRUN=true;}
       if(vpflow.flag("RBANAL")) {pflow::RBANAL(argv); _PROGRAMRUN=true;}
       if(vpflow.flag("SUMPDOS")) {pflow::SUMPDOS(argv); _PROGRAMRUN=true;}
       if(vpflow.flag("SWAP")) {cout << pflow::xstrSWAP(argv,cin); _PROGRAMRUN=true;}
@@ -1632,52 +1563,20 @@ namespace pflow {
     }
     // *********************************************************************
     if(argv.size()==5 && !_PROGRAMRUN) {
-      // [OBSOLETE] if(vpflow.flag("CAGES") && AFLOW_PTHREADS::FLAG) {pflow::CAGES(aflags,cin,aurostd::args2utype(argv,"--cages",-1.0)); _PROGRAMRUN=true;}
-      // [OBSOLETE] if(vpflow.flag("RDF")) {pflow::RDF(cin,aurostd::args2xvectorutype<double>(argv,"--rdf",3)); _PROGRAMRUN=true;}
-      // [OBSOLETE] if(vpflow.flag("MILLER")) {cout << pflow::MILLER(argv,cin) << endl; _PROGRAMRUN=true;}
-      // [OBSOLETE CO 180703]if(vpflow.flag("QMVASP")) {pflow::QMVASP(argv); _PROGRAMRUN=true;}
       if(vpflow.flag("RBDIST")) {pflow::RBDIST(argv); _PROGRAMRUN=true;}
       if(vpflow.flag("SETCM")) {cout << pflow::SETCM(cin,aurostd::args2xvectorutype<double>(argv,"--setcm",3)); _PROGRAMRUN=true;}
       if(vpflow.flag("SETORIGIN")) {cout << pflow::SETORIGIN(cin,aurostd::args2xvectorutype<double>(argv,"--setorigin",3)); _PROGRAMRUN=true;}
       if(vpflow.flag("CMPSTR")) {pflow::CMPSTR(argv); _PROGRAMRUN=true;}
-      // superlattice
-      // [OBSOLETE] if(vpflow.flag("CE::SUPERLATTICE")) {pflow::Superlattice(argv); _PROGRAMRUN=true;}
-      // [OBSOLETE] if(vpflow.flag("XRD_DIST")) {pflow::GetAtomicPlaneDist(cin,argv); _PROGRAMRUN=true;}
     }
-    // [OBSOLETE] // *********************************************************************
-    // [OBSOLETE]  if(argv.size()>=5 && !_PROGRAMRUN) {
-    // [OBSOLETE] if(vpflow.flag("SHIFT")) {cout << pflow::SHIFT(argv,cin); _PROGRAMRUN=true;}
-    // [OBSOLETE] if(vpflow.flag("JMOL")) {pflow::JMOL( cin,aurostd::args2xvectorutype<int>(argv,"--jmol",3),argv); _PROGRAMRUN=true;}
-    // [OBSOLETE] }
-    // [OBSOLETE] // *********************************************************************
-    // [OBSOLETE] if(argv.size()==6 && !_PROGRAMRUN) {
-    // [OBSOLETE] if(vpflow.flag("INTPOL")) {pflow::INTPOL(argv); _PROGRAMRUN=true;}
-    // [OBSOLETE]  if(vpflow.flag("MILLER")) {cout << pflow::MILLER(argv,cin) << endl; _PROGRAMRUN=true;}
-    // [OBSOLETE] }
-    // *********************************************************************
-    // [OBSOLETE] if(argv.size()==7 && !_PROGRAMRUN) {
-    // [OBSOLETE] if(vpflow.flag("MILLER")) {cout << pflow::MILLER(argv,cin) << endl; _PROGRAMRUN=true;}
-    // [OBSOLETE] if(vpflow.flag("SHELL")) {pflow::SHELL(argv,cin); _PROGRAMRUN=true;}
-    // [OBSOLETE] if(vpflow.flag("CE::CLUSTERS")) {pflow::Cluster(argv); _PROGRAMRUN=true;}
-    // [OBSOLETE] if(vpflow.flag("CE::CLUSTEREXPANSION")) {AClusterExpansionMethodMain(argv); _PROGRAMRUN=true;}
-    // [OBSOLETE] }
-    // [OBSOLETE] // *********************************************************************
-    // [OBSOLETE] if(argv.size()==8 && !_PROGRAMRUN) {
-    // [OBSOLETE]     if(vpflow.flag("RDFCMP")) {pflow::RDFCMP(aurostd::args2xvectorutype<double>(argv,"--rdfcmp",4),string(argv.at(6)),string(argv.at(7))); _PROGRAMRUN=true;}
-    // [OBSOLETE] if(vpflow.flag("CLAT")) {pflow::CLAT(argv); _PROGRAMRUN=true;}
-    // [OBSOLETE] }
-    // ----------------------------------------------- ERRORS
 
     if(!_PROGRAMRUN) {
       cerr << "aflow: the number of arguments is not correct" << endl;
       cerr << "Try \'aflow --help\' for more information" << endl;
       for(uint i=0;i<argv.size();i++)
-	// cerr << "argv.at(" << i << ")=" << argv.at(i) << endl; // exit(0);
-	cerr << argv.at(i) << " ";
-      cerr << endl;
+          cerr << "argv.at(" << i << ")=" << argv.at(i) << endl;  
+      exit(0);
     }
     // *********************************************************************
-    // exit(1);
     return 0; // CO
   }
 } // namespace pflow

@@ -12316,30 +12316,25 @@ int ijk2l(const xstructure& str,const xvector<int>& ijk) {
 // ***************************************************************************
 xstructure AQEgeom2aims(istream& input) {
     xstructure a(input,IOAFLOW_AUTO);
-    //  if(a.iomode==IOVASP_AUTO || a.iomode==IOVASP_POSCAR || a.iomode==IOVASP_ABCCAR || a.iomode==IOVASP_WYCKCAR) 
     a.xstructure2aims();
     return a;
 }
 
 xstructure AQEgeom2abinit(istream& input) {
     xstructure a(input,IOAFLOW_AUTO);
-    //  if(a.iomode==IOVASP_AUTO || a.iomode==IOVASP_POSCAR || a.iomode==IOVASP_ABCCAR || a.iomode==IOVASP_WYCKCAR) 
     a.xstructure2abinit();
     return a;
 }
 
 xstructure AQEgeom2qe(istream& input) {
     xstructure a(input,IOAFLOW_AUTO);
-    //  if(a.iomode==IOVASP_AUTO || a.iomode==IOVASP_POSCAR || a.iomode==IOVASP_ABCCAR || a.iomode==IOVASP_WYCKCAR) 
     a.xstructure2qe();
     return a;
 }
 
 xstructure AQEgeom2vasp(istream& input) {
     xstructure a(input,IOAFLOW_AUTO);
-    //  if(a.iomode==IOQE_AUTO || a.iomode==IOQE_GEOM)
     a.xstructure2vasp();
-    //  cerr << a.title << endl;
     return a;
 }
 
