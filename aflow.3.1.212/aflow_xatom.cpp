@@ -2338,21 +2338,62 @@ ostream& operator<<(ostream& oss,const xstructure& a) { // operator<<
     // ----------------------------------------------------------------------
     //  QUANTUM ESPRESSO OUTPUT
     if(a_iomode==IOQE_AUTO || a_iomode==IOQE_GEOM) { // VASP POSCAR
+        //  KESONG YANG Adds it for QE 2025
+        // Constants and settings
+        uint depthQE = 27; // Padding depth for alignment
+        const std::string pseudo_dir = "./"; // Directory for pseudopotential files
+        const std::string outdir = "./out";  // Output directory
+        const std::string prefix = "qe_calc"; // Prefix for output files
+        const int kpoints[3] = {6, 6, 6};    // Default k-point grid (Monkhorst-Pack)
+        const double ecutwfc = 40.0;         // Wavefunction cutoff (Ry)
+        const double ecutrho = 320.0;        // Charge density cutoff (Ry)
+
+        // --- &control namelist ---
         oss << "! AFLOW::QE BEGIN " << endl;
-        uint depthQE=27;
-        if(a_iomode==IOQE_AUTO) oss << "! " << a.title <<endl;//<< " (AUTO)" <<endl;
-        if(a_iomode==IOQE_GEOM) oss << "! " << a.title <<endl;//<< " (GEOM)" <<endl;
-        oss << aurostd::PaddedPOST("&system",depthQE," ") << " ! // aflow " << endl;
-        oss << aurostd::PaddedPOST(" ibrav=0,",depthQE," ") << " ! // free " << endl;
-        oss << aurostd::PaddedPOST(" nat="+aurostd::utype2string(a.atoms.size())+",",depthQE) << " ! // a.atoms.size() " << endl;
-        oss << aurostd::PaddedPOST(" ntyp="+aurostd::utype2string(a.num_each_type.size()),depthQE) << " ! // a.num_each_type.size() " << endl;
-        //oss << aurostd::PaddedPOST(" ntyp="+aurostd::utype2string(a.num_each_type.size())+",",depthQE) << " ! // a.num_each_type.size() " << endl;  // CO 171010
+        if (a_iomode == IOQE_AUTO || a_iomode == IOQE_GEOM) {
+            oss << "! " << a.title << std::endl;
+        }
+
+        oss << "&control" << std::endl;
+        oss << aurostd::PaddedPOST(" calculation='scf',", depthQE) << " ! // Self-consistent field calculation" << std::endl;
+        oss << aurostd::PaddedPOST(" prefix='" + prefix + "',", depthQE) << " ! // File prefix" << std::endl;
+        oss << aurostd::PaddedPOST(" pseudo_dir='" + pseudo_dir + "',", depthQE) << " ! // Pseudopotential directory" << std::endl;
+        oss << aurostd::PaddedPOST(" outdir='" + outdir + "',", depthQE) << " ! // Output directory" << std::endl;
+        oss << " /" << std::endl;
+
+
+        oss << "&system" << std::endl;
+        oss << aurostd::PaddedPOST(" ibrav=0,", depthQE) << " ! // Free lattice" << std::endl;
+        oss << aurostd::PaddedPOST(" nat=" + aurostd::utype2string(a.atoms.size()) + ",", depthQE) << " ! // Number of atoms" << std::endl;
+        oss << aurostd::PaddedPOST(" ntyp=" + aurostd::utype2string(a.num_each_type.size()) + ",", depthQE) << " ! // Number of atom types" << std::endl;
+        oss << aurostd::PaddedPOST(" ecutwfc=" + aurostd::utype2string(ecutwfc) + ",", depthQE) << " ! // Wavefunction cutoff (Ry)" << std::endl;
+        oss << aurostd::PaddedPOST(" ecutrho=" + aurostd::utype2string(ecutrho) + ",", depthQE) << " ! // Charge density cutoff (Ry)" << std::endl;
         //oss << aurostd::PaddedPOST(" ecutwfc=_AFLOW_ECUTWFC_,",depthQE," ") << " ! // fix these " << endl;  // CO 171010
         //oss << aurostd::PaddedPOST(" ecutrho=_AFLOW_ECUTRHO_",depthQE," ") << " ! // fix these " << endl;   // CO 171010
-        oss << " /" << endl;
-        oss.setf(std::ios::fixed,std::ios::floatfield);
-        uint _precision_=_AFLOW_XSTR_PRINT_PRECISION_; //14; //was 16 stefano 10 dane //CO 180515
-        oss.precision(_precision_);
+        oss << " /" << std::endl;
+
+        // --- &electrons namelist ---
+        oss << "&electrons" << std::endl;
+        oss << aurostd::PaddedPOST(" conv_thr=1.0d-8,", depthQE) << " ! // Convergence threshold for electrons" << std::endl;
+        oss << aurostd::PaddedPOST(" mixing_beta=0.7,", depthQE) << " ! // Mixing factor for SCF" << std::endl;
+        oss << " /" << std::endl;
+
+
+        // --- CELL_PARAMETERS (from POSCAR lattice vectors) ---
+        oss << "CELL_PARAMETERS (angstrom)" << std::endl;
+        oss.setf(std::ios::fixed, std::ios::floatfield);
+        oss.precision(_AFLOW_XSTR_PRINT_PRECISION_); // Use existing precision setting
+        for(uint i=1;i<=3;i++) {
+            for(uint j=1;j<=3;j++) {
+                oss << " ";
+                if(abs(a.lattice(i,j))<10.0) oss << " ";
+                if(!std::signbit(a.lattice(i,j))) oss << " ";
+                oss << a.lattice(i,j)*a.scale << ""; // DX 2/15/18 - added scaling factor
+            }
+            oss << endl;
+        }
+
+        // --- ATOMIC_POSITIONS (existing code) ---
         if(a.coord_flag==_COORDS_FRACTIONAL_) oss << "ATOMIC_POSITIONS (crystal)" << endl;
         if(a.coord_flag==_COORDS_CARTESIAN_)  oss << "ATOMIC_POSITIONS (angstrom)" << endl;
         for(uint iat=0;iat<a.atoms.size();iat++) {
@@ -2360,43 +2401,32 @@ ostream& operator<<(ostream& oss,const xstructure& a) { // operator<<
             if(a.atoms.at(iat).name_is_given==TRUE) {
                 oss << " " << aurostd::PaddedPOST(KBIN::VASP_PseudoPotential_CleanName(a.atoms.at(iat).name),5," ") << " ";
             } else {
-                cerr << "QE needs atoms species names" << endl; exit(0);
+                cerr << "QE needs atoms species names" << endl; 
+                exit(0);
             }
             for(uint j=1;j<=3;j++) {
-                //  oss << " ";
                 if(a.coord_flag==_COORDS_FRACTIONAL_) {if(abs(a.atoms.at(iat).fpos(j))<10.0) oss << " ";if(!std::signbit(a.atoms.at(iat).fpos(j))) oss << " "; oss << a.atoms.at(iat).fpos(j) << " ";}
                 if(a.coord_flag==_COORDS_CARTESIAN_)  {if(abs(a.atoms.at(iat).cpos(j))<10.0) oss << " ";if(!std::signbit(a.atoms.at(iat).cpos(j))) oss << " "; oss << a.atoms.at(iat).cpos(j) << " ";}
             }
             oss << " ! // " << a.atoms.at(iat).cleanname << " ";
             if(a.write_inequivalent_flag==TRUE) {
                 oss << " ";
-                //	if(i<10) oss << "0";
                 oss << iat << "[";
                 if(a.atoms.at(iat).equivalent<10) oss << "0";
                 oss << a.atoms.at(iat).equivalent << "]";
                 if(a.atoms.at(iat).is_inequivalent) {
                     oss <<"*";
                     oss << "_(" << a.atoms.at(iat).num_equivalents << ") "; //<< "  index=" << a.atoms.at(iat).index_iatoms << "  ";
-                    //  " v" << a.iatoms.size() << "   burp ";
-                    // for(uint jat=0;jat<a.iatoms.size();jat++)  oss << a.iatoms.at(jat).size() << " ";
                 }
             }
             oss << endl;
         }
-        // ----------------------------------------------------------------------
-        oss.precision(_precision_);  // STEFANO to cut/paste from matlab in format long
-        oss << "CELL_PARAMETERS (angstrom)" << endl ;
-        {
-            for(uint i=1;i<=3;i++) {
-                for(uint j=1;j<=3;j++) {
-                    oss << " ";
-                    if(abs(a.lattice(i,j))<10.0) oss << " ";
-                    if(!std::signbit(a.lattice(i,j))) oss << " ";
-                    oss << a.lattice(i,j)*a.scale << ""; // DX 2/15/18 - added scaling factor
-                }
-                oss << endl;
-            }
-        }
+        
+        // --- K_POINTS (automatic Monkhorst-Pack grid) ---
+        oss << "K_POINTS (automatic)" << std::endl;
+        oss << kpoints[0] << " " << kpoints[1] << " " << kpoints[2] << " 0 0 0" << std::endl;
+
+
         oss << "# AFLOW::QE END " << endl;
         return oss;
     }
