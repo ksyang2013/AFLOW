@@ -10431,6 +10431,8 @@ namespace pflow {
   xstructure POSCAR(istream& input) {
     xstructure str(input,IOAFLOW_AUTO);
     str.iomode=IOVASP_POSCAR;
+    if (str.species.size()) 
+        str.is_vasp5_poscar_format = TRUE;  //Kesong fixes this to use vasp5 format if species are given, 2025
     return str;
   }
 } // namespace pflow

@@ -1434,7 +1434,7 @@ xstructure::xstructure(string structure_title) {
     // SPECIES ---------------------------
     species.clear();species_pp.clear();species_pp_type.clear();species_pp_version.clear();species_pp_ZVAL.clear();species_pp_vLDAU.clear();species_volume.clear();species_mass.clear(); // CO 180420 - ClearSpecies()
     is_vasp4_poscar_format=TRUE;
-    is_vasp5_poscar_format=FALSE;
+    is_vasp5_poscar_format=FALSE; 
     // ATOMS -----------------------------
     atoms.clear();
     // FLAGS -----------------------------
@@ -2350,7 +2350,7 @@ ostream& operator<<(ostream& oss,const xstructure& a) { // operator<<
 
         // --- &control namelist ---
         oss << "! AFLOW::QE BEGIN " << endl;
-        oss << "! Originally written by AFLOW Consortium; Refined by Prof. Kesong YANG for Class NANO115L & NANO110; 2025-04" << endl;
+        oss << "! Originally written by AFLOW Consortium; Refined by Prof. Kesong YANG for class NANO115L; 2025-04" << endl;
         if (a_iomode == IOQE_AUTO || a_iomode == IOQE_GEOM) {
             oss << "! " << a.title << std::endl;
         }
@@ -2736,6 +2736,7 @@ string xstructure::PrintSymbolicMathRepresentation(void){
         if(aa.is_vasp4_poscar_format==TRUE) {
         } // nothing to do
 
+        aa.is_vasp5_poscar_format=TRUE;
         if(aa.is_vasp5_poscar_format==TRUE) {
             for(uint i=0;i<aa.species.size();i++)
                 oss << aa.species.at(i)<< " ";
