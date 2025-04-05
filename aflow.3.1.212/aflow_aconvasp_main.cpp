@@ -2175,21 +2175,6 @@ namespace pflow {
   }
 }
 
-/*
-// [OBSOLETE] [JUNKAI] JUNKAI STUFF
-// [OBSOLETE] [JUNKAI]   "<< x<<" --magpara label \n\
-// [OBSOLETE] [JUNKAI]   "<< x<<" --magpara_h label \n\
-// [OBSOLETE] [JUNKAI]   PROTOTYPE CHECKING (we are writing new codes so these instructions will disappear) \n\
-// [OBSOLETE] [JUNKAI]   "<< x<<" --prototyper | --PROTOTYPER <POSCAR \n\
-// [OBSOLETE] [JUNKAI]   "<< x<<" --prototyper_h | --PROTOTYPER_H < POSCAR \n\
-// [OBSOLETE] [JUNKAI]   "<< x<<" --prototyper_m | --PROTOTYPER_M < POSCAR \n\
-// [OBSOLETE] [JUNKAI]   "<< x<<" --prototypermult | --PROTOTYPERMULT < POSCAR \n\
-// [OBSOLETE] [JUNKAI]   "<< x<<" --protoclassify < list \n\
-// [OBSOLETE] [JUNKAI]   "<< x<<" --protoclassify name1,name2,name3 \n\
-// [OBSOLETE] [JUNKAI]   "<< x<<" --protoclassify_h < list \n\
-// [OBSOLETE] [JUNKAI]   "<< x<<" --protoclassify_m < list \n\
-// [OBSOLETE] [JUNKAI]   \n\
-*/
 
 // ***************************************************************************
 // pflow::ABCCAR
@@ -2198,6 +2183,8 @@ namespace pflow {
   xstructure ABCCAR(istream& input) {
     xstructure str(input,IOAFLOW_AUTO);
     str.iomode=IOVASP_ABCCAR;
+    if (str.species.size()) 
+        str.is_vasp5_poscar_format = TRUE;  //Kesong fixes this to use vasp5 format if species are given, 2025
     return str;
   }
 } // namespace pflow
@@ -2207,9 +2194,6 @@ namespace pflow {
 // ***************************************************************************
 namespace pflow {
   void ACE(istream& input) {
-    //  xstructure a(input,IOAFLOW_AUTO);
-    // pflow::PrintACE(a,cout);
-    // [OBSOLETE]  pflow::PrintACE(xstructure(input,IOVASP_POSCAR),cout);
     pflow::PrintACE(xstructure(input,IOAFLOW_AUTO),cout);
   }
 } // namespace pflow
