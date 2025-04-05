@@ -29,7 +29,7 @@ VERSNUMBER=3.1.212
 # FOR FROZSL -lmkl_lapack95_ilp64 -lmkl_core -lmkl_intel_lp64 -lmkl_sequential
 
 # for aflow
-CPP=g++  -std=c++17  -DAFLOW_MULTITHREADS_ENABLE
+CPP=g++  -std=c++17  -DAFLOW_MULTITHREADS_ENABLE   #-fmax-include-depth=1000
 #-O2 -frepo
 # for sqllite
 CC=gcc
@@ -41,10 +41,11 @@ CC=gcc
 #CPP=g++ -std=c++0x-4.7 -std=c++0x
 # -std=gnu++0x
 #CCFLAGS= -DCYGWIN -Wall -W -fno-inline
-CCFLAGS=-Wall -W -fno-inline
+CCFLAGS=-Wall -W -fno-inline #-fmax-include-depth=900   
 CCFLAGS_MT=$(CCFLAGS) -O2
 #CCFLAGS_GSA=$(CCFLAGS) -O1	#CO OBSOLETE 170601
-INCLUDE = -I ./
+INCLUDE = -I ./ 
+#INCLUDE = -I ./ -I /usr/include/x86_64-linux-gnu/sys  #ubuntu
 #INCLUDE = -I ./  -I /opt/intel/mkl100/include
 
 # -fno-inline -fno-implicit-inline-templates-frepo

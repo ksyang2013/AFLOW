@@ -952,70 +952,71 @@ extern double _SYM_TOL_; // tolerance control for isequal_RHT in atom class (RHT
 // DX and CO - END
 
 class _atom { // simple class.. nothing fancy
- public:
-  // constructor destructor                              // constructor/destructor
-  _atom();                                               // default, just allocate
-  ~_atom();                                              // kill everything
-  _atom(const _atom &b);
-  const _atom& operator=(const _atom &b);                // copy
-  void clear();
-  // content                                             // content
-  xvector<double> fpos;                                  // positions are with respect to ijk lattice cell
-  xvector<double> cpos;                                  // so if fpos/cpos is outside a cell, you can shift
-  xvector<double> corigin;                               // origin for convasp purposes
-  xvector<double> coord;                                 // general coordinate for symmetry routines (RHT)
-  vector<string> fpos_equation;                         // DX 20180607 - lattice equation for atomic position 
-  vector<string> cpos_equation;                         // DX 20180607 - Cartesian equation for atomic position 
-  double spin;                                           // spin along z in VASP MODE
-  bool spin_is_given;                                    // TRUE if spin has been set // DX 9/21/17
-  xvector<double> noncoll_spin;                          // non-collinear spin                // DX 12/5/17
-  bool noncoll_spin_is_given;                            // TRUE if noncoll_spin has been set // DX 12/5/17
-  double mass;                                           // mass 
-  int    type;                                           // with bringincell, which adjust cpos/fpos and ijk as well
-  string name;                                           // the name read from the INPUT
-  int info;                                              // container for misc. information  // RHT
-  string cleanname;                                      // a chemical clean version of the name
-  bool   name_is_given;                                  // TRUE is atom name has been given
-  int    atomic_number;                                  // 0 by defauls
-  int    number;                                         // atom number reference for convasp, from zero to the sky
-  string sd;                                             // ?
-  bool   print_RHT;                                      // a printer for coord and name (general position)   // RHT
-  bool   print_cartesian;                                // print frac or cartesian
-  bool   verbose;                                        // verbose in printing
-  xvector<int> ijk;                                      // xvector identifier of the lattice (but you must give str)
-  bool   isincell;                                       // is in cell ? (i==j==k==0 ?)
-  int    basis;                                          // identifier of position in the basis, from zero to the sky
-  double reference;                                      // reference/measure for ordering
-  int    ireference;                                     // sort of number in the list
-  // for symmetry
-  int    equivalent;                                     // points to the equivalent atom in the cell (-1 if irreducible)
-  bool   is_inequivalent;                                // if atom is irreducible
-  uint   num_equivalents;                                // say how many they are (only for is_inequivalent)
-  uint   index_iatoms;                                   // if calculated on the xstructure, the index within iatoms for the identical atoms
-  // for order parameter                                 // order parameter
-  int    order_parameter_value;                          // order parameter
-  bool   order_parameter_atom;                           // order parameter
-  // for partial occupation                              // partial occupation
-  double partial_occupation_value;                       // partial occupation
-  bool   partial_occupation_flag;                        // partial occupation
-  int shell;                                             // neighbour shell number
-  // operators/functions                                 // operator/functions
-  friend ostream& operator<<(ostream &,const _atom&);    // print
-  void CleanName(void);                                  // function to clean up the name
-  void CleanSpin(void);                                  // function to clean up the spin from EZ vasp script
- private:                                                //
-  void free();                                           // free space
+    public:
+        // constructor destructor                              // constructor/destructor
+        _atom();                                               // default, just allocate
+        ~_atom();                                              // kill everything
+        _atom(const _atom& b);
+        const _atom& operator=(const _atom &b);                // copy
+        void clear();
+        // content                                             // content
+        xvector<double> fpos;                                  // positions are with respect to ijk lattice cell
+        xvector<double> cpos;                                  // so if fpos/cpos is outside a cell, you can shift
+        xvector<double> corigin;                               // origin for convasp purposes
+        xvector<double> coord;                                 // general coordinate for symmetry routines (RHT)
+        vector<string> fpos_equation;                         // DX 20180607 - lattice equation for atomic position 
+        vector<string> cpos_equation;                         // DX 20180607 - Cartesian equation for atomic position 
+        double spin;                                           // spin along z in VASP MODE
+        bool spin_is_given;                                    // TRUE if spin has been set // DX 9/21/17
+        xvector<double> noncoll_spin;                          // non-collinear spin                // DX 12/5/17
+        bool noncoll_spin_is_given;                            // TRUE if noncoll_spin has been set // DX 12/5/17
+        double mass;                                           // mass 
+        int    type;                                           // with bringincell, which adjust cpos/fpos and ijk as well
+        string name;                                           // the name read from the INPUT
+        int info;                                              // container for misc. information  // RHT
+        string cleanname;                                      // a chemical clean version of the name
+        bool   name_is_given;                                  // TRUE is atom name has been given
+        int    atomic_number;                                  // 0 by defauls
+        int    number;                                         // atom number reference for convasp, from zero to the sky
+        string sd;                                             // ?
+        bool   print_RHT;                                      // a printer for coord and name (general position)   // RHT
+        bool   print_cartesian;                                // print frac or cartesian
+        bool   verbose;                                        // verbose in printing
+        xvector<int> ijk;                                      // xvector identifier of the lattice (but you must give str)
+        bool   isincell;                                       // is in cell ? (i==j==k==0 ?)
+        int    basis;                                          // identifier of position in the basis, from zero to the sky
+        double reference;                                      // reference/measure for ordering
+        int    ireference;                                     // sort of number in the list
+                                                               // for symmetry
+        int    equivalent;                                     // points to the equivalent atom in the cell (-1 if irreducible)
+        bool   is_inequivalent;                                // if atom is irreducible
+        uint   num_equivalents;                                // say how many they are (only for is_inequivalent)
+        uint   index_iatoms;                                   // if calculated on the xstructure, the index within iatoms for the identical atoms
+                                                               // for order parameter                                 // order parameter
+        int    order_parameter_value;                          // order parameter
+        bool   order_parameter_atom;                           // order parameter
+                                                               // for partial occupation                              // partial occupation
+        double partial_occupation_value;                       // partial occupation
+        bool   partial_occupation_flag;                        // partial occupation
+        int shell;                                             // neighbour shell number
+                                                               // operators/functions                                 // operator/functions
+        friend ostream& operator<<(ostream &,const _atom&);    // print
+        void CleanName(void);                                  // function to clean up the name
+        void CleanSpin(void);                                  // function to clean up the spin from EZ vasp script
+    private:                                                //
+        void free();                                           // free space
+        void copy(const _atom& b); //
 };
 
 class _atom_reference_cmp {                              // sorting through reference
- public:
-  bool operator()(const _atom& atom1,const _atom& atom2) const {
-    return (bool) (atom1.reference<atom2.reference);}
+    public:
+        bool operator()(const _atom& atom1,const _atom& atom2) const {
+            return (bool) (atom1.reference<atom2.reference);}
 };
 class _atom_type_cmp {                                   // sorting through type
- public:
-  bool operator()(const _atom& atom1,const _atom& atom2) const {
-    return (bool) (atom1.type<atom2.type);}
+    public:
+        bool operator()(const _atom& atom1,const _atom& atom2) const {
+            return (bool) (atom1.type<atom2.type);}
 };
 
 #define NUM_ELEMENTS (103+1)  // up to Uranium
@@ -1081,10 +1082,10 @@ double GetAtomXrayScatt(const string& symbol);
 double GetAtomXrayScatt(const uint& atnum);
 double GetCompoundAttenuationLenght(const vector<string>& species,const vector<double>& composition,const double& density);  // density in g/cm^3, return in cm
 double GetCompoundAttenuationLenght(const deque<string>& _species,const deque<int>& _composition,const double& density);  // density in g/cm^3, return in cm
-// DX and CO - START
+                                                                                                                          // DX and CO - START
 bool isequalRHT(const _atom& a, const _atom& b,double=_SYM_TOL_);       // bool equality only checks 'coord' and 'name' (RHT)  // RHT
-// DX and CO - END
-// routines of general use
+                                                                        // DX and CO - END
+                                                                        // routines of general use
 string XATOM_AlphabetizationSpecies(string speciesA,string speciesB);
 string XATOM_AlphabetizationSpecies(vector<string> vspecies);
 string XATOM_AlphabetizationSpecies(vector<string> vspecies,vector<double> vnumbers);
@@ -1105,95 +1106,95 @@ string atom2json(_atom& atom, int coord_flag, int poccupation); // DX 8/31/17 - 
 
 // --------------------------------------------------------------------------
 class _sym_op {
- public:
-  // constructor destructor
-  _sym_op();                                                    // default, just allocate
-  ~_sym_op();                                                   // kill everything
-  // content
-  // for _PGROUP_
-  xmatrix<double>  Uc;            // 3x3                        // uniques (not irreducible) operations on positions (Uc cartesian)
-  xmatrix<double>  Uf;            // 3x3                        // uniques (not irreducible) operations on indices   (Uf fractional)
-  xmatrix<double>  generator;     // 3x3                        // generator A, U=exp(A*theta)
-  xvector<double>  generator_coefficients;                      // generator coefficients on Lx, Ly, Lz basis // DX 12/6/17
-  xmatrix<xcomplex<double> > SU2_matrix; // 2x2                 // SU(2) 2x2 complex matrix // DX 1/15/18
-  xvector<xcomplex<double> > su2_coefficients;                  // su(2) coefficients on sigma_1, sigma_2, sigma_3 basis (Pauli matrices) // DX 1/15/18
-  double           angle;                                       // angle axis
-  xvector<double>  axis;          // 3                          // (1,2,3)=axis
-  xvector<double> quaternion_vector;				//GEENA
-  xmatrix<double> quaternion_matrix;				//GEENA
-  string           str_type;                                    // generic type of the operation
-  string           str_Hermann_Mauguin;                         // Hermann_Mauguin notation
-  string           str_Schoenflies;                             // Schoenflies notation
-  bool             flag_inversion;                              // flag if inversion
-  vector<int>      basis_atoms_map;                             // this is the vector that tell where the basis atom gets mapped by the operation
-  vector<int>      basis_types_map;                           // this is the vector that tell where the basis species gets mapped by the operation
-  // DX and CO - START
-  bool             basis_map_calculated;                        //have we've calculated it?
-  // DX and CO - END
-  bool             is_pgroup;                                   // bool is_pgroup
-  // for _PGROUPXTAL_
-  bool             is_pgroup_xtal;                              // bool is_pgroup_xtal
-  // for _PGROUPK_
-  bool             is_pgroupk;                                  // bool is_pgroupk
-  // for _PGROUPK_XTAL_                  
-  bool             is_pgroupk_xtal;                             // bool is_pgroupk_xtal // DX 12/5/17 - Added pgroupk_xtal
-  // for _FGROUP_
-  xvector<double>  ctau;          // 3                          // translation in CARTESIAN       // FACTOR GROUP only, [0,1[
-  xvector<double>  ftau;          // 3                          // translation in FRACTIONAL      // FACTOR GROUP only, [0,1[
-  bool             is_fgroup;                                   // bool is_fgroup
-  // for _SGROUP_
-  xvector<double>  ctrasl;        // 3                          // translation in CARTESIAN       // SPACE GROUP only, [integers]
-  xvector<double>  ftrasl;        // 3                          // translation in FRACTIONAL      // SPACE GROUP only, [ingegers]
-  bool             is_sgroup;                                   // bool is_sgroup
-  // operators
-  // for _AGROUP_
-  bool             is_agroup;                                   // bool is_agroup     // for site operation point group
-  uint             site;                                        // uint site          // site index // DX 8/3/17
-  const _sym_op& operator=(const _sym_op& b);
-  friend ostream& operator<<(ostream &,const _sym_op&);
- private:
-  void free();
+    public:
+        // constructor destructor
+        _sym_op();                                                    // default, just allocate
+        ~_sym_op();                                                   // kill everything
+                                                                      // content
+                                                                      // for _PGROUP_
+        xmatrix<double>  Uc;            // 3x3                        // uniques (not irreducible) operations on positions (Uc cartesian)
+        xmatrix<double>  Uf;            // 3x3                        // uniques (not irreducible) operations on indices   (Uf fractional)
+        xmatrix<double>  generator;     // 3x3                        // generator A, U=exp(A*theta)
+        xvector<double>  generator_coefficients;                      // generator coefficients on Lx, Ly, Lz basis // DX 12/6/17
+        xmatrix<xcomplex<double> > SU2_matrix; // 2x2                 // SU(2) 2x2 complex matrix // DX 1/15/18
+        xvector<xcomplex<double> > su2_coefficients;                  // su(2) coefficients on sigma_1, sigma_2, sigma_3 basis (Pauli matrices) // DX 1/15/18
+        double           angle;                                       // angle axis
+        xvector<double>  axis;          // 3                          // (1,2,3)=axis
+        xvector<double> quaternion_vector;				//GEENA
+        xmatrix<double> quaternion_matrix;				//GEENA
+        string           str_type;                                    // generic type of the operation
+        string           str_Hermann_Mauguin;                         // Hermann_Mauguin notation
+        string           str_Schoenflies;                             // Schoenflies notation
+        bool             flag_inversion;                              // flag if inversion
+        vector<int>      basis_atoms_map;                             // this is the vector that tell where the basis atom gets mapped by the operation
+        vector<int>      basis_types_map;                           // this is the vector that tell where the basis species gets mapped by the operation
+                                                                    // DX and CO - START
+        bool             basis_map_calculated;                        //have we've calculated it?
+                                                                      // DX and CO - END
+        bool             is_pgroup;                                   // bool is_pgroup
+                                                                      // for _PGROUPXTAL_
+        bool             is_pgroup_xtal;                              // bool is_pgroup_xtal
+                                                                      // for _PGROUPK_
+        bool             is_pgroupk;                                  // bool is_pgroupk
+                                                                      // for _PGROUPK_XTAL_                  
+        bool             is_pgroupk_xtal;                             // bool is_pgroupk_xtal // DX 12/5/17 - Added pgroupk_xtal
+                                                                      // for _FGROUP_
+        xvector<double>  ctau;          // 3                          // translation in CARTESIAN       // FACTOR GROUP only, [0,1[
+        xvector<double>  ftau;          // 3                          // translation in FRACTIONAL      // FACTOR GROUP only, [0,1[
+        bool             is_fgroup;                                   // bool is_fgroup
+                                                                      // for _SGROUP_
+        xvector<double>  ctrasl;        // 3                          // translation in CARTESIAN       // SPACE GROUP only, [integers]
+        xvector<double>  ftrasl;        // 3                          // translation in FRACTIONAL      // SPACE GROUP only, [ingegers]
+        bool             is_sgroup;                                   // bool is_sgroup
+                                                                      // operators
+                                                                      // for _AGROUP_
+        bool             is_agroup;                                   // bool is_agroup     // for site operation point group
+        uint             site;                                        // uint site          // site index // DX 8/3/17
+        const _sym_op& operator=(const _sym_op& b);
+        friend ostream& operator<<(ostream &,const _sym_op&);
+    private:
+        void free();
 };
 
 //DX 201801107 - add _kpoint class - START
 // --------------------------------------------------------------------------
 class _kpoint {
- public:
-  // constructor destructor
-  _kpoint();                                           // default, just allocate
-  ~_kpoint();                                          // default, just allocate
-  // content
-  char iomode;                                         // store format (not used yet)
-  xmatrix<double> klattice;                            // reciprocal lattice
-  xvector<double> fpos;                                // fractional position of kpoint
-  xvector<double> cpos;                                // Cartesian position of kpoint (not used yet)
-  string label;                                        // kpoint label (i.e., high-symmetry point labels)
-  bool is_transformed;                                 // indicates if kpoint is transformed from AFLOW standard
-  const _kpoint& operator=(const _kpoint& b);          // assignment operator
-  // operators/functions                               // operator/functions
-  string str() const;                                  // prints "fpos ! label" (e.g., 0.0000 0.0000 0.0000 ! \\Gamma)
-  void TransformKpoint(const xmatrix<double>& P);      // transforms kpoint via P matrix (k'=k*P) and klattice via Q matrix (L_recip'=Q*L_recip) (see ITC-A pg. 79)
-  friend ostream& operator<<(ostream&,const _kpoint&); // ostream operator
- private:
-  void free();
+    public:
+        // constructor destructor
+        _kpoint();                                           // default, just allocate
+        ~_kpoint();                                          // default, just allocate
+                                                             // content
+        char iomode;                                         // store format (not used yet)
+        xmatrix<double> klattice;                            // reciprocal lattice
+        xvector<double> fpos;                                // fractional position of kpoint
+        xvector<double> cpos;                                // Cartesian position of kpoint (not used yet)
+        string label;                                        // kpoint label (i.e., high-symmetry point labels)
+        bool is_transformed;                                 // indicates if kpoint is transformed from AFLOW standard
+        const _kpoint& operator=(const _kpoint& b);          // assignment operator
+                                                             // operators/functions                               // operator/functions
+        string str() const;                                  // prints "fpos ! label" (e.g., 0.0000 0.0000 0.0000 ! \\Gamma)
+        void TransformKpoint(const xmatrix<double>& P);      // transforms kpoint via P matrix (k'=k*P) and klattice via Q matrix (L_recip'=Q*L_recip) (see ITC-A pg. 79)
+        friend ostream& operator<<(ostream&,const _kpoint&); // ostream operator
+    private:
+        void free();
 };
 //DX 201801107 - add _kpoint class - END
 
 // --------------------------------------------------------------------------
 class wyckoffsite_ITC { //Also for wyckoff sites
- public:
-  wyckoffsite_ITC(void);
-  wyckoffsite_ITC(const wyckoffsite_ITC& b);
-  ~wyckoffsite_ITC(void);
-  // OPERATORS                                                  // --------------------------------------
-  const wyckoffsite_ITC& operator=(const wyckoffsite_ITC& b);             // some operators
-  friend ostream& operator<<(ostream&,const wyckoffsite_ITC&);       // ostream
-  // CONTENT
-  xvector<double> coord;
-  string type; //chemical label etc
-  string wyckoffSymbol;
- private:                                                       // ---------------------------------------
-  void free();                                                  // to free everything
+    public:
+        wyckoffsite_ITC(void);
+        wyckoffsite_ITC(const wyckoffsite_ITC& b);
+        ~wyckoffsite_ITC(void);
+        // OPERATORS                                                  // --------------------------------------
+        const wyckoffsite_ITC& operator=(const wyckoffsite_ITC& b);             // some operators
+        friend ostream& operator<<(ostream&,const wyckoffsite_ITC&);       // ostream
+                                                                           // CONTENT
+        xvector<double> coord;
+        string type; //chemical label etc
+        string wyckoffSymbol;
+    private:                                                       // ---------------------------------------
+        void free();                                                  // to free everything
 };
 
 // --------------------------------------------------------------------------
@@ -1224,31 +1225,31 @@ bool sortAtomsNames(const _atom& a1,const _atom& a2);		// sort atoms by names
 bool sortAtomsDist(const _atom& a1,const _atom& a2);		// sort atoms by dist  // CO 180420
 
 class xstructure {
- public:
-  // constructors/destructors                                   // --------------------------------------
-  xstructure(string="");                                        // constructor default
-  xstructure(const xstructure& b);                              // constructor copy
-  xstructure(istream& input,int=IOVASP_POSCAR);                 // constructor from istream
-  xstructure(ifstream& input,int=IOVASP_POSCAR);                // constructor from ifstream
-  xstructure(stringstream& input,int=IOVASP_POSCAR);            // constructor from stringstream
-  xstructure(const string& input,int);                          // constructor from file
-  xstructure(const string& url,const string& file,int=IOVASP_POSCAR); // constructor from URL
-  ~xstructure();                                                // destructor
-  // I/O, mutators                                              // --------------------------------------
-  bool GetStoich(void);                                         // get stoich_each_type - 170724 CO
-  bool FixLattices(void);                                       // Reciprocal/f2c/c2f
-  void SetCoordinates(const int& mode);                         // change coordinates
-  void MakeBasis(void);                                         // make basis for atoms (basis and number)
-  void MakeTypes(void);                                         // refresh types based on num_each_type  // CO 180420
-  void AddAtom(const _atom& atom);                              // adding an atom
-  void AddAtom_POCC(const _atom& atom);                         // adding an atom FOR POCC ONLY
-  void RemoveAtom(const uint& iat);                             // deleting an atom (index)
-  void RemoveAtoms(vector<uint>& v_atoms_to_remove);            // deleting many atoms (indices)
-  void RemoveCopies(double=1.0e-3);                             // deleting atoms too close F/C
-  void RemoveFractionalCopies(double=1.0e-3);                   // deleting atoms too close F
-  void RemoveCartesianCopies(double=1.0e-3);                    // deleting atoms too close C
-  void AddCorners(void);                                        // for picturing purpose
-  void Clear(void);                                             // clear everything
+    public:
+        // constructors/destructors                                   // --------------------------------------
+        xstructure(string="");                                        // constructor default
+        xstructure(const xstructure& b);                              // constructor copy
+        xstructure(istream& input,int=IOVASP_POSCAR);                 // constructor from istream
+        xstructure(ifstream& input,int=IOVASP_POSCAR);                // constructor from ifstream
+        xstructure(stringstream& input,int=IOVASP_POSCAR);            // constructor from stringstream
+        xstructure(const string& input,int);                          // constructor from file
+        xstructure(const string& url,const string& file,int=IOVASP_POSCAR); // constructor from URL
+        ~xstructure();                                                // destructor
+                                                                      // I/O, mutators                                              // --------------------------------------
+        bool GetStoich(void);                                         // get stoich_each_type - 170724 CO
+        bool FixLattices(void);                                       // Reciprocal/f2c/c2f
+        void SetCoordinates(const int& mode);                         // change coordinates
+        void MakeBasis(void);                                         // make basis for atoms (basis and number)
+        void MakeTypes(void);                                         // refresh types based on num_each_type  // CO 180420
+        void AddAtom(const _atom& atom);                              // adding an atom
+        void AddAtom_POCC(const _atom& atom);                         // adding an atom FOR POCC ONLY
+        void RemoveAtom(const uint& iat);                             // deleting an atom (index)
+        void RemoveAtoms(vector<uint>& v_atoms_to_remove);            // deleting many atoms (indices)
+        void RemoveCopies(double=1.0e-3);                             // deleting atoms too close F/C
+        void RemoveFractionalCopies(double=1.0e-3);                   // deleting atoms too close F
+        void RemoveCartesianCopies(double=1.0e-3);                    // deleting atoms too close C
+        void AddCorners(void);                                        // for picturing purpose
+        void Clear(void);                                             // clear everything
   void ClearSpecies(void);                                     // Clear all the symmetry
   void ShifOriginToAtom(const int& iat);                        // Shift the origin to atom(iat)
   void IdenticalAtoms(void);                                    // Make identical atoms

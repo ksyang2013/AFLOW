@@ -51,7 +51,14 @@
 // look into aflow.h for the definitions
 
 // constructors
-_atom::_atom() {
+_atom::_atom() {free();}
+
+// destructor
+_atom::~_atom() {free();}
+
+
+// constructors
+void _atom::free() {
     fpos.clear();
     cpos.clear();
     corigin.clear();
@@ -90,60 +97,56 @@ _atom::_atom() {
     shell = 0;
 }
 
-// destructor
-_atom::~_atom() {
-    free();
+void _atom::copy(const _atom& b) { // copy PRIVATE
+    fpos=b.fpos;
+    cpos=b.cpos;
+    corigin=b.corigin;
+    coord=b.coord;
+    fpos_equation=b.fpos_equation; //DX 20180607 - symbolic math for atom positions
+    cpos_equation=b.cpos_equation; //DX 20180607 - symbolic math for atom positions
+    type=b.type;
+    spin=b.spin;
+    spin_is_given=b.spin_is_given; // DX 9/21/17 - magnetic sym
+    noncoll_spin=b.noncoll_spin; // DX 12/5/17 - magnetic sym (non-collinear)
+    noncoll_spin_is_given=b.noncoll_spin_is_given; // DX 12/5/17 - magnetic sym (non-collinear)
+    mass=b.mass;
+    name=b.name;
+    info=b.info;  // (RHT)
+    cleanname=b.cleanname;
+    atomic_number=b.atomic_number;
+    number=b.number;
+    name_is_given=b.name_is_given;
+    sd=b.sd;
+    print_RHT=b.print_RHT;  // (RHT)
+    print_cartesian=b.print_cartesian;
+    basis=b.basis;
+    ijk=b.ijk;
+    isincell=b.isincell;
+    reference=b.reference;
+    ireference=b.ireference;
+    equivalent=b.equivalent;
+    is_inequivalent=b.is_inequivalent;
+    num_equivalents=b.num_equivalents;
+    index_iatoms=b.index_iatoms;
+    verbose=b.verbose;
+    order_parameter_value=b.order_parameter_value;
+    order_parameter_atom=b.order_parameter_atom;
+    partial_occupation_value=b.partial_occupation_value;
+    partial_occupation_flag=b.partial_occupation_flag;
+    shell = b.shell;
 }
 
-void _atom::free() {
-}
-
-const _atom& _atom::operator=(const _atom& b) {       // operator=
-    if(this != &b) {
-        free();
-        fpos=b.fpos;
-        cpos=b.cpos;
-        corigin=b.corigin;
-        coord=b.coord;
-        fpos_equation=b.fpos_equation; //DX 20180607 - symbolic math for atom positions
-        cpos_equation=b.cpos_equation; //DX 20180607 - symbolic math for atom positions
-        type=b.type;
-        spin=b.spin;
-        spin_is_given=b.spin_is_given; // DX 9/21/17 - magnetic sym
-        noncoll_spin=b.noncoll_spin; // DX 12/5/17 - magnetic sym (non-collinear)
-        noncoll_spin_is_given=b.noncoll_spin_is_given; // DX 12/5/17 - magnetic sym (non-collinear)
-        mass=b.mass;
-        name=b.name;
-        info=b.info;  // (RHT)
-        cleanname=b.cleanname;
-        atomic_number=b.atomic_number;
-        number=b.number;
-        name_is_given=b.name_is_given;
-        sd=b.sd;
-        print_RHT=b.print_RHT;  // (RHT)
-        print_cartesian=b.print_cartesian;
-        basis=b.basis;
-        ijk=b.ijk;
-        isincell=b.isincell;
-        reference=b.reference;
-        ireference=b.ireference;
-        equivalent=b.equivalent;
-        is_inequivalent=b.is_inequivalent;
-        num_equivalents=b.num_equivalents;
-        index_iatoms=b.index_iatoms;
-        verbose=b.verbose;
-        order_parameter_value=b.order_parameter_value;
-        order_parameter_atom=b.order_parameter_atom;
-        partial_occupation_value=b.partial_occupation_value;
-        partial_occupation_flag=b.partial_occupation_flag;
-        shell = b.shell;
-    }
+const _atom& _atom::operator=(const _atom& b) {       // operator= PUBLIC
+    if(this!=&b) {copy(b);}
     return *this;
 }
 
-void _atom::clear(){
-    _atom a; (*this)=a;
+_atom::_atom(const _atom& b) { // copy PUBLIC
+    copy(b);
 }
+
+void _atom::clear(){free();}
+
 
 ostream& operator<<(ostream& oss,const _atom& atom) {
     oss.setf(std::ios::fixed,std::ios::floatfield);
@@ -257,7 +260,7 @@ std::vector<double> atom_miedema_nws(NUM_ELEMENTS);       // store starting from
 std::vector<double> atom_miedema_Vm(NUM_ELEMENTS);        // store starting from ONE Miedema Rule Table 1a Physica 100B (1980) 1-28
 std::vector<double> atom_miedema_gamma_s(NUM_ELEMENTS);   // store starting from ONE Miedema Rule Table 1a Physica 100B (1980) 1-28
 std::vector<double> atom_miedema_BVm(NUM_ELEMENTS);       // store starting from ONE Miedema Rule Table 1a Physica 100B (1980) 1-28
-// for lanthines from J.A. Alonso and N.H. March. Electrons in Metals and Alloys, Academic Press, London (1989) (except La)
+                                                          // for lanthines from J.A. Alonso and N.H. March. Electrons in Metals and Alloys, Academic Press, London (1989) (except La)
 std::vector<double> atom_radius_vec(NUM_ELEMENTS);        // store starting from ONE
 std::vector<double> atom_radius_covalent_vec(NUM_ELEMENTS);// store starting from ONE // DX and CO - 9/4/17 
 std::vector<double> atom_electronegativity_vec(NUM_ELEMENTS);        // store starting from ONE
@@ -306,7 +309,7 @@ void atoms_initialize(void) {
     // s-electron systems
     i++; atom_symbol_vec[i]="Li"; atom_name_vec[i]="Lithium";      atom_mass_vec[i]*=6.941;     atom_volume_vec[i]=20.24110; atom_valence_std_vec[i]=1; atom_valence_iupac_vec[i]=1;  atom_miedema_phi_star[i]=2.85;  atom_miedema_nws[i]=0.98;  atom_miedema_Vm[i]=5.5;  atom_miedema_gamma_s[i]= 530;   atom_miedema_BVm[i]=1.5;   atom_radius_vec[i]=0.152;  atom_radius_covalent_vec[i]=1.28;   atom_electronegativity_vec[i]=0.98;  atom_crystal_vec[i]="bcc";  pettifor_scale[i]=0.45; xray_scatt_vec[i]=3.00145; pearson_coefficient[i]=0.0014588232;  // Li
     i++; atom_symbol_vec[i]="Be"; atom_name_vec[i]="Beryllium";    atom_mass_vec[i]*=9.0122;    atom_volume_vec[i]= 7.83290; atom_valence_std_vec[i]=2; atom_valence_iupac_vec[i]=2;  atom_miedema_phi_star[i]=4.20;  atom_miedema_nws[i]=1.60;  atom_miedema_Vm[i]=2.9;  atom_miedema_gamma_s[i]=1900;   atom_miedema_BVm[i]=4.9;   atom_radius_vec[i]=0.114;  atom_radius_covalent_vec[i]=0.96;   atom_electronegativity_vec[i]=1.57;  atom_crystal_vec[i]="hcp";  pettifor_scale[i]=1.50; pearson_coefficient[i]=0.0;  // Be
-    // p-electron systems
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          // p-electron systems
     i++; atom_symbol_vec[i]="B";  atom_name_vec[i]="Boron";        atom_mass_vec[i]*=10.81;     atom_volume_vec[i]= 5.88420; atom_valence_std_vec[i]=3; atom_valence_iupac_vec[i]=3;  atom_miedema_phi_star[i]=4.75;  atom_miedema_nws[i]=1.55;  atom_miedema_Vm[i]=2.8;  atom_miedema_gamma_s[i]= NNN;   atom_miedema_BVm[i]=NNN;   atom_radius_vec[i]=0.097;  atom_radius_covalent_vec[i]=0.84;   atom_electronegativity_vec[i]=2.04;  atom_crystal_vec[i]="tet";  pettifor_scale[i]=2.00; pearson_coefficient[i]=0.00135391428;  // B
     i++; atom_symbol_vec[i]="C";  atom_name_vec[i]="Carbon";       atom_mass_vec[i]*=12.011;    atom_volume_vec[i]= 5.59490; atom_valence_std_vec[i]=4; atom_valence_iupac_vec[i]=4;  atom_miedema_phi_star[i]=6.20;  atom_miedema_nws[i]=1.90;  atom_miedema_Vm[i]=1.8;  atom_miedema_gamma_s[i]= NNN;   atom_miedema_BVm[i]=NNN;   atom_radius_vec[i]=0.077;  atom_radius_covalent_vec[i]=0.76;   atom_electronegativity_vec[i]=2.55;  atom_crystal_vec[i]="dia";  pettifor_scale[i]=2.50; xray_scatt_vec[i]=6.019; pearson_coefficient[i]=0.00007387218;   // C  // DX and CO - 9/4/17 atom_radius_covalent_vec uses sp3 hybridization (most common)
     i++; atom_symbol_vec[i]="N";  atom_name_vec[i]="Nitrogen";     atom_mass_vec[i]*=14.0067;   atom_volume_vec[i]= 7.59940; atom_valence_std_vec[i]=5; atom_valence_iupac_vec[i]=5;  atom_miedema_phi_star[i]=7.00;  atom_miedema_nws[i]=1.60;  atom_miedema_Vm[i]=2.2;  atom_miedema_gamma_s[i]= NNN;   atom_miedema_BVm[i]=NNN;   atom_radius_vec[i]=0.071;  atom_radius_covalent_vec[i]=0.71;   atom_electronegativity_vec[i]=3.04;  atom_crystal_vec[i]="hex";  pettifor_scale[i]=3.00; pearson_coefficient[i]=0.00001857771; // N JUNKAI CHANGED VALENCE
@@ -318,7 +321,7 @@ void atoms_initialize(void) {
     // s-electron systems
     i++; atom_symbol_vec[i]="Na";atom_name_vec[i]="Sodium";      atom_mass_vec[i]*=22.9898;  atom_volume_vec[i]=36.9135; atom_valence_std_vec[i]=1; atom_valence_iupac_vec[i]=1; atom_miedema_phi_star[i]=2.70; atom_miedema_nws[i]=0.82; atom_miedema_Vm[i]=8.3; atom_miedema_gamma_s[i]= 260;  atom_miedema_BVm[i]=1.6;  atom_radius_vec[i]=0.186; atom_radius_covalent_vec[i]=1.66;   atom_electronegativity_vec[i]=0.93; atom_crystal_vec[i]="bcc";  pettifor_scale[i]=0.40; pearson_coefficient[i]=0.0;  // Na
     i++; atom_symbol_vec[i]="Mg";atom_name_vec[i]="Magnesium";   atom_mass_vec[i]*=24.305;   atom_volume_vec[i]=22.8178; atom_valence_std_vec[i]=2; atom_valence_iupac_vec[i]=2; atom_miedema_phi_star[i]=3.45; atom_miedema_nws[i]=1.17; atom_miedema_Vm[i]=5.8; atom_miedema_gamma_s[i]= 790;  atom_miedema_BVm[i]=5.0;  atom_radius_vec[i]=0.160; atom_radius_covalent_vec[i]=1.41;   atom_electronegativity_vec[i]=1.31; atom_crystal_vec[i]="hcp";  pettifor_scale[i]=1.28; pearson_coefficient[i]=0.00073988271;  // Mg
-    // p-electron systems
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        // p-electron systems
     i++; atom_symbol_vec[i]="Al";atom_name_vec[i]="Aluminium";   atom_mass_vec[i]*=26.9815;  atom_volume_vec[i]=16.4000; atom_valence_std_vec[i]=3; atom_valence_iupac_vec[i]=3; atom_miedema_phi_star[i]=4.20; atom_miedema_nws[i]=1.39; atom_miedema_Vm[i]=4.6; atom_miedema_gamma_s[i]=1200;  atom_miedema_BVm[i]=7.2;  atom_radius_vec[i]=0.143; atom_radius_covalent_vec[i]=1.21;   atom_electronegativity_vec[i]=1.61; atom_crystal_vec[i]="fcc";  pettifor_scale[i]=1.66; pearson_coefficient[i]=0.0;  // Al
     i++; atom_symbol_vec[i]="Si";atom_name_vec[i]="Silicon";     atom_mass_vec[i]*=28.0855;  atom_volume_vec[i]=14.3536; atom_valence_std_vec[i]=4; atom_valence_iupac_vec[i]=4; atom_miedema_phi_star[i]=4.70; atom_miedema_nws[i]=1.50; atom_miedema_Vm[i]=4.2; atom_miedema_gamma_s[i]=1290;  atom_miedema_BVm[i]=11.9; atom_radius_vec[i]=0.117; atom_radius_covalent_vec[i]=1.11;   atom_electronegativity_vec[i]=1.90; atom_crystal_vec[i]="dia";  pettifor_scale[i]=1.92; xray_scatt_vec[i]=14.43; pearson_coefficient[i]=0.00020046752; // Si ???
     i++; atom_symbol_vec[i]="P"; atom_name_vec[i]="Phosphorus";  atom_mass_vec[i]*=30.9738;  atom_volume_vec[i]=14.1995; atom_valence_std_vec[i]=5; atom_valence_iupac_vec[i]=5; atom_miedema_phi_star[i]=5.5;  atom_miedema_nws[i]=1.65; atom_miedema_Vm[i]=NNN; atom_miedema_gamma_s[i]= NNN;  atom_miedema_BVm[i]=NNN;  atom_radius_vec[i]=0.109; atom_radius_covalent_vec[i]=1.07;   atom_electronegativity_vec[i]=2.19; atom_crystal_vec[i]="cub";  pettifor_scale[i]=2.18; xray_scatt_vec[i]=15.3133; pearson_coefficient[i]=0.0; // P   MIEDEMA = PAUL VAN DER PUT book
@@ -330,7 +333,7 @@ void atoms_initialize(void) {
     // s-electron systems
     i++; atom_symbol_vec[i]="K"; atom_name_vec[i]="Potassium";   atom_mass_vec[i]*=39.0983;  atom_volume_vec[i]=73.9091; atom_valence_std_vec[i]=1; atom_valence_iupac_vec[i]=1; atom_miedema_phi_star[i]=2.25; atom_miedema_nws[i]=0.65; atom_miedema_Vm[i]=12.8;atom_miedema_gamma_s[i]= 150;  atom_miedema_BVm[i]=1.5;  atom_radius_vec[i]=0.231; atom_radius_covalent_vec[i]=2.03;   atom_electronegativity_vec[i]=0.82; atom_crystal_vec[i]="fcc";  pettifor_scale[i]=0.35; pearson_coefficient[i]=0.000164;  // K
     i++; atom_symbol_vec[i]="Ca";atom_name_vec[i]="Calcium";     atom_mass_vec[i]*=40.08;    atom_volume_vec[i]=42.1927; atom_valence_std_vec[i]=2; atom_valence_iupac_vec[i]=2; atom_miedema_phi_star[i]=2.55; atom_miedema_nws[i]=0.91; atom_miedema_Vm[i]=8.8; atom_miedema_gamma_s[i]= 490;  atom_miedema_BVm[i]=4.0;  atom_radius_vec[i]=0.197; atom_radius_covalent_vec[i]=1.76;   atom_electronegativity_vec[i]=1.00; atom_crystal_vec[i]="bcc";  pettifor_scale[i]=0.60; pearson_coefficient[i]=0.000297564;  // Ca
-    // d-electron systems: transition metals
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      // d-electron systems: transition metals
     i++; atom_symbol_vec[i]="Sc";atom_name_vec[i]="Scandium";    atom_mass_vec[i]*=44.9559;  atom_volume_vec[i]=24.6739; atom_valence_std_vec[i]=3; atom_valence_iupac_vec[i]=3; atom_miedema_phi_star[i]=3.25; atom_miedema_nws[i]=1.27; atom_miedema_Vm[i]=6.1; atom_miedema_gamma_s[i]=1200;  atom_miedema_BVm[i]=6.6;  atom_radius_vec[i]=0.160; atom_radius_covalent_vec[i]=1.70;   atom_electronegativity_vec[i]=1.36; atom_crystal_vec[i]="hcp";  pettifor_scale[i]=0.74; xray_scatt_vec[i]=21.34; pearson_coefficient[i]=0.0;  // Sc
     i++; atom_symbol_vec[i]="Ti";atom_name_vec[i]="Titanium";    atom_mass_vec[i]*=47.9;     atom_volume_vec[i]=17.1035; atom_valence_std_vec[i]=4; atom_valence_iupac_vec[i]=4; atom_miedema_phi_star[i]=3.65; atom_miedema_nws[i]=1.47; atom_miedema_Vm[i]=4.8; atom_miedema_gamma_s[i]=2050;  atom_miedema_BVm[i]=11.0; atom_radius_vec[i]=0.147; atom_radius_covalent_vec[i]=1.60;   atom_electronegativity_vec[i]=1.54; atom_crystal_vec[i]="hcp";  pettifor_scale[i]=0.79; xray_scatt_vec[i]=22.24; pearson_coefficient[i]=0.000286456;  // Ti
     i++; atom_symbol_vec[i]="V"; atom_name_vec[i]="Vanadium";    atom_mass_vec[i]*=50.9415;  atom_volume_vec[i]=13.2086; atom_valence_std_vec[i]=5; atom_valence_iupac_vec[i]=5; atom_miedema_phi_star[i]=4.25; atom_miedema_nws[i]=1.64; atom_miedema_Vm[i]=4.1; atom_miedema_gamma_s[i]=2600;  atom_miedema_BVm[i]=14.0; atom_radius_vec[i]=0.132; atom_radius_covalent_vec[i]=1.53;   atom_electronegativity_vec[i]=1.63; atom_crystal_vec[i]="bcc";  pettifor_scale[i]=0.84; pearson_coefficient[i]=9.54831E-07;  // V
@@ -341,7 +344,7 @@ void atoms_initialize(void) {
     i++; atom_symbol_vec[i]="Ni";atom_name_vec[i]="Nickel";      atom_mass_vec[i]*=58.69;    atom_volume_vec[i]=10.8664; atom_valence_std_vec[i]=10; atom_valence_iupac_vec[i]=4; atom_miedema_phi_star[i]=5.20; atom_miedema_nws[i]=1.75; atom_miedema_Vm[i]=3.5; atom_miedema_gamma_s[i]=2450;  atom_miedema_BVm[i]=12.0; atom_radius_vec[i]=0.125; atom_radius_covalent_vec[i]=1.24;   atom_electronegativity_vec[i]=1.91; atom_crystal_vec[i]="fcc";  pettifor_scale[i]=1.09; xray_scatt_vec[i]=25.02; pearson_coefficient[i]=0.000430773;  // Ni
     i++; atom_symbol_vec[i]="Cu";atom_name_vec[i]="Copper";      atom_mass_vec[i]*=63.546;   atom_volume_vec[i]=12.0159; atom_valence_std_vec[i]=11; atom_valence_iupac_vec[i]=4; atom_miedema_phi_star[i]=4.55; atom_miedema_nws[i]=1.47; atom_miedema_Vm[i]=3.7; atom_miedema_gamma_s[i]=1850;  atom_miedema_BVm[i]=9.3;  atom_radius_vec[i]=0.128; atom_radius_covalent_vec[i]=1.32;   atom_electronegativity_vec[i]=1.90; atom_crystal_vec[i]="fcc";  pettifor_scale[i]=1.20; xray_scatt_vec[i]=27.03; pearson_coefficient[i]=0.00021086;  // Cu JUNKAI CHANGED VALENCE    
     i++; atom_symbol_vec[i]="Zn";atom_name_vec[i]="Zinc";        atom_mass_vec[i]*=65.38;    atom_volume_vec[i]=15.0827; atom_valence_std_vec[i]=12; atom_valence_iupac_vec[i]=2; atom_miedema_phi_star[i]=4.10; atom_miedema_nws[i]=1.32; atom_miedema_Vm[i]=4.4; atom_miedema_gamma_s[i]=1020;  atom_miedema_BVm[i]=5.5;  atom_radius_vec[i]=0.133; atom_radius_covalent_vec[i]=1.22;   atom_electronegativity_vec[i]=1.65; atom_crystal_vec[i]="hcp";  pettifor_scale[i]=1.44; xray_scatt_vec[i]=28.44; pearson_coefficient[i]=0.000595597;  // Zn
-    // p-electron systems
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                // p-electron systems
     i++; atom_symbol_vec[i]="Ga";atom_name_vec[i]="Gallium";     atom_mass_vec[i]*=69.737;   atom_volume_vec[i]=18.9039; atom_valence_std_vec[i]=3; atom_valence_iupac_vec[i]=3; atom_miedema_phi_star[i]=4.10; atom_miedema_nws[i]=1.31; atom_miedema_Vm[i]=5.2; atom_miedema_gamma_s[i]= 830;  atom_miedema_BVm[i]=6.7;  atom_radius_vec[i]=0.135; atom_radius_covalent_vec[i]=1.22;   atom_electronegativity_vec[i]=1.81; atom_crystal_vec[i]="orc";  pettifor_scale[i]=1.68; pearson_coefficient[i]=0.000197588;  // Ga
     i++; atom_symbol_vec[i]="Ge";atom_name_vec[i]="Germanium";   atom_mass_vec[i]*=72.59;    atom_volume_vec[i]=19.2948; atom_valence_std_vec[i]=4; atom_valence_iupac_vec[i]=4; atom_miedema_phi_star[i]=4.55; atom_miedema_nws[i]=1.37; atom_miedema_Vm[i]=4.6; atom_miedema_gamma_s[i]=1030;  atom_miedema_BVm[i]=10.5; atom_radius_vec[i]=0.122; atom_radius_covalent_vec[i]=1.20;   atom_electronegativity_vec[i]=2.01; atom_crystal_vec[i]="dia";  pettifor_scale[i]=1.92; pearson_coefficient[i]=0.00058782;  // Ge
     i++; atom_symbol_vec[i]="As";atom_name_vec[i]="Arsenic";     atom_mass_vec[i]*=74.9216;  atom_volume_vec[i]=19.0677; atom_valence_std_vec[i]=5; atom_valence_iupac_vec[i]=5; atom_miedema_phi_star[i]=4.80; atom_miedema_nws[i]=1.44; atom_miedema_Vm[i]=5.2; atom_miedema_gamma_s[i]=1000;  atom_miedema_BVm[i]=5.1;  atom_radius_vec[i]=0.125; atom_radius_covalent_vec[i]=1.19;   atom_electronegativity_vec[i]=2.18; atom_crystal_vec[i]="rhl";  pettifor_scale[i]=2.16; pearson_coefficient[i]=0.0;  // As
@@ -353,7 +356,7 @@ void atoms_initialize(void) {
     // s-electron systems
     i++; atom_symbol_vec[i]="Rb";atom_name_vec[i]="Rubidium";    atom_mass_vec[i]*=85.4678;  atom_volume_vec[i]=91.2738; atom_valence_std_vec[i]=1; atom_valence_iupac_vec[i]=1; atom_miedema_phi_star[i]=2.10; atom_miedema_nws[i]=0.60; atom_miedema_Vm[i]=14.6;atom_miedema_gamma_s[i]= 120;  atom_miedema_BVm[i]=1.8;  atom_radius_vec[i]=0.251; atom_radius_covalent_vec[i]=2.20;   atom_electronegativity_vec[i]=0.82; atom_crystal_vec[i]="bcc";  pettifor_scale[i]=0.30; pearson_coefficient[i]=0.000109697;  // Rb
     i++; atom_symbol_vec[i]="Sr";atom_name_vec[i]="Strontium";   atom_mass_vec[i]*=87.62;    atom_volume_vec[i]=55.4105; atom_valence_std_vec[i]=2; atom_valence_iupac_vec[i]=2; atom_miedema_phi_star[i]=2.40; atom_miedema_nws[i]=0.84; atom_miedema_Vm[i]=10.2;atom_miedema_gamma_s[i]= 430;  atom_miedema_BVm[i]=3.9;  atom_radius_vec[i]=0.215; atom_radius_covalent_vec[i]=1.95;   atom_electronegativity_vec[i]=0.95; atom_crystal_vec[i]="fcc";  pettifor_scale[i]=0.55; pearson_coefficient[i]=6.09969E-05;  // Sr
-    // d-electron systems: transition metals
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      // d-electron systems: transition metals
     i++; atom_symbol_vec[i]="Y"; atom_name_vec[i]="Yttrium";     atom_mass_vec[i]*=88.9059;  atom_volume_vec[i]=32.4546; atom_valence_std_vec[i]=3; atom_valence_iupac_vec[i]=3; atom_miedema_phi_star[i]=3.20; atom_miedema_nws[i]=1.21; atom_miedema_Vm[i]=7.3; atom_miedema_gamma_s[i]=1100;  atom_miedema_BVm[i]=7.2;  atom_radius_vec[i]=0.181; atom_radius_covalent_vec[i]=1.90;   atom_electronegativity_vec[i]=1.22; atom_crystal_vec[i]="hcp";  pettifor_scale[i]=0.70; pearson_coefficient[i]=0.0;  // Y
     i++; atom_symbol_vec[i]="Zr";atom_name_vec[i]="Zirconium";   atom_mass_vec[i]*=91.22;    atom_volume_vec[i]=23.2561; atom_valence_std_vec[i]=4; atom_valence_iupac_vec[i]=4; atom_miedema_phi_star[i]=3.40; atom_miedema_nws[i]=1.39; atom_miedema_Vm[i]=5.8; atom_miedema_gamma_s[i]=1950;  atom_miedema_BVm[i]=12.0; atom_radius_vec[i]=0.158; atom_radius_covalent_vec[i]=1.75;   atom_electronegativity_vec[i]=1.33; atom_crystal_vec[i]="hcp";  pettifor_scale[i]=0.76; pearson_coefficient[i]=0.000342629;  // Zr
     i++; atom_symbol_vec[i]="Nb";atom_name_vec[i]="Niobium";     atom_mass_vec[i]*=92.9064;  atom_volume_vec[i]=18.3132; atom_valence_std_vec[i]=5; atom_valence_iupac_vec[i]=5; atom_miedema_phi_star[i]=4.00; atom_miedema_nws[i]=1.62; atom_miedema_Vm[i]=4.9; atom_miedema_gamma_s[i]=2700;  atom_miedema_BVm[i]=18.0; atom_radius_vec[i]=0.143; atom_radius_covalent_vec[i]=1.64;   atom_electronegativity_vec[i]=1.60; atom_crystal_vec[i]="bcc";  pettifor_scale[i]=0.82; pearson_coefficient[i]=0.0;  // Nb
@@ -364,7 +367,7 @@ void atoms_initialize(void) {
     i++; atom_symbol_vec[i]="Pd";atom_name_vec[i]="Palladium";   atom_mass_vec[i]*=106.4;    atom_volume_vec[i]=15.4596; atom_valence_std_vec[i]=10; atom_valence_iupac_vec[i]=4; atom_miedema_phi_star[i]=5.45; atom_miedema_nws[i]=1.67; atom_miedema_Vm[i]=4.3; atom_miedema_gamma_s[i]=2100;  atom_miedema_BVm[i]=16.0; atom_radius_vec[i]=0.137; atom_radius_covalent_vec[i]=1.39;   atom_electronegativity_vec[i]=2.20; atom_crystal_vec[i]="fcc";  pettifor_scale[i]=1.12; pearson_coefficient[i]=0.000309478;  // Pd
     i++; atom_symbol_vec[i]="Ag";atom_name_vec[i]="Silver";      atom_mass_vec[i]*=107.8682; atom_volume_vec[i]=18.0678; atom_valence_std_vec[i]=11; atom_valence_iupac_vec[i]=4; atom_miedema_phi_star[i]=4.45; atom_miedema_nws[i]=1.39; atom_miedema_Vm[i]=4.7; atom_miedema_gamma_s[i]=1250;  atom_miedema_BVm[i]=10.0; atom_radius_vec[i]=0.144; atom_radius_covalent_vec[i]=1.45;   atom_electronegativity_vec[i]=1.93; atom_crystal_vec[i]="fcc";  pettifor_scale[i]=1.18; xray_scatt_vec[i]=47.18; pearson_coefficient[i]=8.57985E-05;  // Ag JUNKAI CHANGED VALENCE    
     i++; atom_symbol_vec[i]="Cd";atom_name_vec[i]="Cadmium";     atom_mass_vec[i]*=112.41;   atom_volume_vec[i]=22.0408; atom_valence_std_vec[i]=12; atom_valence_iupac_vec[i]=2; atom_miedema_phi_star[i]=4.05; atom_miedema_nws[i]=1.24; atom_miedema_Vm[i]=5.5; atom_miedema_gamma_s[i]= 780;  atom_miedema_BVm[i]=6.10; atom_radius_vec[i]=0.150; atom_radius_covalent_vec[i]=1.44;   atom_electronegativity_vec[i]=1.69; atom_crystal_vec[i]="hcp";  pettifor_scale[i]=1.36; pearson_coefficient[i]=0.000271603;  // Cd
-    // p-electron systems
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       // p-electron systems
     i++; atom_symbol_vec[i]="In";atom_name_vec[i]="Indium";      atom_mass_vec[i]*=114.82;   atom_volume_vec[i]=27.5233; atom_valence_std_vec[i]=3; atom_valence_iupac_vec[i]=3; atom_miedema_phi_star[i]=3.90; atom_miedema_nws[i]=1.17; atom_miedema_Vm[i]=6.3; atom_miedema_gamma_s[i]= 690;  atom_miedema_BVm[i]=6.4;  atom_radius_vec[i]=0.157; atom_radius_covalent_vec[i]=1.42;   atom_electronegativity_vec[i]=1.78; atom_crystal_vec[i]="fct";  pettifor_scale[i]=1.60; pearson_coefficient[i]=1.24494E-05;  // In
     i++; atom_symbol_vec[i]="Sn";atom_name_vec[i]="Tin";         atom_mass_vec[i]*=118.69;   atom_volume_vec[i]=27.5555; atom_valence_std_vec[i]=4; atom_valence_iupac_vec[i]=4; atom_miedema_phi_star[i]=4.15; atom_miedema_nws[i]=1.24; atom_miedema_Vm[i]=6.4; atom_miedema_gamma_s[i]= 710;  atom_miedema_BVm[i]=8.8;  atom_radius_vec[i]=0.158; atom_radius_covalent_vec[i]=1.39;   atom_electronegativity_vec[i]=1.96; atom_crystal_vec[i]="bct";  pettifor_scale[i]=1.84; pearson_coefficient[i]=0.000334085;  // Sn
     i++; atom_symbol_vec[i]="Sb";atom_name_vec[i]="Antimony";    atom_mass_vec[i]*=121.75;   atom_volume_vec[i]=27.1823; atom_valence_std_vec[i]=5; atom_valence_iupac_vec[i]=5; atom_miedema_phi_star[i]=4.40; atom_miedema_nws[i]=1.26; atom_miedema_Vm[i]=6.6; atom_miedema_gamma_s[i]= 680;  atom_miedema_BVm[i]=7.0;  atom_radius_vec[i]=0.161; atom_radius_covalent_vec[i]=1.39;   atom_electronegativity_vec[i]=2.05; atom_crystal_vec[i]="rhl";  pettifor_scale[i]=2.08; pearson_coefficient[i]=6.60751E-05;  // Sb
@@ -376,9 +379,9 @@ void atoms_initialize(void) {
     // s-electron systems
     i++; atom_symbol_vec[i]="Cs";atom_name_vec[i]="Cesium";      atom_mass_vec[i]*=132.9054; atom_volume_vec[i]=117.281; atom_valence_std_vec[i]=1; atom_valence_iupac_vec[i]=1; atom_miedema_phi_star[i]=1.95; atom_miedema_nws[i]=0.55; atom_miedema_Vm[i]=16.8;atom_miedema_gamma_s[i]=  95;  atom_miedema_BVm[i]=1.4;  atom_radius_vec[i]=0.265; atom_radius_covalent_vec[i]=2.44;   atom_electronegativity_vec[i]=0.79; atom_crystal_vec[i]="bcc";  pettifor_scale[i]=0.25; pearson_coefficient[i]=0.0;  // Cs
     i++; atom_symbol_vec[i]="Ba";atom_name_vec[i]="Barium";      atom_mass_vec[i]*=137.33;   atom_volume_vec[i]=62.6649; atom_valence_std_vec[i]=2; atom_valence_iupac_vec[i]=2; atom_miedema_phi_star[i]=2.32; atom_miedema_nws[i]=0.81; atom_miedema_Vm[i]=11.3;atom_miedema_gamma_s[i]= 370;  atom_miedema_BVm[i]=3.9;  atom_radius_vec[i]=0.217; atom_radius_covalent_vec[i]=2.15;   atom_electronegativity_vec[i]=0.89; atom_crystal_vec[i]="bcc";  pettifor_scale[i]=0.50; pearson_coefficient[i]=6.23705E-05;  // Ba
-    // d-electron systems: transition metals
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      // d-electron systems: transition metals
     i++; atom_symbol_vec[i]="La";atom_name_vec[i]="Lanthanium";  atom_mass_vec[i]*=138.9055; atom_volume_vec[i]=36.8495; atom_valence_std_vec[i]=3; atom_valence_iupac_vec[i]=3; atom_miedema_phi_star[i]=3.05;/*3.17*/ atom_miedema_nws[i]=1.09;/*1.18*/ atom_miedema_Vm[i]=8.0;/*7.98*/ atom_miedema_gamma_s[i]= 900;  atom_miedema_BVm[i]=5.5;  atom_radius_vec[i]=0.187; atom_radius_covalent_vec[i]=2.07;   atom_electronegativity_vec[i]=1.10; atom_crystal_vec[i]="hex";  pettifor_scale[i]=0.7480; pearson_coefficient[i]=4.65323E-08;  // La
-    // lantanidies
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                // lantanidies
     i++; atom_symbol_vec[i]="Ce";atom_name_vec[i]="Cerium";      atom_mass_vec[i]*=140.12;   atom_volume_vec[i]=26.4729; atom_valence_std_vec[i]=4; atom_valence_iupac_vec[i]=4; atom_miedema_phi_star[i]=3.18;  atom_miedema_nws[i]=1.19;  atom_miedema_Vm[i]=7.76; atom_miedema_gamma_s[i]= NNN;  atom_miedema_BVm[i]=NNN;  atom_radius_vec[i]=0.182; atom_radius_covalent_vec[i]=2.04;   atom_electronegativity_vec[i]=1.12; atom_crystal_vec[i]="fcc";  pettifor_scale[i]=0.7460; pearson_coefficient[i]=2.24956E-05;  // Ce pettifor linear interpolation // miedema from Alonso-March.
     i++; atom_symbol_vec[i]="Pr";atom_name_vec[i]="Praseodymium";atom_mass_vec[i]*=140.9077; atom_volume_vec[i]=36.4987; atom_valence_std_vec[i]=5; atom_valence_iupac_vec[i]=4; atom_miedema_phi_star[i]=3.19;  atom_miedema_nws[i]=1.20;  atom_miedema_Vm[i]=7.56; atom_miedema_gamma_s[i]= NNN;  atom_miedema_BVm[i]=NNN;  atom_radius_vec[i]=0.183; atom_radius_covalent_vec[i]=2.03;   atom_electronegativity_vec[i]=1.13; atom_crystal_vec[i]="hex";  pettifor_scale[i]=0.7440; pearson_coefficient[i]=0.0;  // Pr pettifor linear interpolation
     i++; atom_symbol_vec[i]="Nd";atom_name_vec[i]="Neodymium";   atom_mass_vec[i]*=144.24;   atom_volume_vec[i]=29.6719; atom_valence_std_vec[i]=6; atom_valence_iupac_vec[i]=4; atom_miedema_phi_star[i]=3.19;  atom_miedema_nws[i]=1.20;  atom_miedema_Vm[i]=7.51; atom_miedema_gamma_s[i]= NNN;  atom_miedema_BVm[i]=NNN;  atom_radius_vec[i]=0.182; atom_radius_covalent_vec[i]=2.01;   atom_electronegativity_vec[i]=1.14; atom_crystal_vec[i]="hex";  pettifor_scale[i]=0.7420; pearson_coefficient[i]=0.000231599;  // Nd pettifor linear interpolation JUNKAI CHANGED VALENCE    
@@ -393,7 +396,7 @@ void atoms_initialize(void) {
     i++; atom_symbol_vec[i]="Tm";atom_name_vec[i]="Thulium";     atom_mass_vec[i]*=168.9342; atom_volume_vec[i]=30.0016; atom_valence_std_vec[i]=15; atom_valence_iupac_vec[i]=4; atom_miedema_phi_star[i]=3.22;  atom_miedema_nws[i]=1.23;  atom_miedema_Vm[i]=6.90; atom_miedema_gamma_s[i]= NNN;  atom_miedema_BVm[i]=NNN;  atom_radius_vec[i]=0.174; atom_radius_covalent_vec[i]=1.90;   atom_electronegativity_vec[i]=1.25; atom_crystal_vec[i]="hcp";  pettifor_scale[i]=0.7240; pearson_coefficient[i]=0.0;  // Tm pettifor linear interpolation JUNKAI CHANGED VALENCE    
     i++; atom_symbol_vec[i]="Yb";atom_name_vec[i]="Ytterbium";   atom_mass_vec[i]*=173.04;   atom_volume_vec[i]=39.4395; atom_valence_std_vec[i]=16; atom_valence_iupac_vec[i]=3; atom_miedema_phi_star[i]=3.22;  atom_miedema_nws[i]=1.23;  atom_miedema_Vm[i]=6.86; atom_miedema_gamma_s[i]= NNN;  atom_miedema_BVm[i]=NNN;  atom_radius_vec[i]=0.193; atom_radius_covalent_vec[i]=1.87;   atom_electronegativity_vec[i]=1.10; atom_crystal_vec[i]="fcc";  pettifor_scale[i]=0.7220; pearson_coefficient[i]=8.54557E-05;  // Yb pettifor linear interpolation
     i++; atom_symbol_vec[i]="Lu";atom_name_vec[i]="Lutetium";    atom_mass_vec[i]*=174.967;  atom_volume_vec[i]=29.3515; atom_valence_std_vec[i]=17; atom_valence_iupac_vec[i]=3; atom_miedema_phi_star[i]=3.22;  atom_miedema_nws[i]=1.24;  atom_miedema_Vm[i]=6.81; atom_miedema_gamma_s[i]= NNN;  atom_miedema_BVm[i]=NNN;  atom_radius_vec[i]=0.173; atom_radius_covalent_vec[i]=1.87;   atom_electronegativity_vec[i]=1.27; atom_crystal_vec[i]="hcp";  pettifor_scale[i]=0.7200; pearson_coefficient[i]=8.27273E-07;  // Lu
-    // d-electron systems: transition metalsnnn";
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            // d-electron systems: transition metalsnnn";
     i++; atom_symbol_vec[i]="Hf";atom_name_vec[i]="Hafnium";     atom_mass_vec[i]*=178.49;   atom_volume_vec[i]=22.0408; atom_valence_std_vec[i]=4; atom_valence_iupac_vec[i]=4; atom_miedema_phi_star[i]=3.55; atom_miedema_nws[i]=1.43; atom_miedema_Vm[i]=5.6; atom_miedema_gamma_s[i]=2200;  atom_miedema_BVm[i]=15.0; atom_radius_vec[i]=0.159; atom_radius_covalent_vec[i]=1.75;   atom_electronegativity_vec[i]=1.30; atom_crystal_vec[i]="hcp";  pettifor_scale[i]=0.775; pearson_coefficient[i]=5.25384E-05;  // Hf
     i++; atom_symbol_vec[i]="Ta";atom_name_vec[i]="Tantalum";    atom_mass_vec[i]*=180.9479; atom_volume_vec[i]=18.1100; atom_valence_std_vec[i]=5; atom_valence_iupac_vec[i]=5; atom_miedema_phi_star[i]=4.05; atom_miedema_nws[i]=1.63; atom_miedema_Vm[i]=4.9; atom_miedema_gamma_s[i]=3050;  atom_miedema_BVm[i]=22.0; atom_radius_vec[i]=0.147; atom_radius_covalent_vec[i]=1.70;   atom_electronegativity_vec[i]=1.50; atom_crystal_vec[i]="bcc";  pettifor_scale[i]=0.83; pearson_coefficient[i]=3.66845E-09;  // Ta
     i++; atom_symbol_vec[i]="W"; atom_name_vec[i]="Tungsten";    atom_mass_vec[i]*=183.85;   atom_volume_vec[i]=15.9387; atom_valence_std_vec[i]=6; atom_valence_iupac_vec[i]=6; atom_miedema_phi_star[i]=4.80; atom_miedema_nws[i]=1.81; atom_miedema_Vm[i]=4.5; atom_miedema_gamma_s[i]=3300;  atom_miedema_BVm[i]=31.0; atom_radius_vec[i]=0.137; atom_radius_covalent_vec[i]=1.62;   atom_electronegativity_vec[i]=2.36; atom_crystal_vec[i]="bcc";  pettifor_scale[i]=0.885; pearson_coefficient[i]=6.96679E-05;  // W
@@ -403,7 +406,7 @@ void atoms_initialize(void) {
     i++; atom_symbol_vec[i]="Pt";atom_name_vec[i]="Platinum";    atom_mass_vec[i]*=195.09;   atom_volume_vec[i]=15.7298; atom_valence_std_vec[i]=10; atom_valence_iupac_vec[i]=6; atom_miedema_phi_star[i]=5.65; atom_miedema_nws[i]=1.78; atom_miedema_Vm[i]=4.4; atom_miedema_gamma_s[i]=2550;  atom_miedema_BVm[i]=18.0; atom_radius_vec[i]=0.138; atom_radius_covalent_vec[i]=1.36;   atom_electronegativity_vec[i]=2.28; atom_crystal_vec[i]="fcc";  pettifor_scale[i]=1.105; pearson_coefficient[i]=3.39206E-05;  // Pt
     i++; atom_symbol_vec[i]="Au";atom_name_vec[i]="Gold";        atom_mass_vec[i]*=196.9665; atom_volume_vec[i]=18.1904; atom_valence_std_vec[i]=11; atom_valence_iupac_vec[i]=5; atom_miedema_phi_star[i]=5.15; atom_miedema_nws[i]=1.57; atom_miedema_Vm[i]=4.7; atom_miedema_gamma_s[i]=1550;  atom_miedema_BVm[i]=18.0; atom_radius_vec[i]=0.144; atom_radius_covalent_vec[i]=1.36;   atom_electronegativity_vec[i]=2.54; atom_crystal_vec[i]="fcc";  pettifor_scale[i]=1.16; xray_scatt_vec[i]=74.99; pearson_coefficient[i]=2.08217E-32;  // Au
     i++; atom_symbol_vec[i]="Hg";atom_name_vec[i]="Mercury";     atom_mass_vec[i]*=200.59;   atom_volume_vec[i]=29.7156; atom_valence_std_vec[i]=12; atom_valence_iupac_vec[i]=4; atom_miedema_phi_star[i]=4.20; atom_miedema_nws[i]=1.24; atom_miedema_Vm[i]=5.8; atom_miedema_gamma_s[i]= 610;  atom_miedema_BVm[i]=4.0;  atom_radius_vec[i]=0.150; atom_radius_covalent_vec[i]=1.32;   atom_electronegativity_vec[i]=2.00; atom_crystal_vec[i]="rhl";  pettifor_scale[i]=1.32; pearson_coefficient[i]=6.52519E-05;  // Hg
-    // p-electron systems
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       // p-electron systems
     i++; atom_symbol_vec[i]="Tl";atom_name_vec[i]="Thallium";    atom_mass_vec[i]*=204.37;   atom_volume_vec[i]=31.0721; atom_valence_std_vec[i]=3; atom_valence_iupac_vec[i]=3; atom_miedema_phi_star[i]=3.90; atom_miedema_nws[i]=1.12; atom_miedema_Vm[i]=6.6; atom_miedema_gamma_s[i]= 610;  atom_miedema_BVm[i]=6.2;  atom_radius_vec[i]=0.171; atom_radius_covalent_vec[i]=1.45;   atom_electronegativity_vec[i]=1.62; atom_crystal_vec[i]="hcp";  pettifor_scale[i]=1.56; pearson_coefficient[i]=1.99659E-05;  // Tl electronegativity  2.04=>1.62
     i++; atom_symbol_vec[i]="Pb";atom_name_vec[i]="Lead";        atom_mass_vec[i]*=207.2;    atom_volume_vec[i]=31.6649; atom_valence_std_vec[i]=4; atom_valence_iupac_vec[i]=4; atom_miedema_phi_star[i]=4.10; atom_miedema_nws[i]=1.15; atom_miedema_Vm[i]=6.9; atom_miedema_gamma_s[i]= 610;  atom_miedema_BVm[i]=7.9;  atom_radius_vec[i]=0.175; atom_radius_covalent_vec[i]=1.46;   atom_electronegativity_vec[i]=2.33; atom_crystal_vec[i]="fcc";  pettifor_scale[i]=1.80; pearson_coefficient[i]=1.94378E-05;  // Pb
     i++; atom_symbol_vec[i]="Bi";atom_name_vec[i]="Bismuth";     atom_mass_vec[i]*=208.9804; atom_volume_vec[i]=31.5691; atom_valence_std_vec[i]=5; atom_valence_iupac_vec[i]=5; atom_miedema_phi_star[i]=4.15; atom_miedema_nws[i]=1.16; atom_miedema_Vm[i]=7.2; atom_miedema_gamma_s[i]= 550;  atom_miedema_BVm[i]=6.7;  atom_radius_vec[i]=0.182; atom_radius_covalent_vec[i]=1.48;   atom_electronegativity_vec[i]=2.02; atom_crystal_vec[i]="rhl";  pettifor_scale[i]=2.04; pearson_coefficient[i]=0.0;  // Bi
@@ -415,9 +418,9 @@ void atoms_initialize(void) {
     // s-electron systems
     i++; atom_symbol_vec[i]="Fr";atom_name_vec[i]="Francium";    atom_mass_vec[i]*=223.02;   atom_volume_vec[i]=NNN;     atom_valence_std_vec[i]=1; atom_valence_iupac_vec[i]=1; atom_miedema_phi_star[i]=NNN;  atom_miedema_nws[i]=NNN;  atom_miedema_Vm[i]=NNN; atom_miedema_gamma_s[i]= NNN;  atom_miedema_BVm[i]=NNN;  atom_radius_vec[i]=NNN;   atom_radius_covalent_vec[i]=2.60;   atom_electronegativity_vec[i]=0.70; atom_crystal_vec[i]="bcc";  pettifor_scale[i]=0; pearson_coefficient[i]=0.0;  // Fr
     i++; atom_symbol_vec[i]="Ra";atom_name_vec[i]="Radium";      atom_mass_vec[i]*=226.0254; atom_volume_vec[i]=-1.0000; atom_valence_std_vec[i]=2; atom_valence_iupac_vec[i]=2; atom_miedema_phi_star[i]=NNN;  atom_miedema_nws[i]=NNN;  atom_miedema_Vm[i]=NNN; atom_miedema_gamma_s[i]= NNN;  atom_miedema_BVm[i]=NNN;  atom_radius_vec[i]=NNN;   atom_radius_covalent_vec[i]=2.21;   atom_electronegativity_vec[i]=0.89; atom_crystal_vec[i]="bct";  pettifor_scale[i]=0; pearson_coefficient[i]=0.0;  // Ra
-    // d-electron systems: transition metals
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           // d-electron systems: transition metals
     i++; atom_symbol_vec[i]="Ac";atom_name_vec[i]="Actinium";    atom_mass_vec[i]*=227.03;   atom_volume_vec[i]=45.2437; atom_valence_std_vec[i]=3; atom_valence_iupac_vec[i]=3; atom_miedema_phi_star[i]=NNN;  atom_miedema_nws[i]=NNN;  atom_miedema_Vm[i]=NNN; atom_miedema_gamma_s[i]= NNN;  atom_miedema_BVm[i]=NNN;  atom_radius_vec[i]=NNN;   atom_radius_covalent_vec[i]=2.15;   atom_electronegativity_vec[i]=1.10; atom_crystal_vec[i]="fcc";  pettifor_scale[i]=0; pearson_coefficient[i]=0.0;  // Ac
-    // actinidies
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           // actinidies
     i++; atom_symbol_vec[i]="Th";atom_name_vec[i]="Thorium";     atom_mass_vec[i]*=232.0381; atom_volume_vec[i]=31.9586; atom_valence_std_vec[i]=4; atom_valence_iupac_vec[i]=4; atom_miedema_phi_star[i]=3.30; atom_miedema_nws[i]=1.28; atom_miedema_Vm[i]=7.3; atom_miedema_gamma_s[i]= NNN;  atom_miedema_BVm[i]=NNN;  atom_radius_vec[i]=0.180; atom_radius_covalent_vec[i]=2.06;   atom_electronegativity_vec[i]=1.30; atom_crystal_vec[i]="fcc";  pettifor_scale[i]=0; xray_scatt_vec[i]=86.64; pearson_coefficient[i]=0.0; // Th
     i++; atom_symbol_vec[i]="Pa";atom_name_vec[i]="Protoactinium";atom_mass_vec[i]*=231.04;  atom_volume_vec[i]=NNN;     atom_valence_std_vec[i]=5; atom_valence_iupac_vec[i]=5; atom_miedema_phi_star[i]=NNN;  atom_miedema_nws[i]=NNN;  atom_miedema_Vm[i]=NNN; atom_miedema_gamma_s[i]= NNN;  atom_miedema_BVm[i]=NNN;  atom_radius_vec[i]=NNN;   atom_radius_covalent_vec[i]=2.00;   atom_electronegativity_vec[i]=1.50; atom_crystal_vec[i]="bct";  pettifor_scale[i]=0; pearson_coefficient[i]=0.0;  // Pa
     i++; atom_symbol_vec[i]="U"; atom_name_vec[i]="Uranium";     atom_mass_vec[i]*=238.03;   atom_volume_vec[i]=NNN;     atom_valence_std_vec[i]=6; atom_valence_iupac_vec[i]=6; atom_miedema_phi_star[i]=NNN;  atom_miedema_nws[i]=NNN;  atom_miedema_Vm[i]=NNN; atom_miedema_gamma_s[i]= NNN;  atom_miedema_BVm[i]=NNN;  atom_radius_vec[i]=0.138; atom_radius_covalent_vec[i]=1.96;   atom_electronegativity_vec[i]=1.38; atom_crystal_vec[i]="orc";  pettifor_scale[i]=0; pearson_coefficient[i]=1.15611E-06;  // U
@@ -440,13 +443,13 @@ void atoms_initialize(void) {
        int test=atom_valence_std_vec[j];
        if(j<=9 && test>=5) {test=test-8;} // first row
        if(j<=17 && test>=5) {test=test-8;} // second row
-    //   if(test!=valence_wahyu[j]) 
-    cerr << atom_symbol_vec[j] << " " << atom_valence_std_vec[j] << " " <<  test  << " " << valence_wahyu[j];
-    if(test!=valence_wahyu[j]) cerr << "   ****   ";
-    cerr << endl;
-    }
-    exit(0);
-    */
+                                           //   if(test!=valence_wahyu[j]) 
+                                           cerr << atom_symbol_vec[j] << " " << atom_valence_std_vec[j] << " " <<  test  << " " << valence_wahyu[j];
+                                           if(test!=valence_wahyu[j]) cerr << "   ****   ";
+                                           cerr << endl;
+                                           }
+                                           exit(0);
+                                           */
 
 
     //   for(int i=1;i<90;i++) {
@@ -784,7 +787,7 @@ bool SortAtomsPettiforScale(vector<string> &vsymbol,xvector<int> &vorder,xvector
     if(vvalue.rows!=(int) vsymbol.size()) return FALSE; // nothing to be ordered
     if(vorder.lrows!=1) return FALSE; // start from 1 .. and contains order from 1
     if(vvalue.lrows!=1) return FALSE; // start from 1
-    // build
+                                      // build
     for(uint i=1;i<=vsymbol.size();i++) {
         vvalue[i]=GetAtomPettiforScale(vsymbol.at(i-1));
         vorder[i]=i;
@@ -1011,7 +1014,7 @@ uint new_XATOM_SplitAlloySpecies(string alloy_in, vector<string> &speciesX, vect
     }
     for(uint i=0;i<speciesX.size();i++)
         speciesX.at(i)=aurostd::CleanStringASCII(speciesX.at(i));   // clean it up so it does not have problems inside only letters_numbers
-    // now the atoms
+                                                                    // now the atoms
     natomsX.clear();
     for(uint i=0;i<speciesX.size();i++) {
         if(i<speciesX.size()-1)
@@ -1039,7 +1042,7 @@ uint XATOM_SplitAlloySpecies(string alloy_in, vector<string> &speciesX, vector<d
     }
     for(uint i=0;i<speciesX.size();i++)
         speciesX.at(i)=aurostd::CleanStringASCII(speciesX.at(i));   // clean it up so it does not have problems inside only letters_numbers
-    // now the atoms
+                                                                    // now the atoms
     natomsX.clear();
     for(uint i=0;i<speciesX.size();i++) {
         if(i<speciesX.size()-1)
@@ -1081,7 +1084,7 @@ uint XATOM_SplitAlloyPseudoPotentials(string alloy_in, vector<string> &species_p
     }
     for(uint i=0;i<species_ppX.size();i++)
         species_ppX.at(i)=aurostd::CleanStringASCII(species_ppX.at(i));   // clean it up so it does not have problems inside only letters_numbers
-    // now the atoms
+                                                                          // now the atoms
     natomsX.clear();
     for(uint i=0;i<species_ppX.size();i++) {
         if(i<species_ppX.size()-1)
@@ -1129,9 +1132,9 @@ _sym_op::_sym_op() {
     site=0;                          // clear stuff       // DX 8/3/17
     basis_atoms_map.clear();         // clear stuff
     basis_types_map.clear();         // clear stuff
-    // DX and CO - START
+                                     // DX and CO - START
     basis_map_calculated=FALSE;      // clear stuff
-    // DX and CO - END
+                                     // DX and CO - END
 }
 
 // destructor
@@ -1201,8 +1204,8 @@ ostream& operator<<(ostream& oss,const _sym_op& symop) {
     oss << " Schoenflies: "<< symop.str_Schoenflies << endl;
     // DX and CO - START
     oss << "" << roundoff(symop.Uc,1e-8) << " Uc "<< endl; // COREY roundoff for printing
-    //oss << "" << symop.Uc << " Uc "<< endl;
-    // DX and CO -END
+                                                           //oss << "" << symop.Uc << " Uc "<< endl;
+                                                           // DX and CO -END
     Uexp=exp(symop.generator);
     // if(! a.symop_inversion[k] ) oss << "" << max(aurostd::abs(Uexp-Uc))
     // << " error " << endl; else oss << "" <<  max(aurostd::abs(Uexp+Uc)) << " error " << endl;
@@ -1426,12 +1429,12 @@ xstructure::xstructure(string structure_title) {
     origin.clear();
     // TOLERANCES ------------------------
     equiv_fpos_epsilon=_EQUIV_FPOS_EPS_; // standard but you can change
-    // NUM_EACH_TYPE ---------------------
-    //ClearSpecies(); // CO 180420
+                                         // NUM_EACH_TYPE ---------------------
+                                         //ClearSpecies(); // CO 180420
     num_each_type.clear();    // CO 180420 - ClearSpecies()
     comp_each_type.clear();   // CO 180420 - ClearSpecies()
     stoich_each_type.clear(); // CO 171025 // CO 180420 - ClearSpecies()
-    // SPECIES ---------------------------
+                              // SPECIES ---------------------------
     species.clear();species_pp.clear();species_pp_type.clear();species_pp_version.clear();species_pp_ZVAL.clear();species_pp_vLDAU.clear();species_volume.clear();species_mass.clear(); // CO 180420 - ClearSpecies()
     is_vasp4_poscar_format=TRUE;
     is_vasp5_poscar_format=FALSE; 
@@ -1464,7 +1467,7 @@ xstructure::xstructure(string structure_title) {
     transform_coordinates_new2original.clear(); //DX 20181024
     rotate_lattice_original2new.clear(); //DX 20181024
     rotate_lattice_new2original.clear(); //DX 20181024
-    //reciprocal_conventional_lattice_type="";
+                                         //reciprocal_conventional_lattice_type="";
     bravais_superlattice_type="";
     bravais_superlattice_variation_type="";
     bravais_superlattice_system="";
@@ -1508,12 +1511,12 @@ xstructure::xstructure(string structure_title) {
     kpoints_kscheme="";
     // DX and CO - START
     dist_nn_min=AUROSTD_NAN;    // CO
-    // SYMMETRY TOLERANCE ----------------------------
+                                // SYMMETRY TOLERANCE ----------------------------
     sym_eps=AUROSTD_NAN; // DX
     sym_eps_calculated=false; // DX, this means that it was calculated and set by the symmetry routines
     sym_eps_change_count=0; // DX 2/22/18 - added tolerance count specific to structure
-    // DX and CO - END
-    // PGROUP ----------------------------
+                            // DX and CO - END
+                            // PGROUP ----------------------------
     pgroup.clear();            // just initialize
     pgroup_calculated=FALSE;
     // PGROUP_XTAL ----------------------------
@@ -1528,7 +1531,7 @@ xstructure::xstructure(string structure_title) {
     // PGROUPK_XTAL ----------------------------
     pgroupk_xtal.clear();            // just initialize // DX 12/5/17 - Added pgroupk_xtal
     pgroupk_xtal_calculated=FALSE;                      // DX 12/5/17 - Added pgroupk_xtal
-    // FGROUP ----------------------------
+                                                        // FGROUP ----------------------------
     fgroup.clear();            // just initialize
     fgroup_calculated=FALSE;
     // SGROUP ----------------------------
@@ -1558,11 +1561,11 @@ xstructure::xstructure(string structure_title) {
     // SPACE GROUP ITC (RHT)
     crystal_system_ITC="";  // RHT
     point_group_ITC=""; // RHT
-    // DX and CO - START
+                        // DX and CO - START
     bravais_label_ITC='X';  // RHT
     lattice_label_ITC='X'; // RHT
     space_group_ITC=0; // RHT
-    // DX and CO - END
+                       // DX and CO - END
     wyckoff_library_entry_ITC=""; // RHT
     wyccar_ITC.clear(); // RHT
     standard_lattice_ITC.clear(); // RHT
@@ -1572,7 +1575,7 @@ xstructure::xstructure(string structure_title) {
     setting_ITC = 0; // DX 8/30/17 - SGDATA
     origin_ITC.clear(); // DX 8/30/17 - SGDATA
     general_position_ITC.clear(); // DX 8/30/17 - SGDATA
-    // GRID ATOMS ------------------------
+                                  // GRID ATOMS ------------------------
     grid_atoms_calculated=FALSE;
     grid_atoms_dimsL.clear();
     grid_atoms_dimsH.clear();
@@ -1580,7 +1583,7 @@ xstructure::xstructure(string structure_title) {
     grid_atoms_number=0;
     grid_atoms_sc2pcMap.clear(); // CO 171025
     grid_atoms_pc2scMap.clear(); // CO 171025
-    // LIJK OBEJCTS ----------------------
+                                 // LIJK OBEJCTS ----------------------
     lijk_calculated=FALSE;
     lijk_table.clear();
     lijk_cpos.clear();
@@ -1598,7 +1601,7 @@ xstructure::xstructure(string structure_title) {
     neighbours_atoms_func_num_vs_nn.clear();
     neighbours_func_r_vs_nn.clear();                   // contains function distance vs neighbours (all atoms)
     neighbours_func_num_vs_nn.clear();                    // contains function number vs neighbours (all atoms)
-    // OUTPUT/ERROR ----------------------
+                                                          // OUTPUT/ERROR ----------------------
     Niggli_has_failed=FALSE;
     Minkowski_has_failed=FALSE;
     LatticeReduction_has_failed=FALSE;
@@ -1675,7 +1678,7 @@ void xstructure::Copy(const xstructure& bstr) {
     num_lattice_parameters=bstr.num_lattice_parameters;                      // number of lattice parameters ANRL 20180618
     prototype_parameter_list=bstr.prototype_parameter_list;                  // prototype parameter list ANRL 20180618
     prototype_parameter_values=bstr.prototype_parameter_values;              // prototype parameters values ANRL 20180618
-    // TOLERANCES ------------------------
+                                                                             // TOLERANCES ------------------------
     equiv_fpos_epsilon=bstr.equiv_fpos_epsilon;
     // NUM_EACH_TYPE ---------------------
     num_each_type.clear();
@@ -1687,7 +1690,7 @@ void xstructure::Copy(const xstructure& bstr) {
     stoich_each_type.clear(); // CO 171025
     for(uint i=0;i<bstr.stoich_each_type.size();i++) // CO 171025
         stoich_each_type.push_back(bstr.stoich_each_type.at(i)); // CO 171025
-    // SPECIES ---------------------------
+                                                                 // SPECIES ---------------------------
     species.clear();
     for(uint i=0;i<bstr.species.size();i++)
         species.push_back(bstr.species.at(i));
@@ -1745,7 +1748,7 @@ void xstructure::Copy(const xstructure& bstr) {
     transform_coordinates_new2original=bstr.transform_coordinates_new2original; //DX 20181024
     rotate_lattice_original2new=bstr.rotate_lattice_original2new; //DX 20181024
     rotate_lattice_new2original=bstr.rotate_lattice_new2original; //DX 20181024
-    // ATOMS -----------------------------
+                                                                  // ATOMS -----------------------------
     atoms.clear();
     for(uint i=0;i<bstr.atoms.size();i++)
         atoms.push_back(bstr.atoms.at(i));
@@ -1797,12 +1800,12 @@ void xstructure::Copy(const xstructure& bstr) {
     kpoints_kscheme=bstr.kpoints_kscheme;
     // DX and CO - START
     dist_nn_min=bstr.dist_nn_min;    // CO
-    // SYMMETRY TOLERANCE ----------------------------
+                                     // SYMMETRY TOLERANCE ----------------------------
     sym_eps=bstr.sym_eps; // DX
     sym_eps_calculated=bstr.sym_eps_calculated; // DX
     sym_eps_change_count=bstr.sym_eps_change_count; // DX 2/22/18 - added tolerance count specific to structure
-    // DX and CO - END
-    // PGROUP ----------------------------
+                                                    // DX and CO - END
+                                                    // PGROUP ----------------------------
     pgroup.clear();
     for(uint i=0;i<bstr.pgroup.size();i++)
         pgroup.push_back(bstr.pgroup.at(i));
@@ -1831,7 +1834,7 @@ void xstructure::Copy(const xstructure& bstr) {
     for(uint i=0;i<bstr.pgroupk_xtal.size();i++)             // DX 12/5/17 - Added pgroupk_xtal
         pgroupk_xtal.push_back(bstr.pgroupk_xtal.at(i));       // DX 12/5/17 - Added pgroupk_xtal
     pgroupk_xtal_calculated=bstr.pgroupk_xtal_calculated;    // DX 12/5/17 - Added pgroupk_xtal
-    // FGROUP ----------------------------
+                                                             // FGROUP ----------------------------
     fgroup.clear();
     for(uint i=0;i<bstr.fgroup.size();i++)
         fgroup.push_back(bstr.fgroup.at(i));
@@ -1884,7 +1887,7 @@ void xstructure::Copy(const xstructure& bstr) {
     setting_ITC=bstr.setting_ITC; // DX 8/30/17 - SGDATA
     origin_ITC=bstr.origin_ITC; // DX 8/30/17 - SGDATA
     general_position_ITC=bstr.general_position_ITC; // DX 8/30/17 - SGDATA
-    // GRID ATOMS ------------------------
+                                                    // GRID ATOMS ------------------------
     grid_atoms_calculated=bstr.grid_atoms_calculated;
     grid_atoms_dimsL=bstr.grid_atoms_dimsL;
     grid_atoms_dimsH=bstr.grid_atoms_dimsH;
@@ -1894,7 +1897,7 @@ void xstructure::Copy(const xstructure& bstr) {
     grid_atoms_number=bstr.grid_atoms_number;
     grid_atoms_sc2pcMap.clear(); for(uint i=0;i<bstr.grid_atoms_sc2pcMap.size();i++){grid_atoms_sc2pcMap.push_back(bstr.grid_atoms_sc2pcMap[i]);} // CO 171025
     grid_atoms_pc2scMap.clear(); for(uint i=0;i<bstr.grid_atoms_pc2scMap.size();i++){grid_atoms_pc2scMap.push_back(bstr.grid_atoms_pc2scMap[i]);} // CO 171025
-    // LIJK OBEJCTS ----------------------
+                                                                                                                                                  // LIJK OBEJCTS ----------------------
     lijk_calculated=bstr.lijk_calculated;
     lijk_table.clear();
     lijk_cpos.clear();
@@ -2026,8 +2029,8 @@ ostream& operator<<(ostream& oss,const xstructure& a) { // operator<<
     string soliloquy="XSTRUCTURE::operator<<():";
     int a_iomode=a.iomode;
     if(a_iomode==IOAFLOW_AUTO) a_iomode=IOVASP_AUTO; // some default
-    // ----------------------------------------------------------------------
-    // VASP OUTPUT
+                                                     // ----------------------------------------------------------------------
+                                                     // VASP OUTPUT
     if(a_iomode==IOVASP_AUTO || a_iomode==IOVASP_POSCAR || a_iomode==IOVASP_ABCCAR || a_iomode==IOVASP_WYCKCAR) { // VASP POSCAR
         oss.setf(std::ios::fixed,std::ios::floatfield);
         uint _precision_=_AFLOW_XSTR_PRINT_PRECISION_; //14; //was 16 stefano 10 dane //CO 180515
@@ -12337,6 +12340,8 @@ xstructure AQEgeom2qe(istream& input) {
 xstructure AQEgeom2vasp(istream& input) {
     xstructure a(input,IOAFLOW_AUTO);
     a.xstructure2vasp();
+    if (a.species.size()) 
+        a.is_vasp5_poscar_format = TRUE;  //Kesong fixes this to use vasp5 format if species are given, 2025
     return a;
 }
 
