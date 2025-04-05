@@ -501,7 +501,7 @@ namespace KBIN {
         double max_latt = max(xvasp.str.a, xvasp.str.b, xvasp.str.c);
         if (max_latt >= 50)
             xvasp.INCAR << aurostd::PaddedPOST("AMIN=0.01", _incarpad_) <<  "# if c > 50 Angstrom, set 0.01" <<  endl;
-        
+
         return Krun;
     };  
 }
@@ -2666,13 +2666,13 @@ namespace KBIN {
         if (aurostd::doesKeywordExist(xvasp.INCAR_orig.str(), "NELM ") || aurostd::doesKeywordExist(xvasp.INCAR_orig.str(), "NELM=")  ||
                 aurostd::doesKeywordExist(aurostd::file2string(xvasp.Directory+"/aflow.in"), "NELM ") || 
                 aurostd::doesKeywordExist(aurostd::file2string(xvasp.Directory+"/aflow.in"), "NELM=") 
-                ) {
+           ) {
             xvasp.INCAR << GetLineWithKeyword(xvasp.INCAR_orig.str(), "NELM") << endl;
             xvasp.INCAR << GetLineWithKeyword(aurostd::file2string(xvasp.Directory+"/aflow.in"), "NELM") << endl;
         }
         else  
             ss_INCAR << aurostd::PaddedPOST("NELM=120",_incarpad_)        <<  notes  << endl; //default is good since we can keep restarting
-        
+
         if (RunType == "STATIC") {
             if (aurostd::doesKeywordExist(xvasp.INCAR_orig.str(), "ISMEAR")) {
                 xvasp.INCAR << GetLineWithKeyword(xvasp.INCAR_orig.str(), "ISMEAR") << endl;  //somtimes, one want to use ISMEAR=0 to produce DOS
@@ -3209,7 +3209,7 @@ namespace KBIN {
                 strline=aurostd::GetLineString(FileContent,i);
                 if(//aurostd::substring2bool(strline,"ISMEAR",TRUE) || 
                         aurostd::substring2bool(strline,"#ISMEAR",TRUE) ||
-                       // aurostd::substring2bool(strline,"SIGMA",TRUE) || 
+                        // aurostd::substring2bool(strline,"SIGMA",TRUE) || 
                         aurostd::substring2bool(strline,"#SIGMA",TRUE)) {
                     xvasp.INCAR << "";
                 } else {
@@ -3324,7 +3324,7 @@ namespace KBIN {
             for(int i=1;i<=imax;i++) {
                 strline=aurostd::GetLineString(FileContent,i);
                 if(
-                       // aurostd::substring2bool(strline,"ISPIND",TRUE) || 
+                        // aurostd::substring2bool(strline,"ISPIND",TRUE) || 
                         aurostd::substring2bool(strline,"#ISPIND",TRUE) ||
                         //aurostd::substring2bool(strline,"ISPIN",TRUE) 
                         aurostd::substring2bool(strline,"#ISPIN",TRUE) ||
@@ -3383,7 +3383,7 @@ namespace KBIN {
             if(vflags.KBIN_VASP_FORCE_OPTION_LSCOUPLING.option==FALSE) {;} // dummy
             DONE=TRUE;
         }
-        
+
         // ***************************************************************************
         // AUTO_MAGMOM 
         if(command=="AUTO_MAGMOM") {
@@ -4952,7 +4952,7 @@ namespace KBIN {
                     AtomicName.push_back(xstr_name.species.at(i));
                 }
             }
-                else { // cout << "no name given taking from OUTCAR" << endl;
+            else { // cout << "no name given taking from OUTCAR" << endl;
                 // ********************************************************************************  
                 //READ  OUTCAR
                 bool found_OUTCAR=FALSE;
