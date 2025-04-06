@@ -981,7 +981,8 @@ patch_makefile2: Makefile
 	mv M Makefile
 check:
 	-./aflow --proto=4:Bi:Tc | ./aflow --sprim | md5sum
-	#174c76b2b2928dcdf2f3b39069a8b59
+	#41d374176709a0ddda81a2c031a8302f  (in vasp5 format)
+	#174c76b2b2928dcdf2f3b39069a8b59   (in vasp4 format)
 #	./aflow --checki | grep FAIL
 www:	web
 clean:

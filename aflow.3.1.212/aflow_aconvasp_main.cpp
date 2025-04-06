@@ -12392,6 +12392,8 @@ namespace pflow {
     bool LDEBUG=(FALSE || XHOST.DEBUG);
     if(LDEBUG) cerr << "pflow::SUPERCELL: BEGIN" << endl;
     xstructure str(input,IOAFLOW_AUTO);
+    if (str.species.size()) 
+        str.is_vasp5_poscar_format = TRUE;  //Kesong fixes this to use vasp5 format if species are given, 2025
     vector<string> tokens;
     aurostd::string2tokens(options,tokens,",");
     xmatrix<double> msc(3,3);

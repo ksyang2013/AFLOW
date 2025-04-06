@@ -7879,8 +7879,10 @@ xstructure Standard_Primitive_UnitCellForm(const xstructure& a) {
 }
 
 xstructure GetStandardPrimitive(const xstructure& a) {
-    // cerr << "GetStandardPrimitive(const xstructure& a)" << endl;
-    return Standard_Primitive_UnitCellForm(a);
+    xstructure b = Standard_Primitive_UnitCellForm(a);
+    if (b.species.size()) 
+        b.is_vasp5_poscar_format = TRUE;  //Kesong fixes this to use vasp5 format if species are given, 2025
+    return b;
 }
 
 void xstructure::Standard_Primitive_UnitCellForm(void) {
@@ -7923,7 +7925,10 @@ xstructure Standard_Conventional_UnitCellForm(const xstructure& a) {
 }
 
 xstructure GetStandardConventional(const xstructure& a) {
-    return Standard_Conventional_UnitCellForm(a);
+    xstructure b = Standard_Conventional_UnitCellForm(a);
+    if (b.species.size()) 
+        b.is_vasp5_poscar_format = TRUE;  //Kesong fixes this to use vasp5 format if species are given, 2025
+    return  b;
 }
 
 void xstructure::Standard_Conventional_UnitCellForm(void) {
