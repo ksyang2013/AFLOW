@@ -2376,14 +2376,26 @@ struct ShellData {
   vector<deque<_atom> > atoms;
   vector<deque<_atom> > ratoms;
 
+  // Default constructor
+  ShellData();
+
+  // Destructor
   ~ShellData();
+
+  // Copy constructor
+  ShellData(const ShellData&);
+
+  // Assignment operator
   ShellData& operator=(const ShellData&);
+
+  // Helper function to copy data
+  void copyFrom(const ShellData&);
 };
 
 class ShellHandle {
- private:
-  int _idSafeGeneratedShell;
-  int _idSafeMappedShell;
+    private:
+        int _idSafeGeneratedShell;
+        int _idSafeMappedShell;
 
   int _centralAtomID;
   double _indexReductionConstant;
