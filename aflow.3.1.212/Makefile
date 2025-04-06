@@ -181,7 +181,7 @@ POCC_OBJ               = $(POCC_FUNCS_SRC:.cpp=.o) #CO 180409
 SQLITE_OBJ             = $(SQLITE_C:.c=.o)	#CO 170614
 
 
-#Comments this to speed up compliation, Kesong, 2025
+##Comments this to speed up compliation, Kesong, 2025
 #ANRL_SRC := $(wildcard ANRL/*.cpp)
 #ANRL_OBJ := $(ANRL_SRC:.cpp=.o)
 ## Pattern rule with hardcoded ANRL
@@ -981,8 +981,8 @@ patch_makefile2: Makefile
 	mv M Makefile
 check:
 	-./aflow --proto=4:Bi:Tc | ./aflow --sprim | md5sum
-	#41d374176709a0ddda81a2c031a8302f  (in vasp5 format)
-	#174c76b2b2928dcdf2f3b39069a8b59   (in vasp4 format)
+#41d374176709a0ddda81a2c031a8302f  (in vasp5 format)
+#174c76b2b2928dcdf2f3b39069a8b59   (in vasp4 format)
 #	./aflow --checki | grep FAIL
 www:	web
 clean:
