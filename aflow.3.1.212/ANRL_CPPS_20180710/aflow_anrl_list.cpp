@@ -7,7 +7,7 @@
 
 #ifndef _AFLOW_ANRL_LIST_CPP
 #define _AFLOW_ANRL_LIST_CPP
-#include "aflow.h"
+#include "../aflow.h"
 
 
 // ***************************************************************************
