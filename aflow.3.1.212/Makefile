@@ -821,16 +821,14 @@ BIN_tscc = /projects/kyang-group/bin
 BIN_comet = /oasis/projects/nsf/csd416/key021/bin
 BIN_expanse = /expanse/lustre/projects/csd496/key021/bin
 BIN_b2 = /ocean/projects/dmr210002p/shared/bin
+#BIN = $(HOME)/bin
 ################################################################################################
 install: all
-	cp -f aflow $(BIN)/aflow.$(VERSNUMBER).$(DAY)
+	cp -f aflow $(BIN)/aflow.$(VERSNUMBER).$(DAY) 
 	cp -f aflow_data  $(BIN)/
 	ls -las $(BIN)/aflow*
 	rm -f $(BIN)/aflow 
 	ln -s $(BIN)/aflow.$(VERSNUMBER).$(DAY)	 $(BIN)/aflow
-	rm -f $(BIN)/aconvasp 
-	ln -s $(BIN)/aflow  $(BIN)/aconvasp
-	ls -las $(BIN)/aconvasp
 	$(MAKE) check
 #Add by Kesong, 2019-07-01
 install_tscc: all
@@ -843,25 +841,12 @@ install_tscc: all
 	ln -s $(BIN_tscc)/aflow  $(BIN_tscc)/aconvasp
 	ls -las $(BIN_tscc)/aconvasp
 	$(MAKE) check
-install_comet: all
-	cp -f aflow $(BIN_comet)/aflow.$(VERSNUMBER).$(DAY)
-	cp -f aflow_data  $(BIN_comet)/
-	ls -las $(BIN_comet)/aflow*
-	rm -f $(BIN_comet)/aflow 
-	ln -s $(BIN_comet)/aflow.$(VERSNUMBER).$(DAY)	 $(BIN_comet)/aflow
-	rm -f $(BIN_comet)/aconvasp 
-	ln -s $(BIN_comet)/aflow  $(BIN_comet)/aconvasp
-	ls -las $(BIN_comet)/aconvasp
-	$(MAKE) check
 install_expanse: all
 	cp -f aflow $(BIN_expanse)/aflow.$(VERSNUMBER).$(DAY)
 	cp -f aflow_data  $(BIN_expanse)/
 	ls -las $(BIN_expanse)/aflow*
 	rm -f $(BIN_expanse)/aflow 
 	ln -s $(BIN_expanse)/aflow.$(VERSNUMBER).$(DAY)	 $(BIN_expanse)/aflow
-	rm -f $(BIN_expanse)/aconvasp 
-	ln -s $(BIN_expanse)/aflow  $(BIN_expanse)/aconvasp
-	ls -las $(BIN_expanse)/aconvasp
 	$(MAKE) check
 install_b2: all
 	cp -f aflow $(BIN_b2)/aflow.$(VERSNUMBER).$(DAY)
