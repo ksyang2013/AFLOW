@@ -344,23 +344,20 @@ string AVASP_Get_PseudoPotential_PAW_PBE(string species) {
     if(species=="Ca") return "Ca_sv"; // STEFANO     [PAW_PBE]
     if(species=="Cd") return "Cd"; // unique choice..     [PAW_PBE]
     if(species=="Ce") return "Ce_3"; //YANG; 2022-11-02
-    //if(species=="Ce") return "Ce"; //WAHYU     [PAW_PBE]
     if(species=="Cl") return "Cl"; //WAHYU     [PAW_PBE]
     if(species=="Co") return "Co"; // unique choice..     [PAW_PBE]
     if(species=="Cr") return "Cr_pv"; // STEFANO     [PAW_PBE]
-    if(species=="Cs") return "Cs_sv"; // unique choice..     [PAW_PBE]
+    //if(species=="Cs") return "Cs_sv"; // unique choice..     [PAW_PBE]
+    if(species=="Cs") return "Cs_sv_GW"; // use new potential from 54 to avoid DAV error (seems to work) // 2025
     if(species=="Cu") return "Cu_pv"; // STEFANO     [PAW_PBE]
     if(species=="Dy") return "Dy_3"; // unique choice...     [PAW_PBE]
     if(species=="Er") return "Er_3"; // WAHYU, teragrid project     [PAW_PBE]
     if(species=="Eu") return "Eu_3"; // WAHYU, frozen f     [PAW_PBE] //YANG easy to get converged, 2024-02-11
-    //if(species=="Eu") return "Eu"; // WAHYU, with f-states, teragrid project     [PAW_PBE]
     if(species=="F")  return "F"; // WAHYU     [PAW_PBE]
     if(species=="Fe") return "Fe_pv"; // STEFANO     [PAW_PBE]
-    //if(species=="Ga") return "Ga_h"; // STEFANO     [PAW_PBE]
     if(species=="Ga") return "Ga"; // HY
     if(species=="Ge") return "Ge_h"; // STEFANO     [PAW_PBE]
     // if(species=="Ge") return "Ge_d"; // WAHYU     [PAW_PBE]
-    //if(species=="Gd") return "Gd"; // WAHYU // LDAU     [PAW_PBE]
     if(species=="Gd") return "Gd_3"; // WAHYU // LDAU     [PAW_PBE]  //YANG 2024-02-11
     if(species=="H")  return "H"; // WAHYU     [PAW_PBE]
     if(species=="He") return "He"; // unique choice...     [PAW_PBE]
@@ -375,7 +372,6 @@ string AVASP_Get_PseudoPotential_PAW_PBE(string species) {
     if(species=="La") return "La"; // STEFANO,WAHYU // LDAU     [PAW_PBE]
     if(species=="Li") return "Li_sv"; // STEFANO     [PAW_PBE]
     if(species=="Lu") return "Lu_3"; // WAHYU, frozen f     [PAW_PBE]  //Kesong fix convergence issue
-    //if(species=="Lu") return "Lu"; //WAHYU, with f-states,  LDAU     [PAW_PBE]
     if(species=="Mg") return "Mg_pv"; // STEFANO     [PAW_PBE]
     if(species=="Mn") return "Mn_pv"; // STEFANO     [PAW_PBE]
     if(species=="Mo") return "Mo_pv"; // STEFANO     [PAW_PBE]
@@ -384,7 +380,6 @@ string AVASP_Get_PseudoPotential_PAW_PBE(string species) {
     if(species=="N")  return "N"; // vasp recommends     [PAW_PBE]
     if(species=="Nb") return "Nb_sv"; // STEFANO     [PAW_PBE]
     if(species=="Nd") return "Nd_3"; // WAHYU, frozen f     [PAW_PBE] YANG, 2022-11-02, halide perovskit
-    //if(species=="Nd") return "Nd"; // WAHYU, with f-states, teragrid project     [PAW_PBE]
     if(species=="Ne") return "Ne"; // unique choice...     [PAW_PBE]
     if(species=="Ni") return "Ni_pv"; // STEFANO     [PAW_PBE]
     if(species=="Np") return "Np_s"; // STEFANO NEVER USED JUST FOR COMPLETENESS     [PAW_PBE]
@@ -394,11 +389,9 @@ string AVASP_Get_PseudoPotential_PAW_PBE(string species) {
     if(species=="Pa") return "Pa"; // UNTESTED STEFANO of Pa,Pa_s take the hardest one [Wed Nov 23 EST 2011]     [PAW_PBE]
     if(species=="Pb") return "Pb_d"; //STEFANO,WAHYU     [PAW_PBE]
     if(species=="Pd") return "Pd_pv"; // STEFANO     [PAW_PBE]
-    //  if(species=="Pm") return "Pm_3"; // WAHYU, frozen f     [PAW_PBE]
-    if(species=="Pm") return "Pm"; // WAHYU, with f-states, teragrid project     [PAW_PBE]
+    if(species=="Pm") return "Pm_3"; // WAHYU, frozen f     [PAW_PBE]
     if(species=="Pt") return "Pt"; // STEFANO     [PAW_PBE]
     if(species=="Pr") return "Pr_3"; // WAHYU, frozen f     [PAW_PBE] //YANG 2024-02-11
-    //if(species=="Pr") return "Pr";  // WAHYU, with f-states, teragrid project     [PAW_PBE]
     if(species=="Pu") return "Pu_s"; // STEFANO NEVER USED JUST FOR COMPLETENESS     [PAW_PBE]
     if(species=="Rb") return "Rb_sv"; // vasp recommends     [PAW_PBE]
     if(species=="Re") return "Re_pv"; // STEFANO     [PAW_PBE]
@@ -410,7 +403,6 @@ string AVASP_Get_PseudoPotential_PAW_PBE(string species) {
     if(species=="Se") return "Se"; // unique choice...     [PAW_PBE]
     if(species=="Si") return "Si"; // was _h"; //STEFANO,WAHYU     [PAW_PBE]
     if(species=="Sm") return "Sm_3"; // WAHYU, frozen f     [PAW_PBE] //YANG 2024-02-11
-    //if(species=="Sm") return "Sm"; // WAHYU, with f-states, teragrid project     [PAW_PBE]
     if(species=="Sn") return "Sn";//STEFANO     [PAW_PBE]
     if(species=="Sr") return "Sr_sv"; // unique choice...     [PAW_PBE]
     if(species=="Ta") return "Ta_pv"; // STEFANO     [PAW_PBE]
@@ -421,15 +413,12 @@ string AVASP_Get_PseudoPotential_PAW_PBE(string species) {
     if(species=="Ti") return "Ti_pv"; // STEFANO    //KESONG changes Ti_sv to Ti_pv, 
     if(species=="Tl") return "Tl_d"; // STEFANO     [PAW_PBE]
     if(species=="Tm") return "Tm_3"; // WAHYU, frozen f     [PAW_PBE] // YANG 2024-02-11
-    //if(species=="Tm") return "Tm";  // WAHYU, with f-states, teragrid project     [PAW_PBE]
     if(species=="U") return "U"; // UNTESTED STEFANO of U,U_s take the hardest one [Wed Nov 23 EST 2011]     [PAW_PBE]
     if(species=="V")  return "V_sv"; // STEFANO     [PAW_PBE]
     if(species=="W")  return "W_pv"; // STEFANO     [PAW_PBE]
     if(species=="Xe") return "Xe"; // unique choice...     [PAW_PBE]
     if(species=="Y")  return "Y_sv"; // unique choice...     [PAW_PBE]
     if(species=="Yb") return "Yb_3"; // WAHYU, frozen f     [PAW_PBE]  //YANG 2024-02-17
-    //if(species=="Yb") return "Yb_2"; // WAHYU, frozen f     [PAW_PBE]  //YANG 2024-02-1
-    //if(species=="Yb") return "Yb";  // WAHYU, with f-states, teragrid project     [PAW_PBE]
     if(species=="Zn") return "Zn"; // unique choice...     [PAW_PBE]
     if(species=="Zr") return "Zr_sv"; // STEFANO     [PAW_PBE]
 
@@ -579,22 +568,20 @@ string AVASP_Get_PseudoPotential_PAW_PBE_KIN(string species) {
     if(species=="Cl") return "Cl"; //           [PAW_PBE_KIN]
     if(species=="Co") return "Co_sv"; // let`s see           [PAW_PBE_KIN]
     if(species=="Cr") return "Cr_pv"; //            [PAW_PBE_KIN]
-    if(species=="Cs") return "Cs_sv"; // unique choice..           [PAW_PBE_KIN]
+    if(species=="Cs") return "Cs_sv_GW"; // unique choice..           [PAW_PBE_KIN]
     if(species=="Cu") return "Cu_pv"; //            [PAW_PBE_KIN]
     if(species=="Dy") return "Dy_3"; 
+    if(species=="Er") return "Er_3"; 
     if(species=="Eu") return "Eu_3"; 
     if(species=="F")  return "F"; //            [PAW_PBE_KIN]
     if(species=="Fe") return "Fe_pv"; //            [PAW_PBE_KIN]
-    //if(species=="Ga") return "Ga_h"; // pick the _h instead of _d           [PAW_PBE_KIN]
     if(species=="Ga") return "Ga"; // HY
     if(species=="Ge") return "Ge_h"; // pick the _h instead of _d           [PAW_PBE_KIN]
-    // if(species=="Ge") return "Ge_d"; //            [PAW_PBE_KIN]
     if(species=="Gd") return "Gd"; //  // LDAU           [PAW_PBE_KIN]
     if(species=="H")  return "H"; // commented since not ready to be used with SCAN; Rico April 12 2018           [PAW_PBE_KIN]
     if(species=="He") return "He"; // unique choice... // commented since not ready to be used with SCAN; Rico April 12 2018           [PAW_PBE_KIN]
     if(species=="Hf") return "Hf_sv"; //            [PAW_PBE_KIN]
     if(species=="Hg") return "Hg"; // unique choice...           [PAW_PBE_KIN]
-    //if(species=="Ho") return "Ho"; // finally a harder one           [PAW_PBE_KIN]
     if(species=="Ho") return "Ho_3"; // finally a harder one           [PAW_PBE_KIN]
     if(species=="I")  return "I"; // unique choice...           [PAW_PBE_KIN]
     if(species=="In") return "In_d"; // harder           [PAW_PBE_KIN]
@@ -603,8 +590,7 @@ string AVASP_Get_PseudoPotential_PAW_PBE_KIN(string species) {
     if(species=="Kr") return "Kr"; // unique choice...           [PAW_PBE_KIN]
     if(species=="La") return "La"; //  // LDAU           [PAW_PBE_KIN]
     if(species=="Li") return "Li"; // Rico suggests Li            [PAW_PBE_KIN]
-    //  if(species=="Lu") return "Lu_3"; //  frozen f           [PAW_PBE_KIN]
-    if(species=="Lu") return "Lu"; //, with f-states,  LDAU           [PAW_PBE_KIN]
+    if(species=="Lu") return "Lu_3"; //  frozen f           [PAW_PBE_KIN]
     if(species=="Mg") return "Mg_pv"; //            [PAW_PBE_KIN]
     if(species=="Mn") return "Mn_pv"; // vasp suggested           [PAW_PBE_KIN]
     if(species=="Mo") return "Mo_sv"; // curious about _sv           [PAW_PBE_KIN]
@@ -612,8 +598,7 @@ string AVASP_Get_PseudoPotential_PAW_PBE_KIN(string species) {
     if(species=="Na") return "Na"; //  Kesong
     if(species=="N")  return "N"; // vasp recommends           [PAW_PBE_KIN]
     if(species=="Nb") return "Nb_sv"; //            [PAW_PBE_KIN]
-    //  if(species=="Nd") return "Nd_3"; //  frozen f           [PAW_PBE_KIN]
-    if(species=="Nd") return "Nd"; //  with f-states           [PAW_PBE_KIN]
+    if(species=="Nd") return "Nd_3"; //  frozen f           [PAW_PBE_KIN]
     if(species=="Ne") return "Ne"; // unique choice...           [PAW_PBE_KIN]
     if(species=="Ni") return "Ni_pv"; //            [PAW_PBE_KIN]
     if(species=="Np") return "Np"; //  a harder one, NEVER USED JUST FOR COMPLETENESS           [PAW_PBE_KIN]
@@ -623,12 +608,10 @@ string AVASP_Get_PseudoPotential_PAW_PBE_KIN(string species) {
     if(species=="Pa") return "Pa"; // UNTESTED  of Pa,Pa_s take the hardest one [Wed Nov 23 EST 2011]           [PAW_PBE_KIN]
     if(species=="Pb") return "Pb_d"; // the harder           [PAW_PBE_KIN]
     if(species=="Pd") return "Pd_pv"; //            [PAW_PBE_KIN]
-    //  if(species=="Pm") return "Pm_3"; //  frozen f           [PAW_PBE_KIN]
-    if(species=="Pm") return "Pm"; //  with f-states           [PAW_PBE_KIN]
+    if(species=="Pm") return "Pm_3"; //  frozen f           [PAW_PBE_KIN]
     if(species=="Po") return "Po_d"; // the harder           [PAW_PBE_KIN]
     if(species=="Pt") return "Pt_pv"; // let`s try it           [PAW_PBE_KIN]
     if(species=="Pr") return "Pr_3"; //  frozen f           [PAW_PBE_KIN]
-    //if(species=="Pr") return "Pr";  //  with f-states           [PAW_PBE_KIN]
     if(species=="Pu") return "Pu"; //  NEVER USED JUST FOR COMPLETENESS           [PAW_PBE_KIN]
     if(species=="Rb") return "Rb_sv"; // vasp recommends           [PAW_PBE_KIN]
     if(species=="Re") return "Re_pv"; //            [PAW_PBE_KIN]
@@ -652,7 +635,7 @@ string AVASP_Get_PseudoPotential_PAW_PBE_KIN(string species) {
     if(species=="Tm") return "Tm_3"; 
     if(species=="U") return "U"; // UNTESTED  of U,U_s take the hardest one [Wed Nov 23 EST 2011]           [PAW_PBE_KIN]
     if(species=="V")  return "V_sv"; // vasp recommended           [PAW_PBE_KIN]
-    if(species=="W")  return "W_pv"; //            [PAW_PBE_KIN]
+    if(species=="W")  return "W"; 
     if(species=="Xe") return "Xe"; // unique choice...           [PAW_PBE_KIN]
     if(species=="Y")  return "Y_sv"; // unique choice...           [PAW_PBE_KIN]
     if(species=="Yb") return "Yb_3";  

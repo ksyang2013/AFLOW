@@ -15,7 +15,8 @@
 
 #include "aflow.h"
 
-#define _KVASP_VASP_SLEEP_   2
+//#define _KVASP_VASP_SLEEP_   2
+#define _KVASP_VASP_SLEEP_   3   // to avoid runtime error 
 #define _KVASP_WAIT_SLEEP_   10
 #define _KVASP_CHECK_SLEEP_  60
 //#define _KVASP_CHECK_SLEEP_  10
@@ -1553,30 +1554,36 @@ namespace KBIN {
                                             exit(0);
                                         }
                                     }
+                                    
                                     // done with the fixing
+
                                     xvasp.str.FixLattices();
                                     rlattice=xvasp.str.lattice; // in rlattice I`ve always the final structure
                                     // NOW DO THE STATIC PATCHING KPOINTS
                                     aus << "00000  MESSAGE Patching KPOINTS  " << Message(aflags,"user,host,time") << endl;
                                     aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
-                                    //
-                                    // [OBSOLETE]	      KBIN::VASP_Produce_KPOINTS(xvasp,AflowIn,FileAFLOWIN,FileMESSAGE,aflags,kflags,vflags);
+                                   
                                     KBIN::VASP_Produce_KPOINTS(xvasp,AflowIn,FileMESSAGE,aflags,kflags,vflags);
                                     KBIN::VASP_Modify_KPOINTS(xvasp,FileMESSAGE,aflags,vflags);
                                     aurostd::stringstream2file(xvasp.KPOINTS,string(xvasp.Directory+"/KPOINTS"));
+                                    
+                                    // KBIN::VASP_Produce_INCAR(xvasp,AflowIn,FileAFLOWIN,FileMESSAGE,aflags,kflags,vflags); // BETTER than produce, SHOULD reread it
+                                    // KBIN::VASP_Modify_INCAR(xvasp,FileMESSAGE,aflags,kflags,vflags);  // MODIFY ACCORDINGLY
+                                    
                                     // NOW DO THE STATIC PATCHING INCAR
                                     aus << "00000  MESSAGE [" << STRING_TO_SHOW << "] Patching INCAR (static_patching) " << Message(aflags,"user,host,time") << endl;
                                     aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);    
-                                    // KBIN::VASP_Produce_INCAR(xvasp,AflowIn,FileAFLOWIN,FileMESSAGE,aflags,kflags,vflags); // BETTER than produce, SHOULD reread it
                                     KBIN::VASP_Reread_INCAR(xvasp,FileMESSAGE,aflags); // REREAD IT
-                                    // KBIN::VASP_Modify_INCAR(xvasp,FileMESSAGE,aflags,kflags,vflags);  // MODIFY ACCORDINGLY
                                     KBIN::XVASP_INCAR_Relax_Static_ON(xvasp,vflags);     // FIX
                                     // do the RWIGS ON
                                     if(vflags.KBIN_VASP_FORCE_OPTION_RWIGS_STATIC) KBIN::XVASP_INCAR_RWIGS_Static(xvasp,vflags,FileMESSAGE,ON);
+
+                                    
                                     // done write INCAR; KESONG 2025-03-29 
                                     string stmp = aurostd::RemoveCommentLines(aurostd::RemoveEmptyLines(aurostd::SortLinesAlphabetically(aurostd::RemoveDuplicateLines(xvasp.INCAR.str())))); 
                                     aurostd::string2file(stmp,string(xvasp.Directory+"/INCAR"));
                                     //aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));
+                                    
                                     // NOW DO THE STATIC RUN
                                     if(vflags.KBIN_VASP_RUN.flag("STATIC_BANDS")) xvasp.NRELAXING=xvasp.NRELAX; //0;
                                     if(vflags.KBIN_VASP_RUN.flag("STATIC")) xvasp.NRELAXING=xvasp.NRELAX; // 0;
@@ -1586,7 +1593,7 @@ namespace KBIN {
                                     aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
                                     Krun=KBIN::VASP_Run(xvasp,aflags,kflags,vflags,FileMESSAGE);
                                     if(!Krun) {KBIN::VASP_Error(xvasp,FileMESSAGE,"EEEEE  runtime error [RELAX_STATIC_BANDS STATIC]");return Krun;}
-                                    //	    if(_VASP_CONTCAR_SAVE_) KBIN::VASP_CONTCAR_Save(xvasp,string("static"));
+
                                     bool qmwrite=TRUE;
                                     KBIN::VASP_Backup(xvasp,qmwrite,string("static"));
                                     xvasp_spin_evolution.push_back(xvasp.str.qm_mag_atom); // keep track of spins
@@ -2487,6 +2494,7 @@ namespace KBIN {
             }
             if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [2]" << endl;
 
+            aurostd::Sleep(5);
             if(aurostd::FileEmpty(xvasp.Directory+"/vasp.out"))  {KBIN::VASP_Error(xvasp,FileMESSAGE,"EEEEE  ERROR KBIN::VASP_Run: "+Message("time")+"  Empty vasp.out ");return FALSE;}
             if(aurostd::FileEmpty(xvasp.Directory+"/OUTCAR"))  {KBIN::VASP_Error(xvasp,FileMESSAGE,"EEEEE  ERROR KBIN::VASP_Run: "+Message("time")+"  Empty OUTCAR ");return FALSE;}
             // DONT CHECK CONTCAR it can be empty
@@ -2511,8 +2519,9 @@ namespace KBIN {
             xwarning.push_attached("DVERSION",aurostd::utype2string((double) DVERSION));
 
             //check OUTCAR converged? KESONG 2019-07-13 // **************************************** 
-            bool isConverged = FALSE;
-            xOUTCAR outcar(xvasp.Directory+"/OUTCAR");
+            //Not needed, implemented in KBIN::VASP_CheckUnconvergedOUTCAR
+            //bool isConverged = FALSE;
+            //xOUTCAR outcar(xvasp.Directory+"/OUTCAR");
             //if (abs(outcar.total_energy_change) < outcar.EDIFF) {
             //    isConverged = TRUE;
             //}
@@ -2522,7 +2531,7 @@ namespace KBIN {
                 if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  checking warnings" << endl;
                 xmessage.flag("REACHED_ACCURACY",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","reached required accuracy"));
                 xwarning.flag("REACH_NSW", (!xmessage.flag("REACHED_ACCURACY") && KBIN::VASP_isRelaxOUTCAR(xvasp.Directory) && KBIN::VASP_CheckRelaxReachNSW(xvasp.Directory)) ); // check relax (reach NSW)
-                xwarning.flag("CSLOSHING",KBIN::VASP_CheckUnconvergedOUTCAR(xvasp.Directory)); // check converged (static & relaxed)
+                xwarning.flag("CSLOSHING",KBIN::VASP_CheckUnconvergedOUTCAR(xvasp.Directory)); // check converged (static & relaxed) //Kesong Yang
                 xwarning.flag("AMIN",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","decrease AMIN to a smaller values"));
                 xwarning.flag("ZBRENT",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","ZBRENT: fatal error in bracketing"));
                 xwarning.flag("KKSYM",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Reciprocal lattice and k-lattice belong to different class of lattices"));
@@ -2598,8 +2607,6 @@ namespace KBIN {
                 if(xwarning.flag("NKXYZ_IKPTD")) xwarning.flag("IBZKPT",FALSE); // priority
 
                 //************************KESONG Check Static*****************************
-                if (isConverged && xwarning.flag("IBZKPT")) xwarning.flag("IBZKPT",FALSE);
-                if((xmessage.flag("REACHED_ACCURACY") || isConverged) && xwarning.flag("EDDRMM")) xwarning.flag("EDDRMM",FALSE);  
                 //************************KESONG Check Static*****************************
 
                 xfixed.flag("ALL",FALSE);
