@@ -2494,7 +2494,7 @@ namespace KBIN {
             }
             if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [2]" << endl;
 
-            aurostd::Sleep(5);
+            aurostd::Sleep(20);
             if(aurostd::FileEmpty(xvasp.Directory+"/vasp.out"))  {KBIN::VASP_Error(xvasp,FileMESSAGE,"EEEEE  ERROR KBIN::VASP_Run: "+Message("time")+"  Empty vasp.out ");return FALSE;}
             if(aurostd::FileEmpty(xvasp.Directory+"/OUTCAR"))  {KBIN::VASP_Error(xvasp,FileMESSAGE,"EEEEE  ERROR KBIN::VASP_Run: "+Message("time")+"  Empty OUTCAR ");return FALSE;}
             // DONT CHECK CONTCAR it can be empty
@@ -2558,9 +2558,12 @@ namespace KBIN {
                 xwarning.flag("IBZKPT_KNPT", (aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Tetrahedron method fails for NKPT<4.")) ||
                         (aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","IBZKPT: tetrahedron method fails for NKPT<4"))  //KESONG, 2025-03-30, VASP64 format
                         );
-                //xwarning.flag("EDDRMM",( (!xmessage.flag("REACHED_ACCURACY") || !isConverged) && 
-                //            aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING in EDDRMM: call to ZHEGV failed, returncode")) ); // && !xwarning.flag("ZPOTRF");
-                xwarning.flag("EDDRMM", aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING in EDDRMM: call to ZHEGV failed, returncode")); 
+
+                //xwarning.flag("EDDRMM", aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING in EDDRMM: call to ZHEGV failed, returncode")); 
+                //If reaching accuracy or converged, then no need to fix this 
+                xwarning.flag("EDDRMM", (!xmessage.flag("REACHED_ACCURACY") || KBIN::VASP_CheckUnconvergedOUTCAR(xvasp.Directory))  && 
+                            aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING in EDDRMM: call to ZHEGV failed, returncode")) ; // && !xwarning.flag("ZPOTRF");
+
                 xwarning.flag("REAL_OPTLAY_1",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","REAL_OPTLAY: internal error (1)"));
                 xwarning.flag("REAL_OPT",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","REAL_OPT: internal ERROR"));
                 xwarning.flag("SYMPREC",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","inverse of rotation matrix was not found (increase SYMPREC)"));

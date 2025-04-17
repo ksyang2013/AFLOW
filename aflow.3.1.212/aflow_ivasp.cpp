@@ -2526,7 +2526,7 @@ namespace KBIN {
 
 
         if (!aurostd::doesKeywordExist(xvasp.INCAR.str(), "ENCUT")) 
-            xvasp.INCAR << aurostd::PaddedPOST("ENCUT="+aurostd::utype2string(int(xvasp.POTCAR_ENMAX)), _incarpad_) << endl;
+            xvasp.INCAR << aurostd::PaddedPOST("ENCUT="+aurostd::utype2string(int(xvasp.POTCAR_ENMAX) * 1.0), _incarpad_) << endl;
         if (!aurostd::doesKeywordExist(xvasp.INCAR.str(), "LREAL"))
             xvasp.INCAR << aurostd::PaddedPOST("LREAL=Auto", _incarpad_) << endl;
 
@@ -2644,7 +2644,7 @@ namespace KBIN {
         ss_INCAR << aurostd::PaddedPOST("NEDOS= 7001",_incarpad_)     <<  notes  << endl;
         ss_INCAR << aurostd::PaddedPOST("LWAVE=.FALSE.",_incarpad_)   <<  notes << endl;
         if (!aurostd::doesKeywordExist(xvasp.INCAR.str(), "ENCUT"))
-            ss_INCAR << aurostd::PaddedPOST("ENCUT="+aurostd::utype2string(int(xvasp.POTCAR_ENMAX)), _incarpad_) << endl;
+            ss_INCAR << aurostd::PaddedPOST("ENCUT="+aurostd::utype2string(int(xvasp.POTCAR_ENMAX)* 1.0 ), _incarpad_) << endl;
         if (!aurostd::doesKeywordExist(xvasp.INCAR.str(), "EDIFF="))
             ss_INCAR << aurostd::PaddedPOST("EDIFF=1E-4",_incarpad_) << endl;
         if(vflags.KBIN_VASP_FORCE_OPTION_PREC.preserved==FALSE) {
@@ -2832,7 +2832,6 @@ namespace KBIN {
 namespace KBIN {
     void XVASP_INCAR_Precision(_xvasp& xvasp,_vflags& vflags) {        // AFLOW_FUNCTION_IMPLEMENTATION
         string FileContent,strline;
-        cout << vflags.KBIN_VASP_FORCE_OPTION_PREC.xscheme << endl;
         int imax;
         FileContent=xvasp.INCAR.str();
         xvasp.INCAR.str(std::string());
@@ -2862,8 +2861,8 @@ namespace KBIN {
 
             if(vflags.KBIN_VASP_FORCE_OPTION_PREC.xscheme=="HIGH") {
                 if(((aurostd::substring2bool(strline,"PREC",TRUE) && !aurostd::substring2bool(strline,"SYMPREC",TRUE)) || aurostd::substring2bool(strline,"#PREC",TRUE) ||  // CO 171003 - don't confuse PREC and SYMPREC
-                            //aurostd::substring2bool(strline,"ENMAX",TRUE) || aurostd::substring2bool(strline,"#ENMAX",TRUE) ||
-                            //aurostd::substring2bool(strline,"ENCUT",TRUE) || aurostd::substring2bool(strline,"#ENCUT",TRUE) ||
+                            aurostd::substring2bool(strline,"ENMAX",TRUE) || aurostd::substring2bool(strline,"#ENMAX",TRUE) ||
+                            aurostd::substring2bool(strline,"ENCUT",TRUE) || aurostd::substring2bool(strline,"#ENCUT",TRUE) ||
                             aurostd::substring2bool(strline,"EDIFF",TRUE) || aurostd::substring2bool(strline,"#EDIFF",TRUE) ||
                             aurostd::substring2bool(strline,"LREAL",TRUE) || aurostd::substring2bool(strline,"#LREAL",TRUE) ||
                             aurostd::substring2bool(strline,"ALGO",TRUE) || aurostd::substring2bool(strline,"#ALGO",TRUE) ||
@@ -2877,8 +2876,8 @@ namespace KBIN {
             }
             if(vflags.KBIN_VASP_FORCE_OPTION_PREC.xscheme=="ACCURATE") { 
                 if(((aurostd::substring2bool(strline,"PREC",TRUE) && !aurostd::substring2bool(strline,"SYMPREC",TRUE)) || aurostd::substring2bool(strline,"#PREC",TRUE) ||  // CO 171003 - don't confuse PREC and SYMPREC
-                            //aurostd::substring2bool(strline,"ENMAX",TRUE) || aurostd::substring2bool(strline,"#ENMAX",TRUE) ||
-                            //aurostd::substring2bool(strline,"ENCUT",TRUE) || aurostd::substring2bool(strline,"#ENCUT",TRUE) ||
+                            aurostd::substring2bool(strline,"ENMAX",TRUE) || aurostd::substring2bool(strline,"#ENMAX",TRUE) ||
+                            aurostd::substring2bool(strline,"ENCUT",TRUE) || aurostd::substring2bool(strline,"#ENCUT",TRUE) ||
                             aurostd::substring2bool(strline,"EDIFF",TRUE)  || aurostd::substring2bool(strline,"#EDIFF",TRUE)||
                             aurostd::substring2bool(strline,"EDIFFG",TRUE)  || aurostd::substring2bool(strline,"#EDIFFG",TRUE) ||
                             aurostd::substring2bool(strline,"LREAL",TRUE) || aurostd::substring2bool(strline,"#LREAL",TRUE) ||
@@ -2916,44 +2915,61 @@ namespace KBIN {
         if(vflags.KBIN_VASP_INCAR_VERBOSE) xvasp.INCAR << "#AFLOW_PRECISION" << endl;
         if(vflags.KBIN_VASP_FORCE_OPTION_PREC.xscheme=="LOW") {
             xvasp.INCAR << aurostd::PaddedPOST("PREC=Low",_incarpad_) << endl;
-            xvasp.INCAR << aurostd::PaddedPOST("ENCUT="+aurostd::utype2string(int(xvasp.POTCAR_ENMAX)), _incarpad_) << endl;
+            if (!aurostd::doesKeywordExist(xvasp.INCAR.str(), "ENCUT"))
+                xvasp.INCAR << aurostd::PaddedPOST("ENCUT="+aurostd::utype2string(xvasp.POTCAR_ENMAX*DEFAULT_VASP_PREC_ENMAX_LOW, _IVASP_DOUBLE2STRING_PRECISION_),_incarpad_) << "# " << DEFAULT_VASP_PREC_ENMAX_ACCURATE << "*ENCUT (" << xvasp.POTCAR_ENMAX << ") of pseudopotentials " << endl;
         }
         if(vflags.KBIN_VASP_FORCE_OPTION_PREC.xscheme=="MEDIUM") {
             xvasp.INCAR << aurostd::PaddedPOST("PREC=Medium",_incarpad_) << endl;
-            xvasp.INCAR << aurostd::PaddedPOST("ENCUT="+aurostd::utype2string(int(xvasp.POTCAR_ENMAX)), _incarpad_) << endl;
+            if (!aurostd::doesKeywordExist(xvasp.INCAR.str(), "ENCUT"))
+                xvasp.INCAR << aurostd::PaddedPOST("ENCUT="+aurostd::utype2string(xvasp.POTCAR_ENMAX*DEFAULT_VASP_PREC_ENMAX_MEDIUM, _IVASP_DOUBLE2STRING_PRECISION_),_incarpad_) << "# " << DEFAULT_VASP_PREC_ENMAX_ACCURATE << "*ENCUT (" << xvasp.POTCAR_ENMAX << ") of pseudopotentials " << endl;
         }
         if(vflags.KBIN_VASP_FORCE_OPTION_PREC.xscheme=="NORMAL") {
             xvasp.INCAR << "PREC=Normal" << endl;
             if (!aurostd::doesKeywordExist(xvasp.INCAR.str(), "ENCUT"))
-                xvasp.INCAR << aurostd::PaddedPOST("ENCUT="+aurostd::utype2string(int(xvasp.POTCAR_ENMAX)), _incarpad_) << endl;
+                xvasp.INCAR << aurostd::PaddedPOST("ENCUT="+aurostd::utype2string(xvasp.POTCAR_ENMAX*DEFAULT_VASP_PREC_ENMAX_NORMAL, _IVASP_DOUBLE2STRING_PRECISION_),_incarpad_) << "# " << DEFAULT_VASP_PREC_ENMAX_ACCURATE << "*ENCUT (" << xvasp.POTCAR_ENMAX << ") of pseudopotentials " << endl;
+            xvasp.INCAR << aurostd::PaddedPOST("EDIFF=1E-6",_incarpad_) << endl;
         }
         if(vflags.KBIN_VASP_FORCE_OPTION_PREC.xscheme=="HIGH") {
             xvasp.INCAR << aurostd::PaddedPOST("PREC=High",_incarpad_) << endl;
             if (!aurostd::doesKeywordExist(xvasp.INCAR.str(), "ENCUT"))
-                xvasp.INCAR << aurostd::PaddedPOST("ENCUT="+aurostd::utype2string(int(xvasp.POTCAR_ENMAX)), _incarpad_) << endl;
+                xvasp.INCAR << aurostd::PaddedPOST("ENCUT="+aurostd::utype2string(xvasp.POTCAR_ENMAX*DEFAULT_VASP_PREC_ENMAX_HIGH, _IVASP_DOUBLE2STRING_PRECISION_),_incarpad_) << "# " << DEFAULT_VASP_PREC_ENMAX_ACCURATE << "*ENCUT (" << xvasp.POTCAR_ENMAX << ") of pseudopotentials " << endl;
             xvasp.INCAR << aurostd::PaddedPOST("EDIFF=1E-6",_incarpad_) << endl;
             xvasp.INCAR << aurostd::PaddedPOST("LREAL=.FALSE.",_incarpad_) << endl;
-            xvasp.INCAR << aurostd::PaddedPOST("ALGO=Normal",_incarpad_) << endl;
+            xvasp.INCAR << aurostd::PaddedPOST("ALGO=FAST",_incarpad_) << endl;  //let us FAST, if failed, aflow will change it as normal
+            //xvasp.INCAR << aurostd::PaddedPOST("ALGO=Normal",_incarpad_) << endl;
         }
+
+
         if(vflags.KBIN_VASP_FORCE_OPTION_PREC.xscheme=="ACCURATE") {
             xvasp.INCAR << aurostd::PaddedPOST("PREC=Accurate",_incarpad_) << endl;
+
             if (!aurostd::doesKeywordExist(xvasp.INCAR_orig.str(), "ENCUT"))
                 xvasp.INCAR << aurostd::PaddedPOST("ENCUT="+aurostd::utype2string(xvasp.POTCAR_ENMAX*DEFAULT_VASP_PREC_ENMAX_ACCURATE,_IVASP_DOUBLE2STRING_PRECISION_),_incarpad_) << "# " << DEFAULT_VASP_PREC_ENMAX_ACCURATE << "*ENCUT (" << xvasp.POTCAR_ENMAX << ") of pseudopotentials " << endl;
-            if (aurostd::doesKeywordExist(xvasp.INCAR_orig.str(), "EDIFF="))
+
+            if (aurostd::doesKeywordExist(xvasp.INCAR_orig.str(), "EDIFF=")) 
                 xvasp.INCAR << GetLineWithKeyword(xvasp.INCAR_orig.str(), "EDIFF=") << endl;  //KSY sets, if user set EDIFF=, then will use user's setting
+            else
+                xvasp.INCAR << aurostd::PaddedPOST("EDIFF=1E-6",_incarpad_) << endl;
+
+            //will put below into a single function in future
             if(vflags.KBIN_VASP_FORCE_OPTION_RELAX_MODE.xscheme=="ENERGY"){
-                //will put it into a single function in future
                 stringstream stmp;
                 double dvalue_EDIFFG = 1E-6*xvasp.str.atoms.size()*0.9;
                 stmp << std::scientific << std::setprecision(0) << std::uppercase << dvalue_EDIFFG;
                 xvasp.INCAR << aurostd::PaddedPOST("EDIFFG=" + stmp.str(), _incarpad_) << "# 0.001meV/atom [PREC=ACCURATE] " << endl;
             }
+
             if(vflags.KBIN_VASP_FORCE_OPTION_RELAX_MODE.xscheme=="FORCES") {
-                xvasp.INCAR << aurostd::PaddedPOST("EDIFFG=-1E-3",_incarpad_) <<  "#-1E-3 eV/AA [PREC=ACCURATE] " << endl;
+                xvasp.INCAR << aurostd::PaddedPOST("EDIFFG="+aurostd::utype2string(DEFAULT_VASP_PREC_EDIFFG, _IVASP_DOUBLE2STRING_PRECISION_),_incarpad_) << "# " <<  DEFAULT_VASP_PREC_EDIFFG <<  " eV/AA [PREC=ACCURATE]" << endl;
+                //xvasp.INCAR << aurostd::PaddedPOST("EDIFFG=-1E-3",_incarpad_) <<  "#-1E-3 eV/AA [PREC=ACCURATE] " << endl;
             }
+
             xvasp.INCAR << aurostd::PaddedPOST("LREAL=.FALSE.",_incarpad_) << endl;
-            xvasp.INCAR << aurostd::PaddedPOST("ALGO=Normal",_incarpad_) << endl;
+            xvasp.INCAR << aurostd::PaddedPOST("ALGO=FAST",_incarpad_) << endl;  //let us FAST, if failed, aflow will change it as normal
+            //xvasp.INCAR << aurostd::PaddedPOST("ALGO=Normal",_incarpad_) << endl;
         };
+
+
         // BEGIN JJPR
         if(vflags.KBIN_VASP_FORCE_OPTION_PREC.xscheme=="PHONONS") { 
             xvasp.INCAR << aurostd::PaddedPOST("PREC=Accurate",_incarpad_) << "# avoid wrap around errors" << endl;
@@ -3371,7 +3387,6 @@ namespace KBIN {
                 xvasp.INCAR << GetLineWithKeyword(xvasp.INCAR_orig.str(), "MAGMOM") << endl;
             } else {
                 if(OPTION==ON ) {
-                    cout << "here test1" << endl;
                     xvasp.INCAR << "MAGMOM= ";
                     for(uint i=0;i<xvasp.str.atoms.size();i++) xvasp.INCAR << " 0 0 5";
                     xvasp.INCAR << " \t# " << xvasp.str.atoms.size() << " 3*atoms " << endl;
@@ -4552,6 +4567,7 @@ namespace KBIN {
             KBIN::XVASP_KPOINTS_OPERATION(xvasp,"X--,Y--,Z--");  // this should put the origin in GAMMA ??
             rewrite_kpoints=TRUE;
         }
+        
         //this approach seems to be not working for fixing eddrm error
         if(mode=="EDDRMM") {
             file_error="aflow.error.eddrmm";
@@ -4560,7 +4576,23 @@ namespace KBIN {
             KBIN::XVASP_KPOINTS_OPERATION(xvasp,"Xodd,Yodd,Zodd");  // KBIN::XVASP_KPOINTS_ODD(xvasp);  // this should put the origin in GAMMA ??
             xvasp.str.kpoints_s1=0.0;xvasp.str.kpoints_s2=0.0;xvasp.str.kpoints_s3=0.0; // you go on gamma ONLY if you put shift =0 !!
             rewrite_kpoints=TRUE;
+            
+            if (!aurostd::doesKeywordExist(xvasp.INCAR.str(), "ALGO=Normal")) {
+                reload_incar=TRUE;
+                vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme="NORMAL";
+                KBIN::XVASP_INCAR_PREPARE_GENERIC("ALGO",xvasp,vflags,"",0,0.0,FALSE);
+                rewrite_incar=TRUE;
+            }
+            
+            ////ALGO = Normal
+            //reload_incar=TRUE;
+            //aus_exec << "cd " << xvasp.Directory << endl;
+            //aus_exec << "cp INCAR INCAR.eddrmm" << endl;
+            //aus_exec << "cat INCAR | grep -v 'ALGO' > aflow.tmp && mv aflow.tmp INCAR" << endl; // remove ALGO
+            //aus_exec << "echo \"ALGO = Normal                                        #FIX=" << mode << "\" >> INCAR " << endl;
+            //aurostd::execute(aus_exec);
         }
+
         if(mode=="LREAL") {
             file_error="aflow.error.lreal";
             reload_incar=TRUE;
