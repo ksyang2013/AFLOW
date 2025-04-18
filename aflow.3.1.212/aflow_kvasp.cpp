@@ -2526,43 +2526,92 @@ namespace KBIN {
             //    isConverged = TRUE;
             //}
             // **************************************** 
+            // May only check static calculations, no need to correct them if reaching accuracy in relax calculations?
+
 
             if(nrun<maxrun) {  
                 if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  checking warnings" << endl;
+
+                bool isRelax = KBIN::VASP_isRelaxOUTCAR(xvasp.Directory);
+                bool isConverged = KBIN::VASP_CheckConvergedOUTCAR(xvasp.Directory);
+                bool reachedNSW = KBIN::VASP_CheckRelaxReachNSW(xvasp.Directory);
+                bool reachedAccuracy = xmessage.flag("REACHED_ACCURACY",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","reached required accuracy"));
+                bool relax_successful = isRelax && reachedAccuracy && isConverged;
+
+                if (isRelax) {
+                    if (relax_successful) {
+                        aus << "CCCCC  RELAXATION SUCCESSFUL  - " << Message(aflags,"user,host,time") << endl;
+                        aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
+                    }
+                    else {
+                        aus << "CCCCC  RELAXATION FAILED  - " << Message(aflags,"user,host,time") << endl;
+                        aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
+                    }
+                    xwarning.flag("REACH_NSW", !reachedAccuracy && isRelax && reachedNSW); 
+                }
+                else {
+                    if (isConverged) {
+                        aus << "CCCCC  SCF CALCULATIONS CONVERGED - " << Message(aflags,"user,host,time") << endl;
+                        aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
+
+                    }
+                }
+
                 xmessage.flag("REACHED_ACCURACY",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","reached required accuracy"));
-                xwarning.flag("REACH_NSW", (!xmessage.flag("REACHED_ACCURACY") && KBIN::VASP_isRelaxOUTCAR(xvasp.Directory) && KBIN::VASP_CheckRelaxReachNSW(xvasp.Directory)) ); // check relax (reach NSW)
+
                 xwarning.flag("CSLOSHING",KBIN::VASP_CheckUnconvergedOUTCAR(xvasp.Directory)); // check converged (static & relaxed) //Kesong Yang
                 xwarning.flag("AMIN",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","decrease AMIN to a smaller values"));
                 xwarning.flag("ZBRENT",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","ZBRENT: fatal error in bracketing"));
                 xwarning.flag("KKSYM",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Reciprocal lattice and k-lattice belong to different class of lattices"));
                 xwarning.flag("SGRCON",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","VERY BAD NEWS! internal error in subroutine SGRCON"));
                 xwarning.flag("NIRMAT",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Found some non-integer element in rotation matrix"));
+
+                //static or did not reached accuracy in relax; in other words, if reaching accuracy in relax, no need to fix it, still meaningful, saving time
                 xwarning.flag("BRMIX",(!xmessage.flag("REACHED_ACCURACY") &&
                             aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","BRMIX: very serious problems")) );
+
                 xwarning.flag("DAV",(!xmessage.flag("REACHED_ACCURACY") &&
                             aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING: Sub-Space-Matrix is not hermitian in DAV")) );
+
                 xwarning.flag("EDDDAV",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Error EDDDAV: Call to ZHEGV failed. Returncode"));
                 xwarning.flag("ZPOTRF",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","LAPACK: Routine ZPOTRF failed"));
+
                 xwarning.flag("NBANDS",(aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","NBANDS") && // GET ALL TIMES
                             !aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","The number of bands has been changed from the values supplied") &&  // AVOID SELF HEALING
                             !aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","now  NBANDS  =")) );  // AVOID SELF HEALING
+
                 xwarning.flag("LRF_COMMUTATOR",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","LRF_COMMUTATOR internal error: the vector")); // GET ALL TIMES
                 xwarning.flag("EXCCOR",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","ERROR FEXCF: supplied exchange-correlation table")); // look for problem at the correlation
                 xwarning.flag("NATOMS",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","The distance between some ions is very small")); // look for problem for distance
                 xwarning.flag("MEMORY",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","AFLOW ERROR: AFLOW_MEMORY=")); // look for problem for distance
                 xwarning.flag("PSMAXN",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","REAL_OPT: internal ERROR"));
-                xwarning.flag("IBZKPT",(!xmessage.flag("REACHED_ACCURACY") &&
+
+                //static or already reached accuracy in relax
+                xwarning.flag("IBZKPT",( !xmessage.flag("REACHED_ACCURACY") && 
                             aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","VERY BAD NEWS! internal error in subroutine IBZKPT") && 
                             (!aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Tetrahedron method fails for NKPT<4."))
                             ));
+
                 xwarning.flag("IBZKPT_KNPT", (aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Tetrahedron method fails for NKPT<4.")) ||
                         (aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","IBZKPT: tetrahedron method fails for NKPT<4"))  //KESONG, 2025-03-30, VASP64 format
                         );
 
-                //xwarning.flag("EDDRMM", aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING in EDDRMM: call to ZHEGV failed, returncode")); 
+                xwarning.flag("EDDRMM", aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING in EDDRMM: call to ZHEGV failed, returncode")); 
+                //
                 //If reaching accuracy or converged, then no need to fix this 
-                xwarning.flag("EDDRMM", (!xmessage.flag("REACHED_ACCURACY") || KBIN::VASP_CheckUnconvergedOUTCAR(xvasp.Directory))  && 
-                            aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING in EDDRMM: call to ZHEGV failed, returncode")) ; // && !xwarning.flag("ZPOTRF");
+                //bool test_flag = (!xmessage.flag("REACHED_ACCURACY") || KBIN::VASP_CheckUnconvergedOUTCAR(xvasp.Directory))  && 
+                //            aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING in EDDRMM: call to ZHEGV failed, returncode") ; // && !xwarning.flag("ZPOTRF");
+                //cout << "test_flag" << test_flag << endl;
+                //cout << "!xmessage. "  << !xmessage.flag("REACHED_ACCURACY") << endl;
+                //cout << "KBIN::VASP_CheckUnconvergedOUTCAR(xvasp.Directory) " << KBIN::VASP_CheckUnconvergedOUTCAR(xvasp.Directory) << endl;
+                //cout << "present " << aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING in EDDRMM: call to ZHEGV failed, returncode") << endl;
+
+                //xwarning.flag("EDDRMM", ( (KBIN::VASP_isRelaxOUTCAR(xvasp.Directory) && !xmessage.flag("REACHED_ACCURACY")) || KBIN::VASP_CheckUnconvergedOUTCAR(xvasp.Directory) )  && 
+                //            aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING in EDDRMM: call to ZHEGV failed, returncode")) ; // && !xwarning.flag("ZPOTRF");
+
+                //The below only fixes static jobs
+                //xwarning.flag("EDDRMM", KBIN::VASP_CheckUnconvergedOUTCAR(xvasp.Directory) && 
+                //            aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING in EDDRMM: call to ZHEGV failed, returncode")); 
 
                 xwarning.flag("REAL_OPTLAY_1",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","REAL_OPTLAY: internal error (1)"));
                 xwarning.flag("REAL_OPT",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","REAL_OPT: internal ERROR"));
@@ -2608,6 +2657,7 @@ namespace KBIN {
                 // fix troubles
                 if(xmessage.flag("REACHED_ACCURACY") && xwarning.flag("IBZKPT")) xwarning.flag("IBZKPT",FALSE);  // priority
                 if(xwarning.flag("NKXYZ_IKPTD")) xwarning.flag("IBZKPT",FALSE); // priority
+
 
                 //************************KESONG Check Static*****************************
                 //************************KESONG Check Static*****************************

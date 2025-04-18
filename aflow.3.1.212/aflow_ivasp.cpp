@@ -3137,7 +3137,8 @@ namespace KBIN {
         xvasp.aopts.flag("FLAG::XVASP_INCAR_changed",TRUE);
         dvalue = dvalue * 1;  //not used 
         int imax=aurostd::GetNLinesString(FileContent);
-        if (aurostd::doesKeywordExist(FileContent, "ALGO")) vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme = aurostd::GetValueOfKey(FileContent, "ALGO"); //KESONG, get ALGO from user's INCAR, 2020-03-12
+
+        //if (aurostd::doesKeywordExist(FileContent, "ALGO")) vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme = aurostd::GetValueOfKey(FileContent, "ALGO"); //KESONG, get ALGO from user's INCAR, 2020-03-12
 
         // ***************************************************************************
         if(command=="GENERIC") {
@@ -3149,12 +3150,17 @@ namespace KBIN {
         if(command=="ALGO") {
             for(int i=1;i<=imax;i++) {
                 strline=aurostd::GetLineString(FileContent,i);
-                if(aurostd::substring2bool(strline,"ALGO",TRUE) || aurostd::substring2bool(strline,"#ALGO",TRUE) ||
-                        aurostd::substring2bool(strline,"IALGO",TRUE) || aurostd::substring2bool(strline,"#IALGO",TRUE)) {
-                    xvasp.INCAR << "";
-                }
-                else {
-                    if(strline.length()) xvasp.INCAR << strline << endl;
+
+                //Kesong formats code to improve reading
+                bool has_algo = 
+                    aurostd::substring2bool(strline, "ALGO", TRUE) ||
+                    aurostd::substring2bool(strline, "#ALGO", TRUE) ||
+                    aurostd::substring2bool(strline, "IALGO", TRUE) ||
+                    aurostd::substring2bool(strline, "#IALGO", TRUE);
+
+                if (has_algo) xvasp.INCAR << "";
+                else { 
+                    if (!strline.empty()) xvasp.INCAR << strline << endl;
                 }
             }
 
@@ -3171,6 +3177,25 @@ namespace KBIN {
             DONE=TRUE;
         }
 
+        // ***************************************************************************
+        // IALGO IALGO IALGO IALGO IALGO IALGO
+        if(command=="IALGO") {
+            for(int i=1;i<=imax;i++) {
+                strline=aurostd::GetLineString(FileContent,i);
+
+                if(aurostd::substring2bool(strline,"IALGO",TRUE) || aurostd::substring2bool(strline,"#IALGO",TRUE) ||
+                        aurostd::substring2bool(strline,"ALGO",TRUE) || aurostd::substring2bool(strline,"#ALGO",TRUE) ||
+                        aurostd::substring2bool(strline,"IMIX",TRUE) || aurostd::substring2bool(strline,"#IMIX",TRUE)) {
+                    xvasp.INCAR << "";
+                } else {
+                    if(strline.length()) xvasp.INCAR << strline << endl;
+                }
+            }
+
+            xvasp.INCAR << aurostd::PaddedPOST("IALGO="+aurostd::utype2string(ivalue),_incarpad_) << "# IALGOX1" << endl;
+            DONE=TRUE;
+        }
+        
         // ***************************************************************************
         // ENMAX_MULTIPLY ENMAX_MULTIPLY ENMAX_MULTIPLY ENMAX_MULTIPLY ENMAX_MULTIPLY ENMAX_MULTIPLY
         if(command=="ENMAX_MULTIPLY") {
@@ -3198,23 +3223,6 @@ namespace KBIN {
                 }
             }
             xvasp.INCAR << aurostd::PaddedPOST("IMIX="+aurostd::utype2string(ivalue),_incarpad_) << "# IMIX=X" << endl;
-            DONE=TRUE;
-        }
-
-        // ***************************************************************************
-        // IALGO IALGO IALGO IALGO IALGO IALGO
-        if(command=="IALGO") {
-            for(int i=1;i<=imax;i++) {
-                strline=aurostd::GetLineString(FileContent,i);
-                if(aurostd::substring2bool(strline,"IALGO",TRUE) || aurostd::substring2bool(strline,"#IALGO",TRUE) ||
-                        aurostd::substring2bool(strline,"ALGO",TRUE) || aurostd::substring2bool(strline,"#ALGO",TRUE) ||
-                        aurostd::substring2bool(strline,"IMIX",TRUE) || aurostd::substring2bool(strline,"#IMIX",TRUE)) {
-                    xvasp.INCAR << "";
-                } else {
-                    if(strline.length()) xvasp.INCAR << strline << endl;
-                }
-            }
-            xvasp.INCAR << aurostd::PaddedPOST("IALGO="+aurostd::utype2string(ivalue),_incarpad_) << "# IALGOX1" << endl;
             DONE=TRUE;
         }
 
@@ -4576,7 +4584,7 @@ namespace KBIN {
             KBIN::XVASP_KPOINTS_OPERATION(xvasp,"Xodd,Yodd,Zodd");  // KBIN::XVASP_KPOINTS_ODD(xvasp);  // this should put the origin in GAMMA ??
             xvasp.str.kpoints_s1=0.0;xvasp.str.kpoints_s2=0.0;xvasp.str.kpoints_s3=0.0; // you go on gamma ONLY if you put shift =0 !!
             rewrite_kpoints=TRUE;
-            
+
             if (!aurostd::doesKeywordExist(xvasp.INCAR.str(), "ALGO=Normal")) {
                 reload_incar=TRUE;
                 vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme="NORMAL";
@@ -4598,9 +4606,7 @@ namespace KBIN {
             reload_incar=TRUE;
             aus_exec << "cd " << xvasp.Directory << endl;
             aus_exec << "cat INCAR | sed \"s/LREAL/#LREAL/g\" > aflow.tmp && mv aflow.tmp INCAR" << endl; // remove LREAL
-            //if(vflags.KBIN_VASP_INCAR_VERBOSE) aus_exec << "echo \"# Performing KBIN::XVASP_Afix (" << mode << ") [AFLOW] begin\" >> INCAR " << endl;
             aus_exec << "echo \"LREAL=.TRUE.    # (fix=" << mode << "\" >> INCAR " << endl;
-            //if(vflags.KBIN_VASP_INCAR_VERBOSE) aus_exec << "echo \"# Performing KBIN::XVASP_Afix (" << mode << ") [AFLOW] end\" >> INCAR " << endl;
             aurostd::execute(aus_exec);
         }
         if(mode=="EXCCOR") {
@@ -4631,7 +4637,6 @@ namespace KBIN {
         if(mode=="BRMIX") {
             file_error="aflow.error.brmix";
             reload_incar=TRUE;
-            //vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme="VERYFAST";
             vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme="NORMAL";
             KBIN::XVASP_INCAR_PREPARE_GENERIC("ALGO",xvasp,vflags,"",0,0.0,FALSE);
             rewrite_incar=TRUE;
@@ -4843,11 +4848,17 @@ namespace KBIN {
             aus_exec << "echo \"ISMEAR=2                                        # Performing RELAX_STATIC (Methfessel-Paxton order 2)\" >> INCAR " << endl;
             aurostd::execute(aus_exec);
         }
+        
         // rewrite to restart ---------------------------------
-        // "rewrite" calls the INCAR from "xvasp" (with modifications from aflowin), and rewrite it into directory (losing above modifcaitons into INCAR)
-        if(rewrite_incar) {aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));}
+        if(rewrite_incar) { 
+            //{aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));}
+            string stmp = RemoveCommentLines(aurostd::RemoveEmptyLines(SortLinesAlphabetically(RemoveDuplicateLines(xvasp.INCAR.str())))); 
+            aurostd::string2file(stmp,string(xvasp.Directory+"/INCAR"));
+        }
+
         if(rewrite_poscar) {aurostd::stringstream2file(xvasp.POSCAR,string(xvasp.Directory+"/POSCAR"));}
         if(rewrite_kpoints) {aurostd::stringstream2file(xvasp.KPOINTS,string(xvasp.Directory+"/KPOINTS"));}
+        
         // reload to restart ---------------------------------
         // "reload" reads current INCAR (with above modifications) and restarts 
         if(reload_incar) {
@@ -4862,7 +4873,9 @@ namespace KBIN {
             xvasp.KPOINTS_orig.str(std::string()); xvasp.KPOINTS_orig << xvasp.KPOINTS.str();
             xvasp.KPOINTS.str(std::string()); xvasp.KPOINTS << aurostd::file2string(xvasp.Directory+"/KPOINTS");
         }
+
         //KESONG ADDS THIS, recycle CONTCAR, no waste time in relaxation; 2019-07-19
+        //Always recycle CONTCAR for relaxation
         if (KBIN::VASP_isRelaxOUTCAR(xvasp.Directory))  RecyclePOSCARfromCONTCAR(xvasp);
 
         // clean to restart ----------------------------------
