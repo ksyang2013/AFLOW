@@ -2494,10 +2494,12 @@ namespace KBIN {
             }
             if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [2]" << endl;
 
-            //aurostd::Sleep(20);
-            //test, do i really need them?
-            //if(aurostd::FileEmpty(xvasp.Directory+"/vasp.out"))  {KBIN::VASP_Error(xvasp,FileMESSAGE,"EEEEE  ERROR KBIN::VASP_Run: "+Message("time")+"  Empty vasp.out ");return FALSE;}
-            //if(aurostd::FileEmpty(xvasp.Directory+"/OUTCAR"))  {KBIN::VASP_Error(xvasp,FileMESSAGE,"EEEEE  ERROR KBIN::VASP_Run: "+Message("time")+"  Empty OUTCAR ");return FALSE;}
+            //some machines on expanse@sdsc seem to have issues in disk writing, give more time, Kesong 2025-04-18
+            if (aurostd::substring2bool(XHOST.hostname, "exp")) {  
+                aurostd::Sleep(60);
+            }
+            if(aurostd::FileEmpty(xvasp.Directory+"/vasp.out"))  {KBIN::VASP_Error(xvasp,FileMESSAGE,"EEEEE  ERROR KBIN::VASP_Run: "+Message("time")+"  Empty vasp.out ");return FALSE;}
+            if(aurostd::FileEmpty(xvasp.Directory+"/OUTCAR"))  {KBIN::VASP_Error(xvasp,FileMESSAGE,"EEEEE  ERROR KBIN::VASP_Run: "+Message("time")+"  Empty OUTCAR ");return FALSE;}
             // DONT CHECK CONTCAR it can be empty
             // DONT CHECK OSZICAR it can be empty
 
