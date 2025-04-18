@@ -2852,7 +2852,11 @@ namespace KBIN {
             }
 
             if(vflags.KBIN_VASP_FORCE_OPTION_PREC.xscheme=="NORMAL") {
-                if((aurostd::substring2bool(strline,"PREC",TRUE) && !aurostd::substring2bool(strline,"SYMPREC",TRUE)) || aurostd::substring2bool(strline,"#PREC",TRUE)) { 
+                if((aurostd::substring2bool(strline,"PREC",TRUE) && !aurostd::substring2bool(strline,"SYMPREC",TRUE)) || aurostd::substring2bool(strline,"#PREC",TRUE) ||
+                        aurostd::substring2bool(strline,"ENMAX",TRUE) || aurostd::substring2bool(strline,"#ENMAX",TRUE) ||
+                        aurostd::substring2bool(strline,"ENCUT",TRUE) || aurostd::substring2bool(strline,"#ENCUT",TRUE) 
+                  ) 
+                { 
                     xvasp.INCAR << "";
                 } else {
                     if(!vflags.KBIN_VASP_INCAR_VERBOSE && strline.length()) xvasp.INCAR << strline << endl;
@@ -2917,17 +2921,17 @@ namespace KBIN {
         if(vflags.KBIN_VASP_FORCE_OPTION_PREC.xscheme=="LOW") {
             xvasp.INCAR << aurostd::PaddedPOST("PREC=Low",_incarpad_) << endl;
             if (!aurostd::doesKeywordExist(xvasp.INCAR.str(), "ENCUT"))
-                xvasp.INCAR << aurostd::PaddedPOST("ENCUT="+aurostd::utype2string(xvasp.POTCAR_ENMAX*DEFAULT_VASP_PREC_ENMAX_LOW, _IVASP_DOUBLE2STRING_PRECISION_),_incarpad_) << "# " << DEFAULT_VASP_PREC_ENMAX_ACCURATE << "*ENCUT (" << xvasp.POTCAR_ENMAX << ") of pseudopotentials " << endl;
+                xvasp.INCAR << aurostd::PaddedPOST("ENCUT="+aurostd::utype2string(xvasp.POTCAR_ENMAX*DEFAULT_VASP_PREC_ENMAX_LOW, _IVASP_DOUBLE2STRING_PRECISION_),_incarpad_) << "# " << DEFAULT_VASP_PREC_ENMAX_LOW << "*ENCUT (" << xvasp.POTCAR_ENMAX << ") of pseudopotentials " << endl;
         }
         if(vflags.KBIN_VASP_FORCE_OPTION_PREC.xscheme=="MEDIUM") {
             xvasp.INCAR << aurostd::PaddedPOST("PREC=Medium",_incarpad_) << endl;
             if (!aurostd::doesKeywordExist(xvasp.INCAR.str(), "ENCUT"))
-                xvasp.INCAR << aurostd::PaddedPOST("ENCUT="+aurostd::utype2string(xvasp.POTCAR_ENMAX*DEFAULT_VASP_PREC_ENMAX_MEDIUM, _IVASP_DOUBLE2STRING_PRECISION_),_incarpad_) << "# " << DEFAULT_VASP_PREC_ENMAX_ACCURATE << "*ENCUT (" << xvasp.POTCAR_ENMAX << ") of pseudopotentials " << endl;
+                xvasp.INCAR << aurostd::PaddedPOST("ENCUT="+aurostd::utype2string(xvasp.POTCAR_ENMAX*DEFAULT_VASP_PREC_ENMAX_MEDIUM, _IVASP_DOUBLE2STRING_PRECISION_),_incarpad_) << "# " << DEFAULT_VASP_PREC_ENMAX_MEDIUM << "*ENCUT (" << xvasp.POTCAR_ENMAX << ") of pseudopotentials " << endl;
         }
         if(vflags.KBIN_VASP_FORCE_OPTION_PREC.xscheme=="NORMAL") {
             xvasp.INCAR << "PREC=Normal" << endl;
             if (!aurostd::doesKeywordExist(xvasp.INCAR.str(), "ENCUT"))
-                xvasp.INCAR << aurostd::PaddedPOST("ENCUT="+aurostd::utype2string(xvasp.POTCAR_ENMAX*DEFAULT_VASP_PREC_ENMAX_NORMAL, _IVASP_DOUBLE2STRING_PRECISION_),_incarpad_) << "# " << DEFAULT_VASP_PREC_ENMAX_ACCURATE << "*ENCUT (" << xvasp.POTCAR_ENMAX << ") of pseudopotentials " << endl;
+                xvasp.INCAR << aurostd::PaddedPOST("ENCUT="+aurostd::utype2string(xvasp.POTCAR_ENMAX*DEFAULT_VASP_PREC_ENMAX_NORMAL, _IVASP_DOUBLE2STRING_PRECISION_),_incarpad_) << "# " << DEFAULT_VASP_PREC_ENMAX_NORMAL << "*ENCUT (" << xvasp.POTCAR_ENMAX << ") of pseudopotentials " << endl;
             xvasp.INCAR << aurostd::PaddedPOST("EDIFF=1E-6",_incarpad_) << endl;
         }
         if(vflags.KBIN_VASP_FORCE_OPTION_PREC.xscheme=="HIGH") {

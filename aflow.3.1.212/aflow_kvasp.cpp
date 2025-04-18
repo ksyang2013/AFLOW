@@ -15,11 +15,9 @@
 
 #include "aflow.h"
 
-//#define _KVASP_VASP_SLEEP_   2
-#define _KVASP_VASP_SLEEP_   3   // to avoid runtime error 
+#define _KVASP_VASP_SLEEP_   2
 #define _KVASP_WAIT_SLEEP_   10
 #define _KVASP_CHECK_SLEEP_  60
-//#define _KVASP_CHECK_SLEEP_  10
 #define KBIN_WRONG_ENTRY_STRING string("WRONG_ENTRY")
 #define KBIN_WRONG_ENTRY_NUMBER -123
 
@@ -2492,19 +2490,11 @@ namespace KBIN {
                     vasp_start=FALSE;
                 }
             }
-            if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [2]" << endl;
 
-            //some machines on expanse@sdsc seem to have issues in disk writing, give more time, Kesong 2025-04-18
-            if (aurostd::substring2bool(XHOST.hostname, "exp")) {  
-                aurostd::Sleep(60);
-            }
             if(aurostd::FileEmpty(xvasp.Directory+"/vasp.out"))  {KBIN::VASP_Error(xvasp,FileMESSAGE,"EEEEE  ERROR KBIN::VASP_Run: "+Message("time")+"  Empty vasp.out ");return FALSE;}
             if(aurostd::FileEmpty(xvasp.Directory+"/OUTCAR"))  {KBIN::VASP_Error(xvasp,FileMESSAGE,"EEEEE  ERROR KBIN::VASP_Run: "+Message("time")+"  Empty OUTCAR ");return FALSE;}
-            // DONT CHECK CONTCAR it can be empty
-            // DONT CHECK OSZICAR it can be empty
 
             // update kpoints table
-
             kpoints_k1=xvasp.str.kpoints_k1; kpoints_s1=xvasp.str.kpoints_s1;
             kpoints_k2=xvasp.str.kpoints_k2; kpoints_s2=xvasp.str.kpoints_s2;
             kpoints_k3=xvasp.str.kpoints_k3; kpoints_s3=xvasp.str.kpoints_s3;
