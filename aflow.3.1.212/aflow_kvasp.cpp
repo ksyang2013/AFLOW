@@ -2494,9 +2494,10 @@ namespace KBIN {
             }
             if(LDEBUG) cerr << "KBIN::VASP_Run: " << Message("time") << "  [2]" << endl;
 
-            aurostd::Sleep(20);
-            if(aurostd::FileEmpty(xvasp.Directory+"/vasp.out"))  {KBIN::VASP_Error(xvasp,FileMESSAGE,"EEEEE  ERROR KBIN::VASP_Run: "+Message("time")+"  Empty vasp.out ");return FALSE;}
-            if(aurostd::FileEmpty(xvasp.Directory+"/OUTCAR"))  {KBIN::VASP_Error(xvasp,FileMESSAGE,"EEEEE  ERROR KBIN::VASP_Run: "+Message("time")+"  Empty OUTCAR ");return FALSE;}
+            //aurostd::Sleep(20);
+            //test, do i really need them?
+            //if(aurostd::FileEmpty(xvasp.Directory+"/vasp.out"))  {KBIN::VASP_Error(xvasp,FileMESSAGE,"EEEEE  ERROR KBIN::VASP_Run: "+Message("time")+"  Empty vasp.out ");return FALSE;}
+            //if(aurostd::FileEmpty(xvasp.Directory+"/OUTCAR"))  {KBIN::VASP_Error(xvasp,FileMESSAGE,"EEEEE  ERROR KBIN::VASP_Run: "+Message("time")+"  Empty OUTCAR ");return FALSE;}
             // DONT CHECK CONTCAR it can be empty
             // DONT CHECK OSZICAR it can be empty
 
