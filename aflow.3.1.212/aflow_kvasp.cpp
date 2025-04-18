@@ -3256,25 +3256,13 @@ namespace KBIN {
 
 namespace KBIN {
     void VASP_Error(_xvasp &xvasp,string message1,string message2,string message3) {
-        //  pthread_mutex_lock( &mutex_KVASP );
         ofstream FileXVASP;
         string FileNameXVASP;
         FileNameXVASP=xvasp.Directory+"/"+DEFAULT_AFLOW_ERVASP_OUT;
-        if(1) {
-            FileXVASP.open(FileNameXVASP.c_str(),std::ios::out|std::ios::app);
-            // FileXVASP.open(FileNameXVASP.c_str(),std::ios::app);
-            FileXVASP << message1 << message2 << message3 << "  - " <<endl;
-            //   cerr << message1 << message2 << message3 << "  - " <<endl;
-            FileXVASP.flush(); FileXVASP.clear();
-            FileXVASP.close();
-        }
-        if(0) {
-            ostringstream aus;
-            aus << "echo \"" << message1 << message2 << message3 << " \" >> " << FileNameXVASP << endl;//endl;
-            aurostd::execute(aus);
-            //    cerr << aus.str();
-        }
-        //  pthread_mutex_unlock( &mutex_KVASP);
+        FileXVASP.open(FileNameXVASP.c_str(),std::ios::out|std::ios::app);
+        FileXVASP << message1 << message2 << message3 << "  - " <<endl;
+        FileXVASP.flush(); FileXVASP.clear();
+        FileXVASP.close();
     }
 } // namespace KBIN
 

@@ -1929,31 +1929,26 @@ namespace aurostd {
   // Execute Streams/Strings/C_strings
   // ***************************************************************************
   bool execute(ostringstream &command) {
-    // cerr << "COMMAND " <<  command.str().c_str() << endl;
-    system(command.str().c_str());
-    aurostd::StringstreamClean(command);
-    return TRUE;
+      system(command.str().c_str());
+      aurostd::StringstreamClean(command);
+      return TRUE;
   }
 
   bool execute(stringstream &command) {
-    // cerr << "COMMAND " <<  command.str().c_str() << endl;
-    system(command.str().c_str());
-    aurostd::StringstreamClean(command);
-    return TRUE;
+      system(command.str().c_str());
+      aurostd::StringstreamClean(command);
+      return TRUE;
   }
 
   bool execute(string command) {
-    // cerr << "COMMAND " <<  command.c_str() << endl;
-    system(command.c_str());
-    //   command="";
-    return TRUE;
+      system(command.c_str());
+      return TRUE;
   }
 
 #ifdef _stringcharstar_
   bool execute(char* command) {
-    // cerr << "COMMAND " <<  command << endl;
-    system(command);
-    return TRUE;
+      system(command);
+      return TRUE;
   }
 #endif
 
@@ -1961,69 +1956,69 @@ namespace aurostd {
   // Execute vectors/deque of Strings
   // ***************************************************************************
   bool execute(deque<string> vcommand) {
-    for(uint i=0;i<vcommand.size();i++)
-      execute(vcommand.at(i));
-    return TRUE;
+      for(uint i=0;i<vcommand.size();i++)
+          execute(vcommand.at(i));
+      return TRUE;
   }
   bool execute(vector<string> vcommand) {
-    for(uint i=0;i<vcommand.size();i++)
-      execute(vcommand.at(i));
-    return TRUE;
+      for(uint i=0;i<vcommand.size();i++)
+          execute(vcommand.at(i));
+      return TRUE;
   }
 
   // ***************************************************************************
   // Execute & Report Streams/Strings/C_strings
   // ***************************************************************************
   string execute2string(string command) {
-    // bool INIT_VERBOSE=TRUE;
-    // cerr << "COMMAND " <<  command << endl;
-    stringstream strstream,cmdstream;
-    string file=aurostd::TmpFileCreate("execute_report");
-    cmdstream << command << " > " << file <<  endl;
-    system(cmdstream.str().c_str());
-    // command="";
-    strstream << aurostd::file2string(file);
-    cmdstream.clear();cmdstream.str(std::string());
+      // bool INIT_VERBOSE=TRUE;
+      // cerr << "COMMAND " <<  command << endl;
+      stringstream strstream,cmdstream;
+      string file=aurostd::TmpFileCreate("execute_report");
+      cmdstream << command << " > " << file <<  endl;
+      system(cmdstream.str().c_str());
+      // command="";
+      strstream << aurostd::file2string(file);
+      cmdstream.clear();cmdstream.str(std::string());
 #ifndef _AFLOW_TEMP_PRESERVE_
-    aurostd::RemoveFile(file);
+      aurostd::RemoveFile(file);
 #endif
-    string strout=strstream.str();
-    if(strout.length()>0)
-      if(strout.at(strout.length()-1)=='\n')
-	strout.erase(strout.length()-1);
-    return strout;
+      string strout=strstream.str();
+      if(strout.length()>0)
+          if(strout.at(strout.length()-1)=='\n')
+              strout.erase(strout.length()-1);
+      return strout;
   }
 
   string execute2string(ostringstream &command) {
-    string command_str=command.str();
-    aurostd::StringstreamClean(command);
-    return execute2string(command_str);
+      string command_str=command.str();
+      aurostd::StringstreamClean(command);
+      return execute2string(command_str);
   }
 
   string execute2string(stringstream &command) {
-    string command_str=command.str();
-    aurostd::StringstreamClean(command);
-    return execute2string(command_str);
+      string command_str=command.str();
+      aurostd::StringstreamClean(command);
+      return execute2string(command_str);
   }
 
   vector<string> execute2string(vector<string> vcommand) {
-    vector<string> out;
-    for(uint i=0;i<vcommand.size();i++)
-      out.push_back(execute2string(vcommand.at(i)));
-    return out;
+      vector<string> out;
+      for(uint i=0;i<vcommand.size();i++)
+          out.push_back(execute2string(vcommand.at(i)));
+      return out;
   }
 
   deque<string> execute2string(deque<string> vcommand) {
-    deque<string> out;
-    for(uint i=0;i<vcommand.size();i++)
-      out.push_back(execute2string(vcommand.at(i)));
-    return out;
+      deque<string> out;
+      for(uint i=0;i<vcommand.size();i++)
+          out.push_back(execute2string(vcommand.at(i)));
+      return out;
   }
 
 #ifdef _stringcharstar_
   string execute2string(char* command) {
-    string command_str=string(command);
-    return execute2string(command_str);
+      string command_str=string(command);
+      return execute2string(command_str);
   }
 #endif
 
@@ -2031,34 +2026,34 @@ namespace aurostd {
   // Execute & Report Int Streams/Strings/C_strings
   // ***************************************************************************
   template<class utype> utype execute2utype(ostringstream &command) {
-    return (utype) aurostd::string2utype<utype>(execute2string(command));
+      return (utype) aurostd::string2utype<utype>(execute2string(command));
   }
 
   template<class utype> utype execute2utype(stringstream &command) {
-    return (utype) aurostd::string2utype<utype>(execute2string(command));
+      return (utype) aurostd::string2utype<utype>(execute2string(command));
   }
 
   template<class utype> utype execute2utype(string command) {
-    return (utype) aurostd::string2utype<utype>(execute2string(command));
+      return (utype) aurostd::string2utype<utype>(execute2string(command));
   }
 
   template<class utype> vector<utype> execute2utype(vector<utype> vcommand) {
-    vector<utype> out;
-    for(uint i=0;i<vcommand.size();i++)
-      out.push_back((utype) execute2utype<utype>(vcommand.at(i)));
-    return out;
+      vector<utype> out;
+      for(uint i=0;i<vcommand.size();i++)
+          out.push_back((utype) execute2utype<utype>(vcommand.at(i)));
+      return out;
   }
 
   template<class utype> deque<utype> execute2utype(deque<utype> vcommand) {
-    deque<utype> out;
-    for(uint i=0;i<vcommand.size();i++)
-      out.push_back((utype) execute2utype<utype>(vcommand.at(i)));
-    return out;
+      deque<utype> out;
+      for(uint i=0;i<vcommand.size();i++)
+          out.push_back((utype) execute2utype<utype>(vcommand.at(i)));
+      return out;
   }
 
 #ifdef _stringcharstar_
   template<class utype> utype execute2utype(char* command) {
-    return (utype) aurostd::string2utype<utype>(execute2string(command));
+      return (utype) aurostd::string2utype<utype>(execute2string(command));
   }
 #endif
 
@@ -2066,327 +2061,327 @@ namespace aurostd {
   // Sleep
   // ***************************************************************************
   unsigned int Sleep(unsigned int seconds) {
-    //  ostringstream aus;
-    // aus << "sleep " << (int) seconds << " " << endl;
-    // aurostd::execute(aus);
-    return sleep(seconds);
+      //  ostringstream aus;
+      // aus << "sleep " << (int) seconds << " " << endl;
+      // aurostd::execute(aus);
+      return sleep(seconds);
   }
 
   // *******************************************************************************************
   // *******************************************************************************************
   bool ExtractToFileEXPLICIT(ifstream& FileIN,string FileNameOUTPUT,string Keyword) {        // AFLOW_FUNCTION_IMPLEMENTATION
-    ofstream FileOUTPUT;
-    FileOUTPUT.open(FileNameOUTPUT.c_str(),std::ios::out);
-    string strline,subS2;
-    subS2=Keyword; // STRING TO SEARCH
-    FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
-    bool status=FALSE;
-    while(getline(FileIN,strline))
-      if(aurostd::substring2bool(strline,subS2)) {
-	FileOUTPUT << strline.substr(strline.find(subS2)+subS2.length()) << endl;
-	status=TRUE;
-      }
-    FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
-    FileOUTPUT.flush();FileOUTPUT.clear();FileOUTPUT.close();
-    return status;  // return FALSE if the keyword was never found
+      ofstream FileOUTPUT;
+      FileOUTPUT.open(FileNameOUTPUT.c_str(),std::ios::out);
+      string strline,subS2;
+      subS2=Keyword; // STRING TO SEARCH
+      FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
+      bool status=FALSE;
+      while(getline(FileIN,strline))
+          if(aurostd::substring2bool(strline,subS2)) {
+              FileOUTPUT << strline.substr(strline.find(subS2)+subS2.length()) << endl;
+              status=TRUE;
+          }
+      FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
+      FileOUTPUT.flush();FileOUTPUT.clear();FileOUTPUT.close();
+      return status;  // return FALSE if the keyword was never found
   }
 
   bool ExtractToFileEXPLICIT(string StringIN,string FileNameOUTPUT,string Keyword) {        // AFLOW_FUNCTION_IMPLEMENTATION
-    ofstream FileOUTPUT;
-    FileOUTPUT.open(FileNameOUTPUT.c_str(),std::ios::out);
-    string strline,subS2;
-    subS2=Keyword; // STRING TO SEARCH
-    bool status=FALSE;
-    vector<string> tokens;
-    aurostd::string2tokens(StringIN,tokens,"\n");
-    for(uint i=0;i<tokens.size();i++) {
-      strline=tokens.at(i);
-      if(aurostd::substring2bool(strline,subS2)) {
-	FileOUTPUT << strline.substr(strline.find(subS2)+subS2.length()) << endl;
-	status=TRUE;
+      ofstream FileOUTPUT;
+      FileOUTPUT.open(FileNameOUTPUT.c_str(),std::ios::out);
+      string strline,subS2;
+      subS2=Keyword; // STRING TO SEARCH
+      bool status=FALSE;
+      vector<string> tokens;
+      aurostd::string2tokens(StringIN,tokens,"\n");
+      for(uint i=0;i<tokens.size();i++) {
+          strline=tokens.at(i);
+          if(aurostd::substring2bool(strline,subS2)) {
+              FileOUTPUT << strline.substr(strline.find(subS2)+subS2.length()) << endl;
+              status=TRUE;
+          }
       }
-    }
-    FileOUTPUT.flush();FileOUTPUT.clear();FileOUTPUT.close();
-    return status;  // return FALSE if the keyword was never found
+      FileOUTPUT.flush();FileOUTPUT.clear();FileOUTPUT.close();
+      return status;  // return FALSE if the keyword was never found
   }
 
   // *******************************************************************************************
   bool ExtractToFileEXPLICIT(ifstream& FileIN,string FileNameOUTPUT,string Keyword_start,string Keyword_stop) {        // AFLOW_FUNCTION_IMPLEMENTATION
-    ofstream FileOUTPUT;
-    FileOUTPUT.open(FileNameOUTPUT.c_str(),std::ios::out);
-    string strline,subS2;
-    FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
-    bool status=FALSE;
-    while(getline(FileIN,strline)) {
-      if(aurostd::substring2bool(strline,Keyword_stop))  status=FALSE;
-      if(status) FileOUTPUT << strline << endl;
-      if(aurostd::substring2bool(strline,Keyword_start)) status=TRUE;
-    }
-    FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
-    FileOUTPUT.flush();FileOUTPUT.clear();FileOUTPUT.close();
-    return status;  // return FALSE if something got messed up
+      ofstream FileOUTPUT;
+      FileOUTPUT.open(FileNameOUTPUT.c_str(),std::ios::out);
+      string strline,subS2;
+      FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
+      bool status=FALSE;
+      while(getline(FileIN,strline)) {
+          if(aurostd::substring2bool(strline,Keyword_stop))  status=FALSE;
+          if(status) FileOUTPUT << strline << endl;
+          if(aurostd::substring2bool(strline,Keyword_start)) status=TRUE;
+      }
+      FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
+      FileOUTPUT.flush();FileOUTPUT.clear();FileOUTPUT.close();
+      return status;  // return FALSE if something got messed up
   }
 
   bool ExtractToFileEXPLICIT(string StringIN,string FileNameOUTPUT,string Keyword_start,string Keyword_stop) {        // AFLOW_FUNCTION_IMPLEMENTATION
-    ofstream FileOUTPUT;
-    FileOUTPUT.open(FileNameOUTPUT.c_str(),std::ios::out);
-    string strline,subS2;
-    bool status=FALSE;
-    vector<string> tokens;
-    aurostd::string2tokens(StringIN,tokens,"\n");
-    for(uint i=0;i<tokens.size();i++) {
-      strline=tokens.at(i);
-      if(aurostd::substring2bool(strline,Keyword_stop))  status=FALSE;
-      if(status) FileOUTPUT << strline << endl;
-      if(aurostd::substring2bool(strline,Keyword_start)) status=TRUE;
-    }
-    FileOUTPUT.flush();FileOUTPUT.clear();FileOUTPUT.close();
-    return status;  // return FALSE if something got messed up
+      ofstream FileOUTPUT;
+      FileOUTPUT.open(FileNameOUTPUT.c_str(),std::ios::out);
+      string strline,subS2;
+      bool status=FALSE;
+      vector<string> tokens;
+      aurostd::string2tokens(StringIN,tokens,"\n");
+      for(uint i=0;i<tokens.size();i++) {
+          strline=tokens.at(i);
+          if(aurostd::substring2bool(strline,Keyword_stop))  status=FALSE;
+          if(status) FileOUTPUT << strline << endl;
+          if(aurostd::substring2bool(strline,Keyword_start)) status=TRUE;
+      }
+      FileOUTPUT.flush();FileOUTPUT.clear();FileOUTPUT.close();
+      return status;  // return FALSE if something got messed up
   }
 
   // *******************************************************************************************
   // *******************************************************************************************
   bool ExtractToStringEXPLICIT(ifstream& FileIN,string& StringOUTPUT,string Keyword) {        // AFLOW_FUNCTION_IMPLEMENTATION
-    string strline,subS2;
-    subS2=Keyword; // STRING TO SEARCH
-    FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
-    bool status=FALSE;
-    while(getline(FileIN,strline))
-      if(aurostd::substring2bool(strline,subS2)) {
-	StringOUTPUT=StringOUTPUT+strline.substr(strline.find(subS2)+subS2.length())+"\n";
-	status=TRUE;
-      }
-    FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
-    return status;  // return FALSE if the keyword was never found
+      string strline,subS2;
+      subS2=Keyword; // STRING TO SEARCH
+      FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
+      bool status=FALSE;
+      while(getline(FileIN,strline))
+          if(aurostd::substring2bool(strline,subS2)) {
+              StringOUTPUT=StringOUTPUT+strline.substr(strline.find(subS2)+subS2.length())+"\n";
+              status=TRUE;
+          }
+      FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
+      return status;  // return FALSE if the keyword was never found
   }
 
   bool ExtractToStringEXPLICIT(string StringIN,string& StringOUTPUT,string Keyword) {        // AFLOW_FUNCTION_IMPLEMENTATION
-    string strline,subS2;
-    subS2=Keyword; // STRING TO SEARCH
-    bool status=FALSE;
-    vector<string> tokens;
-    aurostd::string2tokens(StringIN,tokens,"\n");
-    for(uint i=0;i<tokens.size();i++) {
-      strline=tokens.at(i);
-      if(aurostd::substring2bool(strline,subS2)) {
-	StringOUTPUT=StringOUTPUT+strline.substr(strline.find(subS2)+subS2.length())+"\n";
-	status=TRUE;
+      string strline,subS2;
+      subS2=Keyword; // STRING TO SEARCH
+      bool status=FALSE;
+      vector<string> tokens;
+      aurostd::string2tokens(StringIN,tokens,"\n");
+      for(uint i=0;i<tokens.size();i++) {
+          strline=tokens.at(i);
+          if(aurostd::substring2bool(strline,subS2)) {
+              StringOUTPUT=StringOUTPUT+strline.substr(strline.find(subS2)+subS2.length())+"\n";
+              status=TRUE;
+          }
       }
-    }
-    return status;  // return FALSE if the keyword was never found
+      return status;  // return FALSE if the keyword was never found
   }
 
   // *******************************************************************************************
   bool ExtractToStringEXPLICIT(ifstream& FileIN,string& StringOUTPUT,string Keyword_start,string Keyword_stop) {        // AFLOW_FUNCTION_IMPLEMENTATION
-    string strline,subS2;
-    FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
-    bool status=FALSE;
-    while(getline(FileIN,strline)) {
-      if(aurostd::substring2bool(strline,Keyword_stop))  status=FALSE;
-      if(status) StringOUTPUT=StringOUTPUT+strline+"\n";
-      if(aurostd::substring2bool(strline,Keyword_start)) status=TRUE;
-    }
-    FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
-    return status;  // return FALSE if something got messed up
+      string strline,subS2;
+      FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
+      bool status=FALSE;
+      while(getline(FileIN,strline)) {
+          if(aurostd::substring2bool(strline,Keyword_stop))  status=FALSE;
+          if(status) StringOUTPUT=StringOUTPUT+strline+"\n";
+          if(aurostd::substring2bool(strline,Keyword_start)) status=TRUE;
+      }
+      FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
+      return status;  // return FALSE if something got messed up
   }
 
   bool ExtractToStringEXPLICIT(string StringIN,string& StringOUTPUT,string Keyword_start,string Keyword_stop) {        // AFLOW_FUNCTION_IMPLEMENTATION
-    string strline,subS2;
-    bool status=FALSE;
-    vector<string> tokens;
-    aurostd::string2tokens(StringIN,tokens,"\n");
-    for(uint i=0;i<tokens.size();i++) {
-      strline=tokens.at(i);
-      if(aurostd::substring2bool(strline,Keyword_stop))  status=FALSE;
-      if(status) StringOUTPUT=StringOUTPUT+strline+"\n";
-      if(aurostd::substring2bool(strline,Keyword_start)) status=TRUE;
-    }
-    return status;  // return FALSE if something got messed up
+      string strline,subS2;
+      bool status=FALSE;
+      vector<string> tokens;
+      aurostd::string2tokens(StringIN,tokens,"\n");
+      for(uint i=0;i<tokens.size();i++) {
+          strline=tokens.at(i);
+          if(aurostd::substring2bool(strline,Keyword_stop))  status=FALSE;
+          if(status) StringOUTPUT=StringOUTPUT+strline+"\n";
+          if(aurostd::substring2bool(strline,Keyword_start)) status=TRUE;
+      }
+      return status;  // return FALSE if something got messed up
   }
 
   // *******************************************************************************************
   // *******************************************************************************************
   bool ExtractToStringstreamEXPLICIT(ifstream& FileIN,stringstream& StringstreamOUTPUT,string Keyword) {        // AFLOW_FUNCTION_IMPLEMENTATION
-    StringstreamOUTPUT.clear();StringstreamOUTPUT.str(std::string());
-    string strline,subS2;
-    subS2=Keyword; // STRING TO SEARCH
-    FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
-    bool status=FALSE;
-    while(getline(FileIN,strline))
-      if(aurostd::substring2bool(strline,subS2)) {
-	StringstreamOUTPUT << strline.substr(strline.find(subS2)+subS2.length()) << endl;
-	status=TRUE;
-      }
-    FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
-    return status;  // return FALSE if the keyword was never found
+      StringstreamOUTPUT.clear();StringstreamOUTPUT.str(std::string());
+      string strline,subS2;
+      subS2=Keyword; // STRING TO SEARCH
+      FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
+      bool status=FALSE;
+      while(getline(FileIN,strline))
+          if(aurostd::substring2bool(strline,subS2)) {
+              StringstreamOUTPUT << strline.substr(strline.find(subS2)+subS2.length()) << endl;
+              status=TRUE;
+          }
+      FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
+      return status;  // return FALSE if the keyword was never found
   }
 
   // *******************************************************************************************
   bool ExtractToStringstreamEXPLICIT(ifstream& FileIN,stringstream& StringstreamOUTPUT,string Keyword_start,string Keyword_stop) {    // AFLOW_FUNCTION_IMPLEMENTATION
-    StringstreamOUTPUT.clear();StringstreamOUTPUT.str(std::string());
-    string strline;
-    FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
-    bool status=FALSE;
-    while(getline(FileIN,strline)) {
-      if(aurostd::substring2bool(strline,Keyword_stop))  status=FALSE;
-      if(status) StringstreamOUTPUT << strline << endl;
-      if(aurostd::substring2bool(strline,Keyword_start)) status=TRUE;
-    }
-    FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
-    return status;  // return FALSE if something got messed up
+      StringstreamOUTPUT.clear();StringstreamOUTPUT.str(std::string());
+      string strline;
+      FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
+      bool status=FALSE;
+      while(getline(FileIN,strline)) {
+          if(aurostd::substring2bool(strline,Keyword_stop))  status=FALSE;
+          if(status) StringstreamOUTPUT << strline << endl;
+          if(aurostd::substring2bool(strline,Keyword_start)) status=TRUE;
+      }
+      FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
+      return status;  // return FALSE if something got messed up
   }
 
   bool ExtractToStringstreamEXPLICIT(stringstream StringStreamIN,stringstream& StringstreamOUTPUT,string Keyword_start,string Keyword_stop) { // AFLOW_FUNCTION_IMPLEMENTATION
-    StringstreamOUTPUT.clear();StringstreamOUTPUT.str(std::string());
-    string StringIN=StringStreamIN.str();
-    return ExtractToStringstreamEXPLICIT(StringIN,StringstreamOUTPUT,Keyword_start,Keyword_stop);
+      StringstreamOUTPUT.clear();StringstreamOUTPUT.str(std::string());
+      string StringIN=StringStreamIN.str();
+      return ExtractToStringstreamEXPLICIT(StringIN,StringstreamOUTPUT,Keyword_start,Keyword_stop);
   }
 
   bool ExtractToStringstreamEXPLICIT(string StringIN,stringstream& StringstreamOUTPUT,string Keyword_start,string Keyword_stop) {  // AFLOW_FUNCTION_IMPLEMENTATION
-    StringstreamOUTPUT.clear();StringstreamOUTPUT.str(std::string());
-    bool status=FALSE;
-    vector<string> tokens;
-    aurostd::string2tokens(StringIN,tokens,"\n");
-    for(uint i=0;i<tokens.size();i++) {
-      if(aurostd::substring2bool(tokens.at(i),Keyword_stop))  status=FALSE;
-      if(status) StringstreamOUTPUT << tokens.at(i) << endl;
-      if(aurostd::substring2bool(tokens.at(i),Keyword_start)) status=TRUE;
-    }
-    return status;  // return FALSE if something got messed up
+      StringstreamOUTPUT.clear();StringstreamOUTPUT.str(std::string());
+      bool status=FALSE;
+      vector<string> tokens;
+      aurostd::string2tokens(StringIN,tokens,"\n");
+      for(uint i=0;i<tokens.size();i++) {
+          if(aurostd::substring2bool(tokens.at(i),Keyword_stop))  status=FALSE;
+          if(status) StringstreamOUTPUT << tokens.at(i) << endl;
+          if(aurostd::substring2bool(tokens.at(i),Keyword_start)) status=TRUE;
+      }
+      return status;  // return FALSE if something got messed up
   }
 
   bool ExtractToStringstreamEXPLICIT(string StringIN,stringstream& StringstreamOUTPUT,string Keyword) {  // AFLOW_FUNCTION_IMPLEMENTATION
-    StringstreamOUTPUT.clear();StringstreamOUTPUT.str(std::string());
-    bool status=FALSE;
-    vector<string> tokens;
-    aurostd::string2tokens(StringIN,tokens,"\n");
-    for(uint i=0;i<tokens.size();i++) {
-      if(aurostd::substring2bool(tokens.at(i),Keyword)) StringstreamOUTPUT << tokens.at(i).substr(tokens.at(i).find(Keyword)+Keyword.length()) << endl;
-      if(aurostd::substring2bool(tokens.at(i),Keyword)) status=TRUE;
-    }
-    return status;  // return FALSE if something got messed up
+      StringstreamOUTPUT.clear();StringstreamOUTPUT.str(std::string());
+      bool status=FALSE;
+      vector<string> tokens;
+      aurostd::string2tokens(StringIN,tokens,"\n");
+      for(uint i=0;i<tokens.size();i++) {
+          if(aurostd::substring2bool(tokens.at(i),Keyword)) StringstreamOUTPUT << tokens.at(i).substr(tokens.at(i).find(Keyword)+Keyword.length()) << endl;
+          if(aurostd::substring2bool(tokens.at(i),Keyword)) status=TRUE;
+      }
+      return status;  // return FALSE if something got messed up
   }
 
   // *******************************************************************************************
   // *******************************************************************************************
   bool ExtractLastToStringstreamEXPLICIT(ifstream& FileIN,stringstream& StringstreamOUTPUT,string Keyword) {   // AFLOW_FUNCTION_IMPLEMENTATION
-    return ExtractToStringstreamEXPLICIT(FileIN,StringstreamOUTPUT,Keyword);
+      return ExtractToStringstreamEXPLICIT(FileIN,StringstreamOUTPUT,Keyword);
   }
 
   // *******************************************************************************************
   bool ExtractLastToStringstreamEXPLICIT(ifstream& FileIN,stringstream& StringstreamOUTPUT,string Keyword_start,string Keyword_stop) { // AFLOW_FUNCTION_IMPLEMENTATION
-    bool LDEBUG=(FALSE || XHOST.DEBUG);
-    if(LDEBUG) cerr << "LDEBUG: ExtractLastToStringstreamEXPLICIT" << endl;
-    StringstreamOUTPUT.clear();StringstreamOUTPUT.str(std::string());
-    vector<string> tokens;
-    aurostd::stream2vectorstring(FileIN,tokens);
-    int istart=-1,istop=-1;
-    for(int i=(int) tokens.size()-1;i>0;i--) {
-      if(aurostd::substring2bool(tokens.at(i),Keyword_stop)  && istop<1)  istop=i-1;
-      if(aurostd::substring2bool(tokens.at(i),Keyword_start) && istart<1) istart=i+1;
-    }
-    if(LDEBUG) cerr << "LDEBUG: " << istart << " " << istop << endl;
-    if(istart>0 && istop>0) {
-      for(int i=istart;i<=istop;i++) StringstreamOUTPUT << tokens.at(i) << endl;
-      if(LDEBUG) cerr << "LDEBUG: " << StringstreamOUTPUT.str() << endl;
-      return TRUE;
-    }
-    return FALSE;
+      bool LDEBUG=(FALSE || XHOST.DEBUG);
+      if(LDEBUG) cerr << "LDEBUG: ExtractLastToStringstreamEXPLICIT" << endl;
+      StringstreamOUTPUT.clear();StringstreamOUTPUT.str(std::string());
+      vector<string> tokens;
+      aurostd::stream2vectorstring(FileIN,tokens);
+      int istart=-1,istop=-1;
+      for(int i=(int) tokens.size()-1;i>0;i--) {
+          if(aurostd::substring2bool(tokens.at(i),Keyword_stop)  && istop<1)  istop=i-1;
+          if(aurostd::substring2bool(tokens.at(i),Keyword_start) && istart<1) istart=i+1;
+      }
+      if(LDEBUG) cerr << "LDEBUG: " << istart << " " << istop << endl;
+      if(istart>0 && istop>0) {
+          for(int i=istart;i<=istop;i++) StringstreamOUTPUT << tokens.at(i) << endl;
+          if(LDEBUG) cerr << "LDEBUG: " << StringstreamOUTPUT.str() << endl;
+          return TRUE;
+      }
+      return FALSE;
   }
 
 
   bool ExtractLastToStringstreamEXPLICIT(stringstream StringStreamIN,stringstream& StringstreamOUTPUT,string Keyword_start,string Keyword_stop) { // AFLOW_FUNCTION_IMPLEMENTATION
-    StringstreamOUTPUT.clear();StringstreamOUTPUT.str(std::string());
-    string StringIN=StringStreamIN.str();
-    return ExtractLastToStringstreamEXPLICIT(StringIN,StringstreamOUTPUT,Keyword_start,Keyword_stop);
+      StringstreamOUTPUT.clear();StringstreamOUTPUT.str(std::string());
+      string StringIN=StringStreamIN.str();
+      return ExtractLastToStringstreamEXPLICIT(StringIN,StringstreamOUTPUT,Keyword_start,Keyword_stop);
   }
 
   bool ExtractLastToStringstreamEXPLICIT(string StringIN,stringstream& StringstreamOUTPUT,string Keyword_start,string Keyword_stop) {  // AFLOW_FUNCTION_IMPLEMENTATION
-    bool LDEBUG=(FALSE || XHOST.DEBUG);
-    if(LDEBUG) cerr << "LDEBUG: ExtractLastToStringstreamEXPLICIT" << endl;
-    StringstreamOUTPUT.clear();StringstreamOUTPUT.str(std::string());
-    vector<string> tokens;
-    aurostd::string2vectorstring(StringIN,tokens);
-    int istart=-1,istop=-1;
-    for(int i=(int) tokens.size()-1;i>0;i--) {
-      if(aurostd::substring2bool(tokens.at(i),Keyword_stop)  && istop<1)  istop=i-1;
-      if(aurostd::substring2bool(tokens.at(i),Keyword_start) && istart<1) istart=i+1;
-    }
-    if(LDEBUG) cerr << "LDEBUG: " << istart << " " << istop << endl;
-    if(istart>0 && istop>0) {
-      for(int i=istart;i<=istop;i++) StringstreamOUTPUT << tokens.at(i) << endl;
-      if(LDEBUG) cerr << "LDEBUG: " << StringstreamOUTPUT.str() << endl;
-      return TRUE;
-    }
-    return FALSE;
+      bool LDEBUG=(FALSE || XHOST.DEBUG);
+      if(LDEBUG) cerr << "LDEBUG: ExtractLastToStringstreamEXPLICIT" << endl;
+      StringstreamOUTPUT.clear();StringstreamOUTPUT.str(std::string());
+      vector<string> tokens;
+      aurostd::string2vectorstring(StringIN,tokens);
+      int istart=-1,istop=-1;
+      for(int i=(int) tokens.size()-1;i>0;i--) {
+          if(aurostd::substring2bool(tokens.at(i),Keyword_stop)  && istop<1)  istop=i-1;
+          if(aurostd::substring2bool(tokens.at(i),Keyword_start) && istart<1) istart=i+1;
+      }
+      if(LDEBUG) cerr << "LDEBUG: " << istart << " " << istop << endl;
+      if(istart>0 && istop>0) {
+          for(int i=istart;i<=istop;i++) StringstreamOUTPUT << tokens.at(i) << endl;
+          if(LDEBUG) cerr << "LDEBUG: " << StringstreamOUTPUT.str() << endl;
+          return TRUE;
+      }
+      return FALSE;
   }
 
   // *******************************************************************************************
   // *******************************************************************************************
 
   bool ExtractJustAfterToFileEXPLICIT(ifstream& FileIN,string FileNameOUTPUT,string Keyword_start) {        // AFLOW_FUNCTION_IMPLEMENTATION
-    ofstream FileOUTPUT;
-    FileOUTPUT.open(FileNameOUTPUT.c_str(),std::ios::out);
-    string strline,subS2;
-    FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
-    bool status=FALSE;
-    while(getline(FileIN,strline)) {
-      if(status) FileOUTPUT << strline << endl;
-      if(aurostd::substring2bool(strline,Keyword_start)) status=TRUE;
-    }
-    FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
-    FileOUTPUT.flush();FileOUTPUT.clear();FileOUTPUT.close();
-    return status;  // return FALSE if something got messed up
+      ofstream FileOUTPUT;
+      FileOUTPUT.open(FileNameOUTPUT.c_str(),std::ios::out);
+      string strline,subS2;
+      FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
+      bool status=FALSE;
+      while(getline(FileIN,strline)) {
+          if(status) FileOUTPUT << strline << endl;
+          if(aurostd::substring2bool(strline,Keyword_start)) status=TRUE;
+      }
+      FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
+      FileOUTPUT.flush();FileOUTPUT.clear();FileOUTPUT.close();
+      return status;  // return FALSE if something got messed up
   }
 
   bool ExtractJustAfterToStringEXPLICIT(ifstream& FileIN,string& StringOUTPUT,string Keyword_start) {        // AFLOW_FUNCTION_IMPLEMENTATION
-    string strline,subS2;
-    FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
-    bool status=FALSE;
-    while(getline(FileIN,strline)) {
-      if(status) StringOUTPUT=StringOUTPUT+strline+"\n";
-      if(aurostd::substring2bool(strline,Keyword_start)) status=TRUE;
-    }
-    FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
-    return status;  // return FALSE if something got messed up
+      string strline,subS2;
+      FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
+      bool status=FALSE;
+      while(getline(FileIN,strline)) {
+          if(status) StringOUTPUT=StringOUTPUT+strline+"\n";
+          if(aurostd::substring2bool(strline,Keyword_start)) status=TRUE;
+      }
+      FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
+      return status;  // return FALSE if something got messed up
   }
 
   bool ExtractJustAfterToStringstreamEXPLICIT(ifstream& FileIN,stringstream& StringstreamOUTPUT,string Keyword_start) {    // AFLOW_FUNCTION_IMPLEMENTATION
-    StringstreamOUTPUT.clear();StringstreamOUTPUT.str(std::string());
-    string strline;
-    FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
-    bool status=FALSE;
-    while(getline(FileIN,strline)) {
-      if(status) StringstreamOUTPUT << strline << endl;
-      if(aurostd::substring2bool(strline,Keyword_start)) status=TRUE;
-    }
-    FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
-    return status;  // return FALSE if something got messed up
+      StringstreamOUTPUT.clear();StringstreamOUTPUT.str(std::string());
+      string strline;
+      FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
+      bool status=FALSE;
+      while(getline(FileIN,strline)) {
+          if(status) StringstreamOUTPUT << strline << endl;
+          if(aurostd::substring2bool(strline,Keyword_start)) status=TRUE;
+      }
+      FileIN.clear();FileIN.seekg(0); // ******* INPUT FILE goes at the beginning
+      return status;  // return FALSE if something got messed up
   }
 
   bool ExtractJustAfterToStringstreamEXPLICIT(stringstream StringStreamIN,stringstream& StringstreamOUTPUT,string Keyword_start) { // AFLOW_FUNCTION_IMPLEMENTATION
-    StringstreamOUTPUT.clear();StringstreamOUTPUT.str(std::string());
-    string StringIN=StringStreamIN.str();
-    return ExtractJustAfterToStringstreamEXPLICIT(StringIN,StringstreamOUTPUT,Keyword_start);
+      StringstreamOUTPUT.clear();StringstreamOUTPUT.str(std::string());
+      string StringIN=StringStreamIN.str();
+      return ExtractJustAfterToStringstreamEXPLICIT(StringIN,StringstreamOUTPUT,Keyword_start);
   }
 
   bool ExtractJustAfterToStringstreamEXPLICIT(string StringIN,stringstream& StringstreamOUTPUT,string Keyword_start) {  // AFLOW_FUNCTION_IMPLEMENTATION
-    StringstreamOUTPUT.clear();StringstreamOUTPUT.str(std::string());
-    bool status=FALSE;
-    vector<string> tokens;
-    aurostd::string2tokens(StringIN,tokens,"\n");
-    for(uint i=0;i<tokens.size();i++) {
-      if(status) StringstreamOUTPUT << tokens.at(i) << endl;
-      if(aurostd::substring2bool(tokens.at(i),Keyword_start)) status=TRUE;
-    }
-    return status;  // return FALSE if something got messed up
+      StringstreamOUTPUT.clear();StringstreamOUTPUT.str(std::string());
+      bool status=FALSE;
+      vector<string> tokens;
+      aurostd::string2tokens(StringIN,tokens,"\n");
+      for(uint i=0;i<tokens.size();i++) {
+          if(status) StringstreamOUTPUT << tokens.at(i) << endl;
+          if(aurostd::substring2bool(tokens.at(i),Keyword_start)) status=TRUE;
+      }
+      return status;  // return FALSE if something got messed up
   }
 
   bool ExtractJustAfterToStringEXPLICIT(string StringIN,string& StringOUTPUT,string Keyword_start) {  // AFLOW_FUNCTION_IMPLEMENTATION
-    stringstream StringstreamOUTPUT;
-    bool out=ExtractJustAfterToStringstreamEXPLICIT(StringIN,StringstreamOUTPUT,Keyword_start);
-    StringOUTPUT=StringstreamOUTPUT.str();
-    return out;  // return FALSE if something got messed up
+      stringstream StringstreamOUTPUT;
+      bool out=ExtractJustAfterToStringstreamEXPLICIT(StringIN,StringstreamOUTPUT,Keyword_start);
+      StringOUTPUT=StringstreamOUTPUT.str();
+      return out;  // return FALSE if something got messed up
   }
 
   // ***************************************************************************
@@ -2394,44 +2389,44 @@ namespace aurostd {
   // ***************************************************************************
   // take istream into a vector strings - Stefano Curtarolo
   uint stream2vectorstring(std::istream& istreamIN,vector<string> &vstringout) {
-    // istreamIN.clear(); // istreamIN.seekg(0); // ******* INPUT FILE goes at the beginning
-    vstringout.clear();
-    while(!istreamIN.eof()) {
-      char tmp[_CIN_LINE_BUFFER_LENGTH_];
-      istreamIN.getline(tmp,_CIN_LINE_BUFFER_LENGTH_-1);
-      vstringout.push_back(string(tmp));
-    }
-    // istreamIN.clear(); // istreamIN.seekg(0); // ******* INPUT FILE goes at the beginning
-    return vstringout.size();  // return FALSE if something got messed up
+      // istreamIN.clear(); // istreamIN.seekg(0); // ******* INPUT FILE goes at the beginning
+      vstringout.clear();
+      while(!istreamIN.eof()) {
+          char tmp[_CIN_LINE_BUFFER_LENGTH_];
+          istreamIN.getline(tmp,_CIN_LINE_BUFFER_LENGTH_-1);
+          vstringout.push_back(string(tmp));
+      }
+      // istreamIN.clear(); // istreamIN.seekg(0); // ******* INPUT FILE goes at the beginning
+      return vstringout.size();  // return FALSE if something got messed up
   }
   // take ifstream into a vector strings - Stefano Curtarolo
   uint stream2vectorstring(std::ifstream& ifstreamIN,vector<string> &vstringout) {
-    // ifstreamIN.clear(); // ifstreamIN.seekg(0); // ******* INPUT FILE goes at the beginning
-    vstringout.clear();
-    while(!ifstreamIN.eof()) {
-      char tmp[_CIN_LINE_BUFFER_LENGTH_];
-      ifstreamIN.getline(tmp,_CIN_LINE_BUFFER_LENGTH_-1);
-      vstringout.push_back(string(tmp));
-    }
-    // ifstreamIN.clear(); // ifstreamIN.seekg(0); // ******* INPUT FILE goes at the beginning
-    return vstringout.size();  // return FALSE if something got messed up
+      // ifstreamIN.clear(); // ifstreamIN.seekg(0); // ******* INPUT FILE goes at the beginning
+      vstringout.clear();
+      while(!ifstreamIN.eof()) {
+          char tmp[_CIN_LINE_BUFFER_LENGTH_];
+          ifstreamIN.getline(tmp,_CIN_LINE_BUFFER_LENGTH_-1);
+          vstringout.push_back(string(tmp));
+      }
+      // ifstreamIN.clear(); // ifstreamIN.seekg(0); // ******* INPUT FILE goes at the beginning
+      return vstringout.size();  // return FALSE if something got messed up
   } 
   uint stream2vectorstring(std::stringstream& stringstreamIN,vector<string> &vstringout) {
-    // stringstreamIN.clear();stringstreamIN.seekg(0); // ******* INPUT FILE goes at the beginning
-    vstringout.clear();
-    while(!stringstreamIN.eof()) {
-      char tmp[_CIN_LINE_BUFFER_LENGTH_];
-      stringstreamIN.getline(tmp,_CIN_LINE_BUFFER_LENGTH_-1);
-      vstringout.push_back(string(tmp));
-    }
-    // stringstreamIN.clear();stringstreamIN.seekg(0); // ******* INPUT FILE goes at the beginning
-    return vstringout.size();  // return FALSE if something got messed up
+      // stringstreamIN.clear();stringstreamIN.seekg(0); // ******* INPUT FILE goes at the beginning
+      vstringout.clear();
+      while(!stringstreamIN.eof()) {
+          char tmp[_CIN_LINE_BUFFER_LENGTH_];
+          stringstreamIN.getline(tmp,_CIN_LINE_BUFFER_LENGTH_-1);
+          vstringout.push_back(string(tmp));
+      }
+      // stringstreamIN.clear();stringstreamIN.seekg(0); // ******* INPUT FILE goes at the beginning
+      return vstringout.size();  // return FALSE if something got messed up
   }
   uint string2vectorstring(const string& stringIN,vector<string> &vstringout,bool consecutive,bool trim_edges) {  //CO 170613
-    //CO mods 170613
-    //we are adding functionality here, because string2tokens will treat "\n\n" same as "\n", but not "\n \n"
-    //consecutive will do the following: "sssss" -> <"s","s",...>
-    //trim_edges will remove delimiters from beginning and end, similar to consecutive=false behavior
+      //CO mods 170613
+      //we are adding functionality here, because string2tokens will treat "\n\n" same as "\n", but not "\n \n"
+      //consecutive will do the following: "sssss" -> <"s","s",...>
+      //trim_edges will remove delimiters from beginning and end, similar to consecutive=false behavior
     //return aurostd::string2tokens(stringIN,vstringout,"\n",true);
     uint count=aurostd::string2tokens(stringIN,vstringout,"\n",consecutive);
     if(trim_edges){
