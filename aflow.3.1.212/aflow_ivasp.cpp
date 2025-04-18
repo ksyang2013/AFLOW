@@ -1237,9 +1237,6 @@ namespace KBIN {
             Krun=FALSE;
             return Krun;
         }
-        // return Krun;
-        // xvasp.aopts.flag("FLAG::XVASP_POSCAR_generated",FALSE);
-        //LDEBUG=TRUE;
 
 
         // CONVERT_UNIT_CELL STUFF
@@ -2563,6 +2560,7 @@ namespace KBIN {
                 xvasp.INCAR << aurostd::PaddedPOST("EDIFFG=" + stmp.str(), _incarpad_) << "# 0.01meV/atom " << endl;
             }
         }
+
         // RELAX_MODE=FORCES mode
         if(vflags.KBIN_VASP_FORCE_OPTION_RELAX_MODE.xscheme=="FORCES") {
             //-------------------------------------------------------------------------------- 
@@ -2571,8 +2569,10 @@ namespace KBIN {
             if(aurostd::doesKeywordExist(FileContent, "EDIFFG")) {
                 double value_ediffg = aurostd::string2utype<double>(aurostd::GetValueOfKey(FileContent, "EDIFFG"));
                 if (value_ediffg > 0) setEDIFFG = true;
+            } else {
+                setEDIFFG = true;
             }
-            if(!aurostd::doesKeywordExist(FileContent, "EDIFFG")) setEDIFFG = true;
+            
             //-------------------------------------------------------------------------------- 
             vector<string> vkey; 
             //string stag = "IBRION; NSW; ISIF; NELM; NELMIN; LOPTICS"; 
@@ -2599,13 +2599,14 @@ namespace KBIN {
                 xvasp.INCAR << aurostd::PaddedPOST(("EDIFFG=" + strEDIFFG), _incarpad_) << "# -0.01 for NIONS <=20, -0.03 for NIONS <=80, -0.05 for larger cell" << endl;
             }
         }
+
         if(!aurostd::doesKeywordExist(FileContent, "EDIFF=")) {
             xvasp.INCAR << aurostd::PaddedPOST("EDIFF=1E-4",_incarpad_) << endl;  //good enough for relax
         }
+        
         // done now write if necessary
         if(vflags.KBIN_VASP_FORCE_OPTION_RELAX_TYPE.flag("IONS_CELL_VOLUME") && number>1) {  // whatever is the number
             xvasp.aopts.flag("FLAG::XVASP_INCAR_changed",FALSE);
-            //aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));
             string stmp = RemoveCommentLines(aurostd::RemoveEmptyLines(SortLinesAlphabetically(RemoveDuplicateLines(xvasp.INCAR.str())))); 
             aurostd::string2file(stmp,string(xvasp.Directory+"/INCAR"));
 
