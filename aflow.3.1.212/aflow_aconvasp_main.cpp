@@ -1583,14 +1583,24 @@ namespace pflow {
 
 // ***************************************************************************
 // pflow::DEVELOP
+// --develop KESONG YANG
 // ***************************************************************************
 void DEVELOP(vector<string> argv) {
     cout << argv.at(0) << endl;
     cout << argv.at(1) << endl;
     cout << argv.at(2) << endl;
     string dir = argv.at(2);
-    stringstream ssINCAR;
-    aurostd::file2stringstream(dir+"/INCAR", ssINCAR);
+    if (1) {
+        //check OUTCAR of vasp64 version
+        string odir = "./";
+        xOUTCAR outcar("./OUTCAR");
+        bool isRelax = KBIN::VASP_isRelaxOUTCAR(odir);
+    }
+
+    exit(0);
+    
+    //stringstream ssINCAR;
+    //aurostd::file2stringstream(dir+"/INCAR", ssINCAR);
     //string strline1 = "NSW=160";
     //string strline2 = "#NSW=160";
     //string strline3 = "#1234 NSW=160";
@@ -1615,11 +1625,10 @@ void DEVELOP(vector<string> argv) {
     //ostr << "Line5" ;
     //cout << ostr.str() << endl; 
     //cout << "strINCAR" <<  ssINCAR.str() << endl;
-    string FileContent1 = ssINCAR.str();
-    cout << FileContent1 << endl;
-    cout << "---" << endl;
+    ///string FileContent1 = ssINCAR.str();
+    ///cout << FileContent1 << endl;
+    ///cout << "---" << endl;
     //cout << KBIN::RemoveEmptyLines(FileContent1);
-    exit(0);
     //vector<string> vlines;
     //aurostd::string2vectorstring(ssINCAR.str(),vlines);
     ////cout << "vlines.size() " << vlines.size() << endl;

@@ -1076,17 +1076,24 @@ bool xOUTCAR::GetProperties(const stringstream& stringstreamIN,bool QUIET) {
         if(LVERBOSE) cout << "xOUTCAR::GetProperties: LDAU calculation in OUTCAR" << endl;
         int LDAUT=0;
         vector<int> vLDAUL;vector<double> vLDAUU,vLDAUJ;
-        for(uint j=0;j<vline.size();j++) {
-            aurostd::string2tokens(vline.at(j),tokens,"=");
-            vline.at(j)=tokens.at(1);
+
+        //Kesong 2025-04-28 fixes the format for vasp64 format
+        for (const auto& line : vline) {
+            if (line.find("LDAUTYPE") != string::npos) {
+                LDAUT=aurostd::string2utype<int>(line);
+            } else if (line.find("LDAUL =") != string::npos) {
+                aurostd::string2tokens(line,tokens," ");
+                for(uint i=0;i<tokens.size();i++) vLDAUL.push_back(aurostd::string2utype<int>(tokens.at(i)));
+            } else if (line.find("LDAUU =") != string::npos) {
+                aurostd::string2tokens(line,tokens," ");
+                for(uint i=0;i<tokens.size();i++) vLDAUU.push_back(((int) 100*aurostd::string2utype<double>(tokens.at(i)))/100.0);
+            } else if (line.find("LDAUJ =") != string::npos) {
+                aurostd::string2tokens(line,tokens," ");
+                for(uint i=0;i<tokens.size();i++) vLDAUJ.push_back(((int) 100*aurostd::string2utype<double>(tokens.at(i)))/100.0);
+            }
         }
-        for(uint j=0;j<vline.size();j++) {
-            aurostd::string2tokens(vline.at(j),tokens," ");
-            if(j==0) LDAUT=aurostd::string2utype<int>(vline.at(j));
-            if(j==1) for(uint i=0;i<tokens.size();i++) vLDAUL.push_back(aurostd::string2utype<int>(tokens.at(i)));
-            if(j==2) for(uint i=0;i<tokens.size();i++) vLDAUU.push_back(((int) 100*aurostd::string2utype<double>(tokens.at(i)))/100.0);  
-            if(j==3) for(uint i=0;i<tokens.size();i++) vLDAUJ.push_back(((int) 100*aurostd::string2utype<double>(tokens.at(i)))/100.0);
-        }
+
+
         if(species_pp_vLDAU.size()!=species.size()) {
             if(!QUIET) cerr << "xOUTCAR::GetProperties: ERROR - species_pp_vLDAU.size()[" << species_pp_vLDAU.size() << "] != species.size()[" << species.size() << "]" << "   filename=[" << filename << "]" << endl;
             ERROR_flag=TRUE;
