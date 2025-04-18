@@ -1594,7 +1594,7 @@ void DEVELOP(vector<string> argv) {
         //check OUTCAR of vasp64 version
         string odir = "./";
         xOUTCAR outcar("./OUTCAR");
-        bool isRelax = KBIN::VASP_isRelaxOUTCAR(odir);
+        //bool isRelax = KBIN::VASP_isRelaxOUTCAR(odir);
     }
 
     exit(0);
