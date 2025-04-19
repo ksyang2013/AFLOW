@@ -1690,18 +1690,13 @@ namespace aurostd {
   // DeleteOstringStreams
   // ***************************************************************************
   void StringstreamClean(ostringstream &aus) {
-    aus.seekp(0,ios_base::beg);       // RESET
-    for(int i=0;i<BUFFER_MAXLEN;i++)  // RESET
-      aus<<(char)0;                   // RESET
-    aus.seekp(0,ios_base::beg);       // RESET
-    // aus.str(std::string());
+      aus.str("");   //CO20200624 // KY20250419
+      aus.clear();           
   }
+
   void StringstreamClean(stringstream &aus) {
-    aus.seekp(0,ios_base::beg);       // RESET
-    for(int i=0;i<BUFFER_MAXLEN;i++)  // RESET
-      aus<<(char)0;                   // RESET
-    aus.seekp(0,ios_base::beg);       // RESET
-    // aus.str(std::string());
+      aus.str("");   //CO20200624 // KY20250419
+      aus.clear();          
   }
 
 
@@ -5659,6 +5654,7 @@ namespace aurostd {
 // ***************************************************************************
 namespace aurostd {
 
+    // ***************************************************************************
     bool doesKeywordExist(const string& FileContent, const string& keyword) {
         bool FLAG = FALSE;
         int imax; 
@@ -5671,6 +5667,7 @@ namespace aurostd {
         return (FLAG);
     }
 
+    // ***************************************************************************
     string GetLineWithKeyword(const string& FileContent, const string& keyword) {
         int imax; 
         string strline, ostr="";
@@ -5685,18 +5682,21 @@ namespace aurostd {
         return (ostr);
     }
 
+    // ***************************************************************************
     bool doesKeywordExistLine(const string& strline, const string& keyword) {
         bool FLAG = FALSE;
         if(aurostd::substring2bool(strline,keyword,TRUE)) FLAG = TRUE;
         return (FLAG);
     }
 
+    // ***************************************************************************
     void capitalizeString(string& s){
         for (unsigned int i=0; i<s.length(); i++){
             s[i] = toupper(s[i]);
         }
     }
 
+    // ***************************************************************************
     string RemoveEmptyLines(const string& FileContent){
         string strline;
         ostringstream oss; oss.str("");
@@ -5709,6 +5709,8 @@ namespace aurostd {
         return (oss.str());
     }
 
+    // ***************************************************************************
+    //Only compare the string before "=", so EDIFF=1E-6 and EDIFF = 1E-3 will be considered as same
     string getUniquePart(const std::string& line) {
         size_t pos = line.find('=');
         std::string unique_part = (pos != std::string::npos) ? line.substr(0, pos) : line;
@@ -5716,6 +5718,9 @@ namespace aurostd {
         return unique_part;
     }
 
+
+    // ***************************************************************************
+    //Remove duplicate lines (only consdier the keywords before "=")
     string RemoveDuplicateLines(const std::string& FileContent) {
         std::string strline;
         std::ostringstream oss;
@@ -5734,6 +5739,7 @@ namespace aurostd {
         return oss.str();
     }
 
+    // ***************************************************************************
     string SortLinesAlphabetically(const std::string& FileContent) {
         std::string strline;
         std::ostringstream oss;
@@ -5756,6 +5762,7 @@ namespace aurostd {
         return oss.str();
     }
 
+    // ***************************************************************************
     string RemoveCommentLines(const std::string& FileContent) {
         std::string strline;
         std::ostringstream oss;
@@ -5794,6 +5801,7 @@ namespace aurostd {
         return (outstr.str());
     }
 
+    // ***************************************************************************
     string RemoveLineWithKeyword(const string& FileContent, const vector<string>& vkeyword, bool CleanBlankLine) {
         string ostr=FileContent, keyword="";
         for (uint i=0; i<vkeyword.size(); i++){
@@ -5803,6 +5811,7 @@ namespace aurostd {
         return (ostr);
     }
 
+    // ***************************************************************************
     string RemoveLineWithMultipleKeywords(const string& FileContent, const string& keywords, bool CleanBlankLine) {
         string ostr = "";
         vector<string> vkey; 

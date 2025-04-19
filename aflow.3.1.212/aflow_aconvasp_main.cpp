@@ -1590,15 +1590,77 @@ void DEVELOP(vector<string> argv) {
     cout << argv.at(1) << endl;
     cout << argv.at(2) << endl;
     string dir = argv.at(2);
-    if (1) {
+    if (0) {
         //check OUTCAR of vasp64 version
         string odir = "./";
         xOUTCAR outcar("./OUTCAR");
         //bool isRelax = KBIN::VASP_isRelaxOUTCAR(odir);
     }
+    if (1) {
+        //debug zbrent 
+        string odir = "./";
+        string mode = "ZBRENT";
+        int param_int = 1;
+        cerr << "here0" << endl;
+        if(mode=="ZBRENT") {
+            cerr << "here1" << endl;
+            //reload_incar=TRUE;
+            ostringstream aus_exec;
+            //aus << "cd " << xvasp.Directory << endl;
+            aus_exec << "echo \"[AFLOW] SELF-MODIFICATION \" >> " << _AFLOWIN_ << " " << endl;
+            aus_exec << "echo \"[AFLOW] Recycling CONTCAR of zbrent_error" << aurostd::utype2string(param_int) << " \" >> " << _AFLOWIN_ << " " << endl;
+            aus_exec << "cat CONTCAR | aflow --aflowin  >> " << _AFLOWIN_ << " " << endl;
+            aus_exec << "cat " << _AFLOWIN_ << " | sed \"s/\\[VASP_FORCE_OPTION\\]VOLUME/#\\[VASP_FORCE_OPTION\\]VOLUME/g\" | sed \"s/##\\[/#\\[/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl;
+            aus_exec << "cat INCAR | grep -v 'EDIFF=' > incar.tmp && mv incar.tmp INCAR" << endl; 
+            aus_exec << "echo \"EDIFF=1E-3                                        #FIX=" << mode << "\" >> INCAR " << endl;
+            aurostd::execute(aus_exec);
+            cerr << "here2" << endl;
+        }
+        //KESONG ADDS THIS, recycle CONTCAR, no waste time in relaxation; 2019-07-19
+        //Always recycle CONTCAR for relaxation, 
+        //if (KBIN::VASP_isRelaxOUTCAR(xvasp.Directory))  RecyclePOSCARfromCONTCAR(xvasp);  //CONTCAR was copied as POSCAR; and xvasp was updated 
+
+        //// reload to restart ---------------------------------
+        //// "reload" reads current INCAR (with above modifications) and restarts 
+        //// reload means loading VASP files to xvasp
+        bool reload_incar = true;
+        _xvasp xvasp;
+        if(reload_incar) {
+            xvasp.INCAR_orig.str(std::string()); xvasp.INCAR_orig << xvasp.INCAR.str();
+            xvasp.INCAR.str(std::string()); xvasp.INCAR << aurostd::file2string(xvasp.Directory+"/INCAR");
+        }
+        //if(reload_poscar) {
+        //    xvasp.POSCAR_orig.str(std::string()); xvasp.POSCAR_orig << xvasp.POSCAR.str();
+        //    xvasp.POSCAR.str(std::string()); xvasp.POSCAR << aurostd::file2string(xvasp.Directory+"/POSCAR");
+        //}
+        //if(reload_kpoints) {
+        //    xvasp.KPOINTS_orig.str(std::string()); xvasp.KPOINTS_orig << xvasp.KPOINTS.str();
+        //    xvasp.KPOINTS.str(std::string()); xvasp.KPOINTS << aurostd::file2string(xvasp.Directory+"/KPOINTS");
+        //}
+
+        //// reload first (since INCAR may be changed), then rewrite? Kesong 2025-04-19, fixes bug in ZBRENT
+        //// rewrite to restart ---------------------------------
+        //// rewrite means writing xvasp to VASP files
+        bool rewrite_incar = true;
+        if(rewrite_incar) { 
+            //{aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));}
+            string stmp = aurostd::RemoveCommentLines(aurostd::RemoveEmptyLines(aurostd::SortLinesAlphabetically(aurostd::RemoveDuplicateLines(xvasp.INCAR.str())))); 
+            aurostd::string2file(stmp,string(xvasp.Directory+"/INCAR"));
+        }
+
+        //if(rewrite_poscar) {aurostd::stringstream2file(xvasp.POSCAR,string(xvasp.Directory+"/POSCAR"));}
+        //if(rewrite_kpoints) {aurostd::stringstream2file(xvasp.KPOINTS,string(xvasp.Directory+"/KPOINTS"));}
+
+
+        //// clean to restart ----------------------------------
+        //if(file_error!="") KBIN::XVASP_Afix_Clean(xvasp,file_error);
+        //if(file_error.empty()) {cerr <<" ERROR KBIN::XVASP_Afix_GENERIC mode=" << mode << endl;exit(0);}
+        ////some clusters (tscc) may not have enough time to synchronize large files? not really? //KESONG 2019-07-26
+    }
+
 
     exit(0);
-    
+
     //stringstream ssINCAR;
     //aurostd::file2stringstream(dir+"/INCAR", ssINCAR);
     //string strline1 = "NSW=160";
@@ -1637,11 +1699,11 @@ void DEVELOP(vector<string> argv) {
     //}
     //string2tokens: does not count tokens
     /*
-    vector<string> tokens;
+       vector<string> tokens;
     //aurostd::string2tokens(aurostd::RemoveWhiteSpaces(ssINCAR.str()),tokens,"#");
     aurostd::string2tokens(ssINCAR.str(),tokens,"#");
     for (uint i=0; i <tokens.size(); i++){
-        cout << tokens.at(i) << endl;
+    cout << tokens.at(i) << endl;
     }
     exit(0);
 
@@ -1652,31 +1714,31 @@ void DEVELOP(vector<string> argv) {
     FileContent=ssINCAR.str();
     int imax=aurostd::GetNLinesString(FileContent);
     for(int i=1;i<=imax;i++) {
-        strline=aurostd::GetLineString(FileContent,i); 
-        if(aurostd::substring2bool(strline,"IBRION",TRUE) || 
-                aurostd::substring2bool(strline,"NSW",TRUE) ||
-                aurostd::substring2bool(strline,"ISIF",TRUE) || 
-                aurostd::substring2bool(strline,"NELM",TRUE) ||
-                aurostd::substring2bool(strline,"NELMIN",TRUE) || 
-                aurostd::substring2bool(strline,"LREAL",TRUE)  || 
-                aurostd::substring2bool(strline,"ISMEAR",TRUE) || 
-                aurostd::substring2bool(strline,"SIGMA",TRUE) ||
-                aurostd::substring2bool(strline,"LORBIT",TRUE) || 
-                aurostd::substring2bool(strline,"EMIN",TRUE) ||
-                aurostd::substring2bool(strline,"EMAX",TRUE) || 
-                aurostd::substring2bool(strline,"NEDOS",TRUE) ||
-                aurostd::substring2bool(strline,"LCHARG",TRUE) || 
-                aurostd::substring2bool(strline,"LWAVE",TRUE) ||
-                aurostd::substring2bool(strline,"LELF",TRUE) ||
-                aurostd::substring2bool(strline,"NSW",TRUE) ||
-                aurostd::substring2bool(strline,"#NSW",TRUE) ||
-                aurostd::substring2bool(strline,"PREC",TRUE))
-        {
-            outstr << "";
-        }
-        else { 
-            if (strline.length()) outstr << strline << endl;
-        }
+    strline=aurostd::GetLineString(FileContent,i); 
+    if(aurostd::substring2bool(strline,"IBRION",TRUE) || 
+    aurostd::substring2bool(strline,"NSW",TRUE) ||
+    aurostd::substring2bool(strline,"ISIF",TRUE) || 
+    aurostd::substring2bool(strline,"NELM",TRUE) ||
+    aurostd::substring2bool(strline,"NELMIN",TRUE) || 
+    aurostd::substring2bool(strline,"LREAL",TRUE)  || 
+    aurostd::substring2bool(strline,"ISMEAR",TRUE) || 
+    aurostd::substring2bool(strline,"SIGMA",TRUE) ||
+    aurostd::substring2bool(strline,"LORBIT",TRUE) || 
+    aurostd::substring2bool(strline,"EMIN",TRUE) ||
+    aurostd::substring2bool(strline,"EMAX",TRUE) || 
+    aurostd::substring2bool(strline,"NEDOS",TRUE) ||
+    aurostd::substring2bool(strline,"LCHARG",TRUE) || 
+    aurostd::substring2bool(strline,"LWAVE",TRUE) ||
+    aurostd::substring2bool(strline,"LELF",TRUE) ||
+    aurostd::substring2bool(strline,"NSW",TRUE) ||
+    aurostd::substring2bool(strline,"#NSW",TRUE) ||
+    aurostd::substring2bool(strline,"PREC",TRUE))
+    {
+    outstr << "";
+    }
+    else { 
+    if (strline.length()) outstr << strline << endl;
+    }
     }
     cout << outstr.str() << endl;
     */
