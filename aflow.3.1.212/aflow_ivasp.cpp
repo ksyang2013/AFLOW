@@ -2830,17 +2830,16 @@ namespace KBIN {
 }
 
 // ***************************************************************************
-// KBIN::XVASP_INCAR_Set_User_Setting  //KY 2025
+// KBIN::XVASP_INCAR_Set_User_Setting  //KESONG YANG 2025
 namespace KBIN {
     void XVASP_INCAR_Set_User_Setting(_xvasp& xvasp,_vflags& vflags, const string& strPREC) {        // AFLOW_FUNCTION_IMPLEMENTATION   TPSS | RTPSS | M06L | MBJL | SCAN | MS0 | MS1 | MS2 | NONE
-        //cerr << "here " << endl;
 
         //if user set EDIFF=, then will use user's setting
         if (aurostd::doesKeywordExist(xvasp.INCAR_orig.str(), "ENCUT")) {
             string etmp =  GetLineWithKeyword(xvasp.INCAR_orig.str(), "ENCUT=");
             xvasp.INCAR << aurostd::PaddedPOST(etmp, _incarpad_)  << "# Apply user-defined settings " << endl; }  
         else {
-            string etmp = aurostd::utype2string(xvasp.POTCAR_ENMAX*DEFAULT_VASP_PREC_ENMAX_ACCURATE,_IVASP_DOUBLE2STRING_PRECISION_);
+            string etmp = aurostd::utype2string(xvasp.POTCAR_ENMAX * std::stod(strPREC), _IVASP_DOUBLE2STRING_PRECISION_);
             xvasp.INCAR << aurostd::PaddedPOST("ENCUT="+etmp, _incarpad_) << "# " << strPREC << "*ENCUT (" << xvasp.POTCAR_ENMAX << ") of pseudopotentials " << endl; 
         }
 
