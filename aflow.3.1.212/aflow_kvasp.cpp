@@ -2533,18 +2533,18 @@ namespace KBIN {
 
                 if (isRelax) {
                     if (relax_successful) {
-                        aus << "CCCCC  RELAXATION SUCCESSFUL  - " << Message(aflags,"user,host,time") << endl;
+                        aus << "CHECK  RELAXATION SUCCESSFUL  - " << Message(aflags,"user,host,time") << endl;
                         aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
                     }
                     else {
-                        aus << "CCCCC  RELAXATION FAILED  - " << Message(aflags,"user,host,time") << endl;
+                        aus << "CHECK  RELAXATION FAILED  - " << Message(aflags,"user,host,time") << endl;
                         aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
                     }
                     xwarning.flag("REACH_NSW", !reachedAccuracy && isRelax && reachedNSW); 
                 }
                 else {
                     if (isConverged) {
-                        aus << "CCCCC  SCF CALCULATIONS CONVERGED - " << Message(aflags,"user,host,time") << endl;
+                        aus << "CHECK  SCF CALCULATIONS CONVERGED - " << Message(aflags,"user,host,time") << endl;
                         aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
 
                     }
