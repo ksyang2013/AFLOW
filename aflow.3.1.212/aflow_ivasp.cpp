@@ -2333,16 +2333,19 @@ namespace KBIN {
                     aus << "00000  MESSAGE POTCAR  generation from file=" << file << endl;
                     aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
                 } else {
-                    file=DEFAULT_VASP_EXTERNAL_POTCAR;
+                    //file=DEFAULT_VASP_EXTERNAL_POTCAR; //KESONG 20250420
+                    file = xvasp.Directory + "/" + DEFAULT_VASP_EXTERNAL_POTCAR;  //fixes bug if one submits jobs outside of the aflow.in directory KY20250420
                     aus << "00000  MESSAGE POTCAR  generation from DEFAULT file=" << DEFAULT_VASP_EXTERNAL_POTCAR << Message(aflags,"user,host,time") << endl;
                     aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
                 }
+
                 if(!aurostd::FileExist(file)) {
                     aus << "EEEEE  ERROR POTCAR file=" << file << " does not exist! " << Message(aflags,"user,host,time") << endl;
                     aurostd::PrintErrorStream(FileMESSAGE,aus,XHOST.QUIET);
                     Krun=FALSE;
                     return Krun;
                 }
+
                 if(aurostd::FileEmpty(file)) {
                     aus << "EEEEE  ERROR POTCAR file=" << file << " is empty! " << Message(aflags,"user,host,time") << endl;
                     aurostd::PrintErrorStream(FileMESSAGE,aus,XHOST.QUIET);
@@ -2351,6 +2354,7 @@ namespace KBIN {
                 }
                 xvasp.POTCAR << aurostd::file2string(file);
             }
+
             if(vflags.KBIN_VASP_POTCAR_FILE.flag("COMMAND") && !vflags.KBIN_VASP_POTCAR_FILE.flag("FILE")) {
                 file=aurostd::substring2string(AflowIn,"[VASP_POTCAR_FILE]COMMAND=",FALSE);
                 aus << "00000  MESSAGE POTCAR  generation from command= '" << file << "' " << endl;
@@ -2836,7 +2840,7 @@ namespace KBIN {
 
         //if user set EDIFF=, then will use user's setting
         if (aurostd::doesKeywordExist(xvasp.INCAR_orig.str(), "ENCUT")) {
-            string etmp =  GetLineWithKeyword(xvasp.INCAR_orig.str(), "ENCUT=");
+            string etmp =  GetLineWithKeyword(xvasp.INCAR_orig.str(), "ENCUT");
             xvasp.INCAR << aurostd::PaddedPOST(etmp, _incarpad_)  << "# Apply user-defined settings " << endl; }  
         else {
             string etmp = aurostd::utype2string(xvasp.POTCAR_ENMAX * std::stod(strPREC), _IVASP_DOUBLE2STRING_PRECISION_);
@@ -2845,15 +2849,14 @@ namespace KBIN {
 
         //cout <<  "xvasp.INCAR_orig.str() " << xvasp.INCAR_orig.str() << endl;
 
-        if (aurostd::doesKeywordExist(xvasp.INCAR_orig.str(), "EDIFF=")) {
-            string etmp =  GetLineWithKeyword(xvasp.INCAR_orig.str(), "EDIFF=");
+        if (aurostd::doesKeywordExist(xvasp.INCAR_orig.str(), "EDIFF")) {
+            string etmp =  GetLineWithKeyword(xvasp.INCAR_orig.str(), "EDIFF");
             xvasp.INCAR << aurostd::PaddedPOST(etmp, _incarpad_)  << "# Apply user-defined settings " << endl; }  
         else {
             xvasp.INCAR << aurostd::PaddedPOST("EDIFF=1E-6",_incarpad_) << endl;
         }
 
-
-        if (aurostd::doesKeywordExist(xvasp.INCAR_orig.str(), "EDIFFG=") || aurostd::doesKeywordExist(xvasp.INCAR_orig.str(), "EDIFFG =") ) {
+        if (aurostd::doesKeywordExist(xvasp.INCAR_orig.str(), "EDIFFG")) { 
             string etmp =  GetLineWithKeyword(xvasp.INCAR_orig.str(), "EDIFFG");
             xvasp.INCAR << aurostd::PaddedPOST(etmp, _incarpad_)  << "# Apply user-defined settings " << endl; }  
         else {
@@ -2987,7 +2990,7 @@ namespace KBIN {
             string stmp = aurostd::utype2string(DEFAULT_VASP_PREC_ENMAX_ACCURATE, _IVASP_DOUBLE2STRING_PRECISION_);
             KBIN::XVASP_INCAR_Set_User_Setting(xvasp, vflags, stmp); 
             xvasp.INCAR << aurostd::PaddedPOST("LREAL=.FALSE.",_incarpad_) << endl;
-            xvasp.INCAR << aurostd::PaddedPOST("ALGO=FAST",_incarpad_) << endl;  
+            //xvasp.INCAR << aurostd::PaddedPOST("ALGO=FAST",_incarpad_) << endl;  
         }
 
         if(vflags.KBIN_VASP_FORCE_OPTION_PREC.xscheme=="ACCURATE") {
@@ -2995,7 +2998,7 @@ namespace KBIN {
             string stmp = aurostd::utype2string(DEFAULT_VASP_PREC_ENMAX_ACCURATE, _IVASP_DOUBLE2STRING_PRECISION_);
             KBIN::XVASP_INCAR_Set_User_Setting(xvasp, vflags, stmp); 
             xvasp.INCAR << aurostd::PaddedPOST("LREAL=.FALSE.",_incarpad_) << endl;
-            xvasp.INCAR << aurostd::PaddedPOST("ALGO=FAST",_incarpad_) << endl;  //let us FAST, if failed, aflow will change it as normal
+            //xvasp.INCAR << aurostd::PaddedPOST("ALGO=Normal",_incarpad_) << endl;  //FAST lead to error; normal is more stable
         }
 
         // BEGIN JJPR
@@ -4841,9 +4844,11 @@ namespace KBIN {
             file_error="aflow.error.csloshing" + aurostd::utype2string(param_int);
             // fix aflowlin
             reload_incar=TRUE;  //if reload, then the modification of INCAR will be saved
-            vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme="NORMAL";
-            KBIN::XVASP_INCAR_PREPARE_GENERIC("ALGO",xvasp,vflags,"",0,0.0,FALSE);
-            aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));
+            if (vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme != "NORMAL") {
+                vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme="NORMAL";
+                KBIN::XVASP_INCAR_PREPARE_GENERIC("ALGO",xvasp,vflags,"",0,0.0,FALSE);
+                aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));
+            }
 
             if (param_int == 1) {
                 reload_incar=TRUE;
@@ -4851,19 +4856,24 @@ namespace KBIN {
                     xvasp.aopts.flag("FLAG::CHGCAR_PRESERVED", TRUE);
                     reload_incar=TRUE;
                     aus_exec << "cd " << xvasp.Directory << endl;
-                    aus_exec << "cat " << _AFLOWIN_ << " | sed \"s/\\[VASP_FORCE_OPTION\\]ALGO/#\\[VASP_FORCE_OPTION\\]ALGO/g\" | sed \"s/##\\[/#\\[/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl;
-                    aus_exec << "cat aflow.in | grep -v 'ALGO=NORMAL      // Self Correction' > aflow.tmp && mv aflow.tmp aflow.in" << endl;
-                    aus_exec << "echo \"[VASP_FORCE_OPTION]ALGO=NORMAL      // Self Correction\"" << " >> " << _AFLOWIN_ << " " << endl;
+
+                    if (vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme != "NORMAL") {
+                        aus_exec << "cat " << _AFLOWIN_ << " | sed \"s/\\[VASP_FORCE_OPTION\\]ALGO/#\\[VASP_FORCE_OPTION\\]ALGO/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl;
+                        aus_exec << "cat " << _AFLOWIN_ << " | sed \"s/##\\[/#\\[/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl;
+                        //aus_exec << "cat aflow.in | grep -v 'ALGO=' > aflow.tmp && mv aflow.tmp aflow.in" << endl;
+                        aus_exec << "echo \"[VASP_FORCE_OPTION]ALGO=NORMAL      // Self Correction\"" << " >> " << _AFLOWIN_ << " " << endl;
+                    }
+                        
                     aus_exec << "cat INCAR | grep -v 'ICHARG' > incar.tmp && mv incar.tmp INCAR" << endl; 
                     aus_exec << "cat INCAR | grep -v 'NELM' > incar.tmp && mv incar.tmp INCAR" << endl; 
-                    aus_exec << "cat INCAR | grep -v 'AMIN' > incar.tmp && mv incar.tmp INCAR" << endl; 
-                    aus_exec << "echo \"ICHARG=1                                         #FIX=" << mode << "\" >> INCAR " << endl;
-                    aus_exec << "echo \"NELM=120                                         #FIX=" << mode << "\" >> INCAR " << endl;
-                    aus_exec << "echo \"AMIN=0.01                                         #FIX=" << mode << "\" >> INCAR " << endl;
+                    aus_exec << "cat INCAR | grep -v 'AMIN' > incar.tmp && mv incar.tmp INCAR" << endl;  
+                    aus_exec << "echo \"ICHARG=1                                        #FIX=" << mode << "\" >> INCAR " << endl;
+                    aus_exec << "echo \"NELM=120                                        #FIX=" << mode << "\" >> INCAR " << endl;
+                    aus_exec << "echo \"AMIN=0.01                                       #FIX=" << mode << "\" >> INCAR " << endl;
                     aurostd::execute(aus_exec);
                 }
             }
-            
+
             //check spin, if static and not spin, then turn on
             if (param_int >= 2){
                 if (not KBIN::VASP_isSpinOUTCAR(xvasp.Directory) && KBIN::VASP_isStaticOUTCAR(xvasp.Directory)) {
@@ -4878,9 +4888,9 @@ namespace KBIN {
                     aus_exec << "cat INCAR | grep -v 'ICHARG' > incar.tmp && mv incar.tmp INCAR" << endl; 
                     aus_exec << "cat INCAR | grep -v 'NELM' > incar.tmp && mv incar.tmp INCAR" << endl; 
                     aus_exec << "cat INCAR | grep -v 'AMIN' > incar.tmp && mv incar.tmp INCAR" << endl; 
-                    aus_exec << "echo \"ICHARG=1                                         #FIX=" << mode << "\" >> INCAR " << endl;
-                    aus_exec << "echo \"NELM=180                                         #FIX=" << mode << "\" >> INCAR " << endl;
-                    aus_exec << "echo \"AMIN=0.01                                         #FIX=" << mode << "\" >> INCAR " << endl;
+                    aus_exec << "echo \"ICHARG=1                                        #FIX=" << mode << "\" >> INCAR " << endl;
+                    aus_exec << "echo \"NELM=180                                        #FIX=" << mode << "\" >> INCAR " << endl;
+                    aus_exec << "echo \"AMIN=0.01                                       #FIX=" << mode << "\" >> INCAR " << endl;
                     aurostd::execute(aus_exec);
                 }
             }

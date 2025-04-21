@@ -335,12 +335,14 @@ string AVASP_Get_PseudoPotential_PAW_PBE(string species) {
     if(species=="Au") return "Au"; // unique choice...     [PAW_PBE]
     if(species=="B")  return "B_h"; // STEFANO     [PAW_PBE]
     //if(species=="B")  return "B"; //vasp recommends     [PAW_PBE]
-    if(species=="Ba") return "Ba_sv"; // unique choice...     [PAW_PBE]
+    //if(species=="Ba") return "Ba_sv"; // unique choice...     [PAW_PBE]
+    if(species=="Ba") return "Ba_sv_GW"; // Ba_sv gives positive energy for isolated Ba atom 
     if(species=="Be") return "Be_sv"; // STEFANO     [PAW_PBE]
     //if(species=="Bi") return "Bi_d"; //STEFANO,WAHYU     [PAW_PBE]
     if(species=="Bi") return "Bi"; //HY
     if(species=="Br") return "Br"; // unique choice...     [PAW_PBE]
-    if(species=="C")  return "C"; // STEFANO, vasp recommends     [PAW_PBE]
+    //if(species=="C")  return "C"; // STEFANO, vasp recommends     [PAW_PBE]
+    if(species=="C")  return "C_h_GW"; // seems better than C, YANG, 2025
     if(species=="Ca") return "Ca_sv"; // STEFANO     [PAW_PBE]
     if(species=="Cd") return "Cd"; // unique choice..     [PAW_PBE]
     if(species=="Ce") return "Ce_3"; //YANG; 2022-11-02

@@ -1597,6 +1597,31 @@ void DEVELOP(vector<string> argv) {
         //bool isRelax = KBIN::VASP_isRelaxOUTCAR(odir);
     }
     if (1) {
+        stringstream aus_exec;
+        cerr << "_AFLOWIN_ " << _AFLOWIN_ << endl;
+        cerr << "#ALGO=NORMAL " << aurostd::substring_present_file_FAST(_AFLOWIN_, "#ALGO=NORMAL", TRUE) << endl;
+        cerr << "ALGO=NORMAL " << aurostd::substring_present_file_FAST(_AFLOWIN_, "ALGO=NORMAL", TRUE) << endl;
+        cerr << "ALGO=FAST " << aurostd::substring_present_file_FAST(_AFLOWIN_, "ALGO=FAST", TRUE) << endl;
+        cerr << "#ALGO=FAST " << aurostd::substring_present_file_FAST(_AFLOWIN_, "#ALGO=FAST", TRUE) << endl;
+
+        cerr << "#[VASP_FORCE_OPTION]ALGO=NORMAL " << aurostd::substring_present_file2(_AFLOWIN_, "#[VASP_FORCE_OPTION]ALGO=NORMAL", TRUE) << endl;
+        cerr << "[VASP_FORCE_OPTION]ALGO=NORMAL " << aurostd::substring_present_file2(_AFLOWIN_, "[VASP_FORCE_OPTION]ALGO=NORMAL", TRUE) << endl;
+
+        cerr << "#[VASP_FORCE_OPTION]ALGO=NORMAL " << aurostd::substring_present_file_FAST(_AFLOWIN_, "#[VASP_FORCE_OPTION]ALGO=NORMAL", TRUE) << endl;
+        cerr << "#[VASP_FORCE_OPTION]ALGO=NORMAL " << aurostd::substring_present_file_FAST(_AFLOWIN_, "#[VASP_FORCE_OPTION]ALGO=NORMAL", TRUE) << endl;
+        cerr << "[VASP_FORCE_OPTION]ALGO=NORMAL " << aurostd::substring_present_file_FAST(_AFLOWIN_, "[VASP_FORCE_OPTION]ALGO=NORMAL", TRUE) << endl;
+
+        if (not aurostd::substring_present_file_FAST(_AFLOWIN_, "ALGO=NORMAL")) {
+            aus_exec << "cat " << _AFLOWIN_ << " | sed \"s/\\[VASP_FORCE_OPTION\\]ALGO/#\\[VASP_FORCE_OPTION\\]ALGO/g\" | sed \"s/##\\[/#\\[/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl;
+            aus_exec << "cat aflow.in | grep -v 'ALGO=NORMAL' > aflow.tmp && mv aflow.tmp aflow.in" << endl;
+            aus_exec << "echo \"[VASP_FORCE_OPTION]ALGO=NORMAL      // Self Correction\"" << " >> " << _AFLOWIN_ << " " << endl;
+            aurostd::execute(aus_exec);
+        }
+
+
+    }
+    exit(0);
+    if (1) {
         //debug zbrent 
         string odir = "./";
         string mode = "ZBRENT";

@@ -3737,6 +3737,25 @@ namespace aurostd {
       }
       return (bool) FALSE;
   }
+  
+  // ***************************************************************************
+  // Function SubStringsPresent (this function checks content after comment symbols like "#" "//")
+  // ***************************************************************************
+  bool substring_present_file2(const string& FileName, const string& strsub1, bool CLEAN) {
+      string StringFile;
+      ifstream FileFile;
+      FileFile.open(FileName.c_str(),std::ios::in);
+      FileFile.clear();FileFile.seekg(0);
+      if(!FileFile) {
+          cerr << "ERROR  FileName=" << FileName << "   not found" << endl;
+          return FALSE;
+          //    exit(0);
+      }
+      StringFile="";char c; while (FileFile.get(c)) StringFile+=c;
+      FileFile.close();
+      return aurostd::substring2bool2(StringFile,strsub1,CLEAN);
+  }
+
 
   // ***************************************************************************
   // Function SubStringsPresent (this function does not check content after comment symbols like "#" "//")

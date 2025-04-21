@@ -613,6 +613,7 @@ namespace aurostd {
   bool substring2bool(const deque<string>& vstrstream, const string& strsub1, bool CLEAN);
   bool substring2bool(const stringstream& strstream, const string& strsub1, bool CLEAN);
   bool substring_present_file(const string& FileName, const string& strsub1, bool CLEAN);
+  bool substring_present_file2(const string& FileName, const string& strsub1, bool CLEAN);  //KY, check substring directly after #
   bool substring_present_file_FAST(const string& FileName, const string& strsub1, bool CLEAN);
   bool substring2bool2(const string& strstream, const string& strsub1);  //KESONG
   bool substring2bool(const string& strstream, const string& strsub1);
