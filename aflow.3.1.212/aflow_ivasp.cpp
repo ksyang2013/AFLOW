@@ -4507,7 +4507,10 @@ namespace KBIN {
         bool rewrite_incar=FALSE,rewrite_poscar=FALSE,rewrite_kpoints=FALSE;
         bool reload_incar=FALSE,reload_poscar=FALSE,reload_kpoints=FALSE;
         
-        // "reload" reads INCAR file (with modifications) 
+        // "reload" reads INCAR file (with modifications), so it must be set as TRUE if directly modiftying INCAR
+        // must set it as FALSE if ONLY do the operation via xvasp class (otherwise, loading INCAR will clean xvasp.INCAR)
+        // if one has to set it as TRUE, then one option is to output xvasp.INCAR.str to file INCAR imediately
+        // aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));
         // "rewrite" write xvasp.INCAR.str() to file INCAR 
 
         vflags.KBIN_VASP_INCAR_VERBOSE=TRUE; 
@@ -4614,12 +4617,12 @@ namespace KBIN {
             xvasp.str.kpoints_s1=0.0;xvasp.str.kpoints_s2=0.0;xvasp.str.kpoints_s3=0.0; // you go on gamma ONLY if you put shift =0 !!
             rewrite_kpoints=TRUE;
 
-            if (!aurostd::doesKeywordExist(xvasp.INCAR.str(), "ALGO=Normal")) {
-                reload_incar=TRUE;
-                vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme="NORMAL";
-                KBIN::XVASP_INCAR_PREPARE_GENERIC("ALGO",xvasp,vflags,"",0,0.0,FALSE);
-                rewrite_incar=TRUE;
-            }
+            //if (!aurostd::doesKeywordExist(xvasp.INCAR.str(), "ALGO=Normal")) {
+            //    //reload_incar=TRUE;
+            //    vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme="NORMAL";
+            //    KBIN::XVASP_INCAR_PREPARE_GENERIC("ALGO",xvasp,vflags,"",0,0.0,FALSE);
+            //    rewrite_incar=TRUE;
+            //}
             
             ////ALGO = Normal
             //reload_incar=TRUE;
@@ -4643,7 +4646,7 @@ namespace KBIN {
             //KESONG 2020-03-06
             file_error="aflow.error.exccor"+aurostd::utype2string(param_int);
             if (param_int == 1 && KBIN::VASP_isRelaxOUTCAR(xvasp.Directory)) {
-                reload_poscar=TRUE;
+                //reload_poscar=TRUE;
                 if(xvasp.aopts.flag("FLAG::POSCAR_PRESERVED")) return 0.0; // don`t touch poscar
                 aurostd::stringstream2file(xvasp.POSCAR,string(xvasp.Directory+"/POSCAR.orig"));
                 xvasp.str.scale=xvasp.str.scale*1.2;
@@ -4668,7 +4671,7 @@ namespace KBIN {
 
         if(mode=="BRMIX") {
             file_error="aflow.error.brmix";
-            reload_incar=TRUE;
+            reload_incar=FALSE;  
             vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme="NORMAL";
             KBIN::XVASP_INCAR_PREPARE_GENERIC("ALGO",xvasp,vflags,"",0,0.0,FALSE);
             rewrite_incar=TRUE;
@@ -4676,21 +4679,22 @@ namespace KBIN {
 
         if(mode=="DAV") {
             file_error="aflow.error.dav";
-            reload_incar=TRUE;
+            // if no direct modification in INCAR, then do not reload, otherwise xvasp.INCAR.str() will be cleaned later 
+            reload_incar=FALSE;
             KBIN::XVASP_INCAR_PREPARE_GENERIC("IALGO",xvasp,vflags,"",48,0.0,FALSE);
             rewrite_incar=TRUE;
         }
 
         if(mode=="EDDDAV") {
             file_error="aflow.error.edddav";
-            reload_incar=TRUE;
+            reload_incar=FALSE;
             KBIN::XVASP_INCAR_PREPARE_GENERIC("IALGO",xvasp,vflags,"",48,0.0,FALSE);   // same as DAV
             rewrite_incar=TRUE;
         }
 
         if(mode=="EFIELD_PEAD") {
             file_error="aflow.error.efield_pead";
-            reload_incar=TRUE;
+            reload_incar=FALSE;
             KBIN::XVASP_INCAR_EFIELD_PEAD(xvasp,0.20,vflags.KBIN_VASP_INCAR_VERBOSE);   // same as DAV
             rewrite_incar=TRUE;
         }
@@ -4706,8 +4710,7 @@ namespace KBIN {
 
         if(mode=="ZPOTRF_POTIM") {
             file_error="aflow.error.zpotrf_potim";
-            reload_incar=TRUE;
-            double potim;
+            double potim=0.1;
             KBIN::XVASP_Afix_POTIM(xvasp,potim,vflags.KBIN_VASP_INCAR_VERBOSE);
             rewrite_incar=TRUE;
         }
@@ -4832,6 +4835,14 @@ namespace KBIN {
             aurostd::execute(aus);
         }
 
+        if(mode=="DENTET") {
+            file_error="aflow.error.dentet";
+            reload_incar=TRUE;  //set reload if INCAR file was changed
+            aus_exec << "cd " << xvasp.Directory << endl;
+            aus_exec << "cat INCAR | sed \"s/ISMEAR/#ISMEAR/g\" > aflow.tmp && mv aflow.tmp INCAR" << endl; // remove ISMEAR
+            aus_exec << "echo \"ISMEAR=2                                        # Performing RELAX_STATIC (Methfessel-Paxton order 2)\" >> INCAR " << endl;
+            aurostd::execute(aus_exec);
+        }
 
         if(mode=="CSLOSHING") {
             file_error="aflow.error.csloshing" + aurostd::utype2string(param_int);
@@ -4839,7 +4850,7 @@ namespace KBIN {
             reload_incar=TRUE;  //if reload, then the modification of INCAR will be saved
             if (vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme != "NORMAL") {
                 vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme="NORMAL";
-                KBIN::XVASP_INCAR_PREPARE_GENERIC("ALGO",xvasp,vflags,"",0,0.0,FALSE);
+                KBIN::XVASP_INCAR_PREPARE_GENERIC("ALGO",xvasp,vflags,"",0,0.0,FALSE);//write it into INCAR first, then the modification will not be lost
                 aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));
             }
 
@@ -4889,15 +4900,6 @@ namespace KBIN {
             }
         }
 
-        if(mode=="DENTET") {
-            file_error="aflow.error.dentet";
-            reload_incar=TRUE;  //set reload if INCAR file was changed
-            aus_exec << "cd " << xvasp.Directory << endl;
-            aus_exec << "cat INCAR | sed \"s/ISMEAR/#ISMEAR/g\" > aflow.tmp && mv aflow.tmp INCAR" << endl; // remove ISMEAR
-            aus_exec << "echo \"ISMEAR=2                                        # Performing RELAX_STATIC (Methfessel-Paxton order 2)\" >> INCAR " << endl;
-            aurostd::execute(aus_exec);
-        }
-        
         //KESONG ADDS THIS, recycle CONTCAR, no waste time in relaxation; 2019-07-19
         //Always recycle CONTCAR for relaxation, 
         if (KBIN::VASP_isRelaxOUTCAR(xvasp.Directory))  RecyclePOSCARfromCONTCAR(xvasp);  //CONTCAR was copied as POSCAR; and xvasp was updated 

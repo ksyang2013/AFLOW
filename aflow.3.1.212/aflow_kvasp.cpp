@@ -2550,9 +2550,8 @@ namespace KBIN {
                     }
                 }
 
-                xmessage.flag("REACHED_ACCURACY",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","reached required accuracy"));
+                //xmessage.flag("REACHED_ACCURACY",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","reached required accuracy"));
 
-                xwarning.flag("CSLOSHING",KBIN::VASP_CheckUnconvergedOUTCAR(xvasp.Directory)); // check converged (static & relaxed) //Kesong Yang
                 xwarning.flag("AMIN",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","decrease AMIN to a smaller values"));
                 xwarning.flag("ZBRENT",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","ZBRENT: fatal error in bracketing"));
                 xwarning.flag("KKSYM",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Reciprocal lattice and k-lattice belong to different class of lattices"));
@@ -2560,11 +2559,11 @@ namespace KBIN {
                 xwarning.flag("NIRMAT",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Found some non-integer element in rotation matrix"));
 
                 //static or did not reached accuracy in relax; in other words, if reaching accuracy in relax, no need to fix it, still meaningful, saving time
-                xwarning.flag("BRMIX",(!xmessage.flag("REACHED_ACCURACY") &&
-                            aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","BRMIX: very serious problems")) );
+                xwarning.flag("BRMIX",(!reachedAccuracy) &&
+                            aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","BRMIX: very serious problems")) ;
 
-                xwarning.flag("DAV",(!xmessage.flag("REACHED_ACCURACY") &&
-                            aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING: Sub-Space-Matrix is not hermitian in DAV")) );
+                xwarning.flag("DAV",(!reachedAccuracy) &&
+                            aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING: Sub-Space-Matrix is not hermitian in DAV")) ;
 
                 xwarning.flag("EDDDAV",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Error EDDDAV: Call to ZHEGV failed. Returncode"));
                 xwarning.flag("ZPOTRF",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","LAPACK: Routine ZPOTRF failed"));
@@ -2650,6 +2649,9 @@ namespace KBIN {
                 // fix troubles
                 if(xmessage.flag("REACHED_ACCURACY") && xwarning.flag("IBZKPT")) xwarning.flag("IBZKPT",FALSE);  // priority
                 if(xwarning.flag("NKXYZ_IKPTD")) xwarning.flag("IBZKPT",FALSE); // priority
+                
+                //Check unconvergence in the end in case the unconvergence was induced by above errors
+                xwarning.flag("CSLOSHING",KBIN::VASP_CheckUnconvergedOUTCAR(xvasp.Directory)); // check converged (static & relaxed) //Kesong Yang
 
 
                 //************************KESONG Check Static*****************************
