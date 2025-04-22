@@ -515,6 +515,7 @@ namespace KBIN {
         // INCAR DONE **************************************************
         xvasp.INCAR_orig << xvasp.INCAR.str();
         xvasp.aopts.flag("FLAG::XVASP_INCAR_generated",TRUE);
+        
         //General Setting 
         double max_latt = max(xvasp.str.a, xvasp.str.b, xvasp.str.c);
         if (max_latt >= 50)
@@ -2543,35 +2544,40 @@ namespace KBIN {
             if(aurostd::_iseven(number)) isif=2; // IONS
         }
 
-
-
         FileContent=xvasp.INCAR.str();
         xvasp.INCAR.str(std::string());
         xvasp.aopts.flag("FLAG::XVASP_INCAR_changed",TRUE);
+
+        if (aurostd::doesKeywordExist(FileContent, "ISIF")) 
+            isif = aurostd::string2utype<int>(aurostd::GetValueOfKey(FileContent, "ISIF"));
+        
         // RELAX_MODE=ENERGY mode
         if(vflags.KBIN_VASP_FORCE_OPTION_RELAX_MODE.xscheme=="ENERGY") {
             double dvalue_EDIFFG = 1E-5*xvasp.str.atoms.size()*0.9;
-            //-------------------------------------------------------------------------------- 
+            
             // CHECK EDIFFG SETTING
             bool setEDIFFG = false; 
             if(aurostd::doesKeywordExist(FileContent, "EDIFFG")) {
                 double value_ediffg = aurostd::string2utype<double>(aurostd::GetValueOfKey(FileContent, "EDIFFG"));
                 if (value_ediffg > dvalue_EDIFFG ) setEDIFFG = true;
-                //if (value_ediffg < 0 or value_ediffg > dvalue_EDIFFG ) setEDIFFG = true;
             }
-            if(!aurostd::doesKeywordExist(FileContent, "EDIFFG")) setEDIFFG = true;
-            //-------------------------------------------------------------------------------- 
+            else {
+                setEDIFFG = true;
+            }
+
             vector<string> vkey; 
-            //string stag = "IBRION; NSW; ISIF; NELM; NELMIN; LOPTICS"; 
             string stag = "IBRION; NSW; ISIF; NELM; NELMIN"; 
             aurostd::string2tokens(stag, vkey, ";");
             if (setEDIFFG) {vkey.push_back("EDIFFG");}
+
             string stmp =  aurostd::RemoveLineWithKeyword(FileContent, vkey, true);
             xvasp.INCAR << aurostd::RemoveEmptyLines(stmp);  //remove empty line but not remove "\n" 
 
             xvasp.INCAR << aurostd::PaddedPOST("IBRION=2",_incarpad_) << endl; 
             xvasp.INCAR << aurostd::PaddedPOST("NSW=160",_incarpad_)  << endl;
             xvasp.INCAR << aurostd::PaddedPOST("ISIF="+aurostd::utype2string(isif),_incarpad_) << endl;
+
+
             if(setEDIFFG){
                 stringstream stmp;
                 stmp << std::scientific << std::setprecision(0) << std::uppercase << dvalue_EDIFFG;
@@ -2664,6 +2670,10 @@ namespace KBIN {
         ss_INCAR << aurostd::PaddedPOST("SIGMA=0.05",_incarpad_)   <<  notes  << endl; 
 
         string stmp = ExtractINCARStrfromAflowIn(xvasp);
+        if (stmp.empty())
+            stmp = xvasp.INCAR_orig.str();
+        //cout << "here1 " << stmp << endl;
+        //exit(0);
 
         if (aurostd::substring2bool(stmp, "ENCUT", TRUE))
             xvasp.INCAR << GetLineWithKeywordAndRemoveWhiteSpaces(stmp, "ENCUT") << endl;
