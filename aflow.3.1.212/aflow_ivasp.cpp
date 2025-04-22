@@ -2671,15 +2671,6 @@ namespace KBIN {
             ss_INCAR << aurostd::PaddedPOST("NELM=120",_incarpad_)        <<  notes  << endl; //default is good since we can keep restarting
 
         if (RunType == "STATIC") {
-            //if (aurostd::substring2bool(stmp, "ISMEAR")) {
-            //    xvasp.INCAR << GetLineWithKeyword(stmp, "ISMEAR") << endl;  //somtimes, one want to play with ISMEAR
-            //    xvasp.INCAR << GetLineWithKeyword(stmp, "SIGMA") << endl;  //in most case, one will not use it
-            //} else {
-            //    ss_INCAR << aurostd::PaddedPOST("ISMEAR=-5",_incarpad_)   <<  notes  << endl; 
-            //    ss_INCAR << aurostd::PaddedPOST("SIGMA=0.05",_incarpad_)   <<  notes  << endl; 
-            //}
-
-
             if(vflags.KBIN_VASP_FORCE_OPTION_BADER.isentry && vflags.KBIN_VASP_FORCE_OPTION_BADER.option) {
                 ss_INCAR << aurostd::PaddedPOST("LAECHG=.TRUE.",_incarpad_) << notes << endl;
                 ss_INCAR << aurostd::PaddedPOST("LAECHG=.TRUE.",_incarpad_) << notes << endl; 
@@ -3259,6 +3250,7 @@ namespace KBIN {
         if(command=="TYPE"  && ! vflags.KBIN_VASP_FORCE_OPTION_NOTUNE.isentry) {
             for(int i=1;i<=imax;i++) {
                 strline=aurostd::GetLineString(FileContent,i);
+                //will apply user's setting if they set
                 if(//aurostd::substring2bool(strline,"ISMEAR",TRUE) || 
                         aurostd::substring2bool(strline,"#ISMEAR",TRUE) ||
                         //aurostd::substring2bool(strline,"SIGMA",TRUE) || 
