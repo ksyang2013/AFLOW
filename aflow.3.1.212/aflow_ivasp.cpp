@@ -2607,13 +2607,13 @@ namespace KBIN {
 
         if(!aurostd::doesKeywordExist(FileContent, "EDIFF=")) {
             xvasp.INCAR << aurostd::PaddedPOST("EDIFF=1E-5",_incarpad_) <<   "  # accurate enough for relax" << endl;  
-        }
         
         // done now write if necessary
         if(vflags.KBIN_VASP_FORCE_OPTION_RELAX_TYPE.flag("IONS_CELL_VOLUME") && number>1) {  // whatever is the number
             xvasp.aopts.flag("FLAG::XVASP_INCAR_changed",FALSE);
             string stmp = RemoveCommentLines(aurostd::RemoveEmptyLines(SortLinesAlphabetically(RemoveDuplicateLines(xvasp.INCAR.str())))); 
             aurostd::string2file(stmp,string(xvasp.Directory+"/INCAR"));
+        }
 
         }
     }
