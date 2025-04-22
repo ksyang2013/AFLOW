@@ -2550,7 +2550,6 @@ namespace KBIN {
                     }
                 }
 
-                //xmessage.flag("REACHED_ACCURACY",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","reached required accuracy"));
 
                 xwarning.flag("AMIN",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","decrease AMIN to a smaller values"));
                 xwarning.flag("ZBRENT",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","ZBRENT: fatal error in bracketing"));
@@ -2579,31 +2578,15 @@ namespace KBIN {
                 xwarning.flag("PSMAXN",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","REAL_OPT: internal ERROR"));
 
                 //static or already reached accuracy in relax
-                xwarning.flag("IBZKPT",( !xmessage.flag("REACHED_ACCURACY") && 
+                xwarning.flag("IBZKPT", (!reachedAccuracy) &&
                             aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","VERY BAD NEWS! internal error in subroutine IBZKPT") && 
-                            (!aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Tetrahedron method fails for NKPT<4."))
-                            ));
+                            (!aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Tetrahedron method fails for NKPT<4.")));
 
                 xwarning.flag("IBZKPT_KNPT", (aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Tetrahedron method fails for NKPT<4.")) ||
-                        (aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","IBZKPT: tetrahedron method fails for NKPT<4"))  //KESONG, 2025-03-30, VASP64 format
-                        );
+                        (aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","IBZKPT: tetrahedron method fails for NKPT<4")));  //KESONG, 2025-03-30, VASP64 format
 
-                xwarning.flag("EDDRMM", aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING in EDDRMM: call to ZHEGV failed, returncode")); 
-                //
-                //If reaching accuracy or converged, then no need to fix this 
-                //bool test_flag = (!xmessage.flag("REACHED_ACCURACY") || KBIN::VASP_CheckUnconvergedOUTCAR(xvasp.Directory))  && 
-                //            aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING in EDDRMM: call to ZHEGV failed, returncode") ; // && !xwarning.flag("ZPOTRF");
-                //cout << "test_flag" << test_flag << endl;
-                //cout << "!xmessage. "  << !xmessage.flag("REACHED_ACCURACY") << endl;
-                //cout << "KBIN::VASP_CheckUnconvergedOUTCAR(xvasp.Directory) " << KBIN::VASP_CheckUnconvergedOUTCAR(xvasp.Directory) << endl;
-                //cout << "present " << aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING in EDDRMM: call to ZHEGV failed, returncode") << endl;
-
-                //xwarning.flag("EDDRMM", ( (KBIN::VASP_isRelaxOUTCAR(xvasp.Directory) && !xmessage.flag("REACHED_ACCURACY")) || KBIN::VASP_CheckUnconvergedOUTCAR(xvasp.Directory) )  && 
-                //            aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING in EDDRMM: call to ZHEGV failed, returncode")) ; // && !xwarning.flag("ZPOTRF");
-
-                //The below only fixes static jobs
-                //xwarning.flag("EDDRMM", KBIN::VASP_CheckUnconvergedOUTCAR(xvasp.Directory) && 
-                //            aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING in EDDRMM: call to ZHEGV failed, returncode")); 
+                xwarning.flag("EDDRMM", (!reachedAccuracy) &&
+                        aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","WARNING in EDDRMM: call to ZHEGV failed, returncode")); 
 
                 xwarning.flag("REAL_OPTLAY_1",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","REAL_OPTLAY: internal error (1)"));
                 xwarning.flag("REAL_OPT",aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","REAL_OPT: internal ERROR"));
