@@ -3465,7 +3465,7 @@ namespace KBIN {
                         if(xvasp.str.atoms.at(i).order_parameter_atom==FALSE) ss << " 5"; 
                         if(xvasp.str.atoms.at(i).order_parameter_atom==TRUE)  ss << " " << xvasp.str.atoms.at(i).order_parameter_value;
                     }
-                    xvasp.INCAR << aurostd::PaddedPOST(ss.str(), _incarpad_)  << " # " << xvasp.str.atoms.size() << " atoms " << endl;
+                    xvasp.INCAR << aurostd::PaddedPOST(ss.str() + " ", _incarpad_)  << "# " << xvasp.str.atoms.size() << " atoms " << endl;
                 }
             }
             DONE=TRUE;
