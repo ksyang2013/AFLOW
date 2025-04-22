@@ -2643,16 +2643,19 @@ namespace KBIN {
         ss_INCAR << aurostd::PaddedPOST("NSW=0",_incarpad_)           <<  notes  << endl;
         ss_INCAR << aurostd::PaddedPOST("NELMIN=2",_incarpad_)        <<  notes  << endl;
         ss_INCAR << aurostd::PaddedPOST("LREAL=.FALSE.",_incarpad_)   <<  notes  << endl; 
-        ss_INCAR << aurostd::PaddedPOST("SIGMA=0.05",_incarpad_)      <<  notes  << endl;
         ss_INCAR << aurostd::PaddedPOST("LORBIT=10",_incarpad_)       <<  notes  << endl;
         ss_INCAR << aurostd::PaddedPOST("EMIN= -45.0",_incarpad_)     <<  notes  << endl;
         ss_INCAR << aurostd::PaddedPOST("EMAX=  25.0",_incarpad_)     <<  notes  << endl;
         ss_INCAR << aurostd::PaddedPOST("NEDOS= 7001",_incarpad_)     <<  notes  << endl;
         ss_INCAR << aurostd::PaddedPOST("LWAVE=.FALSE.",_incarpad_)   <<  notes << endl;
-        if (!aurostd::doesKeywordExist(xvasp.INCAR.str(), "ENCUT"))
+        ss_INCAR << aurostd::PaddedPOST("LCHARG=.TRUE.",_incarpad_)   <<  notes << endl;
+
+        string stmp = aurostd::file2string(xvasp.Directory+"/INCAR.orig");
+        if (!aurostd::doesKeywordExist(stmp, "ENCUT"))
             ss_INCAR << aurostd::PaddedPOST("ENCUT="+aurostd::utype2string(int(xvasp.POTCAR_ENMAX)* 1.0 ), _incarpad_) << endl;
         if (!aurostd::doesKeywordExist(xvasp.INCAR.str(), "EDIFF="))
-            ss_INCAR << aurostd::PaddedPOST("EDIFF=1E-4",_incarpad_) << endl;
+            ss_INCAR << aurostd::PaddedPOST("EDIFF=1E-6",_incarpad_) << endl;
+
         if(vflags.KBIN_VASP_FORCE_OPTION_PREC.preserved==FALSE) {
             if (aurostd::doesKeywordExist(xvasp.INCAR.str(), "LHFCALC"))
                 ss_INCAR << aurostd::PaddedPOST("PREC=Normal",_incarpad_) << endl; //best
@@ -2660,45 +2663,35 @@ namespace KBIN {
                 ss_INCAR << aurostd::PaddedPOST("PREC=Accurate",_incarpad_) << endl; 
         }
 
-        ////TEST, will be removed in future
-        //if (aurostd::doesKeywordExist(xvasp.INCAR_orig.str(), "LREAL ") || aurostd::doesKeywordExist(xvasp.INCAR_orig.str(), "LREAL=")  ||
-        //        aurostd::doesKeywordExist(aurostd::file2string(xvasp.Directory+"/aflow.in"), "LREAL ") || 
-        //        aurostd::doesKeywordExist(aurostd::file2string(xvasp.Directory+"/aflow.in"), "LREAL=") 
-        //   ) {
-        //    xvasp.INCAR << GetLineWithKeyword(xvasp.INCAR_orig.str(), "LREAL") << endl;
-        //    xvasp.INCAR << GetLineWithKeyword(aurostd::file2string(xvasp.Directory+"/aflow.in"), "LREAL") << endl;
-        //}
-
-        if (aurostd::doesKeywordExist(xvasp.INCAR_orig.str(), "NELM ") || aurostd::doesKeywordExist(xvasp.INCAR_orig.str(), "NELM=")  ||
-                aurostd::doesKeywordExist(aurostd::file2string(xvasp.Directory+"/aflow.in"), "NELM ") || 
-                aurostd::doesKeywordExist(aurostd::file2string(xvasp.Directory+"/aflow.in"), "NELM=") 
-           ) {
-            xvasp.INCAR << GetLineWithKeyword(xvasp.INCAR_orig.str(), "NELM") << endl;
-            xvasp.INCAR << GetLineWithKeyword(aurostd::file2string(xvasp.Directory+"/aflow.in"), "NELM") << endl;
-        }
+        if (aurostd::substring2bool(stmp, "NELM")) 
+            xvasp.INCAR << GetLineWithKeyword(stmp, "NELM") << endl;
         else  
             ss_INCAR << aurostd::PaddedPOST("NELM=120",_incarpad_)        <<  notes  << endl; //default is good since we can keep restarting
 
         if (RunType == "STATIC") {
-            if (aurostd::doesKeywordExist(xvasp.INCAR_orig.str(), "ISMEAR")) {
-                xvasp.INCAR << GetLineWithKeyword(xvasp.INCAR_orig.str(), "ISMEAR") << endl;  //somtimes, one want to use ISMEAR=0 to produce DOS
+            if (aurostd::substring2bool(stmp, "ISMEAR")) {
+                xvasp.INCAR << GetLineWithKeyword(stmp, "ISMEAR") << endl;  //somtimes, one want to play with ISMEAR
+                xvasp.INCAR << GetLineWithKeyword(stmp, "SIGMA") << endl;  //in most case, one will not use it
             } else {
                 ss_INCAR << aurostd::PaddedPOST("ISMEAR=-5",_incarpad_)   <<  notes  << endl; 
+                ss_INCAR << aurostd::PaddedPOST("SIGMA=0.05",_incarpad_)   <<  notes  << endl; 
             }
-            if (!aurostd::doesKeywordExist(xvasp.INCAR.str(), "LCHARG"))
-                ss_INCAR << aurostd::PaddedPOST("LCHARG=.TRUE.",_incarpad_)   <<  notes << endl;
+
+
             if(vflags.KBIN_VASP_FORCE_OPTION_BADER.isentry && vflags.KBIN_VASP_FORCE_OPTION_BADER.option) {
                 ss_INCAR << aurostd::PaddedPOST("LAECHG=.TRUE.",_incarpad_) << notes << endl;
                 ss_INCAR << aurostd::PaddedPOST("LAECHG=.TRUE.",_incarpad_) << notes << endl; 
             } else {
                 ss_INCAR << aurostd::PaddedPOST("LAECHG=.FALSE.",_incarpad_) << notes << endl;
             }
+
             if(vflags.KBIN_VASP_FORCE_OPTION_ELF.isentry && vflags.KBIN_VASP_FORCE_OPTION_ELF.option) {
                 ss_INCAR << aurostd::PaddedPOST("LELF=.TRUE.",_incarpad_) << notes << endl;
             } else {
                 ss_INCAR << aurostd::PaddedPOST("LELF=.FALSE.",_incarpad_) << notes << endl;
             }
         }
+
         if (RunType == "BANDS") {
             ss_INCAR << aurostd::PaddedPOST("LCHARG=.FALSE.",_incarpad_)   <<  notes << endl;
             ss_INCAR << aurostd::PaddedPOST("LAECHG=.FALSE.",_incarpad_) << notes << endl;

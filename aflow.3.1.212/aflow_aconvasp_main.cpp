@@ -1595,6 +1595,10 @@ void DEVELOP(vector<string> argv) {
         string odir = "./";
         xOUTCAR outcar("./OUTCAR");
         //bool isRelax = KBIN::VASP_isRelaxOUTCAR(odir);
+        //debug in future
+        //std::stringstream ss; 
+        //aurostd::ExtractToStringstreamEXPLICIT(xvasp.Directory+"/aflow.in", ss, "[VASP_INCAR_MODE_EXPLICIT]START", "[VASP_INCAR_MODE_EXPLICIT]STOP");
+        //cerr << "ss " << ss.str() << endl;
     }
     if (1) {
         stringstream aus_exec;
