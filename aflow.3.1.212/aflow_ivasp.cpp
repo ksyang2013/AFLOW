@@ -2606,7 +2606,7 @@ namespace KBIN {
         }
 
         if(!aurostd::doesKeywordExist(FileContent, "EDIFF=")) {
-            xvasp.INCAR << aurostd::PaddedPOST("EDIFF=1E-4",_incarpad_) << endl;  //good enough for relax
+            xvasp.INCAR << aurostd::PaddedPOST("EDIFF=1E-5",_incarpad_) <<   "  # accurate enough for relax" << endl;  
         }
         
         // done now write if necessary
@@ -2649,6 +2649,8 @@ namespace KBIN {
         ss_INCAR << aurostd::PaddedPOST("NEDOS= 7001",_incarpad_)     <<  notes  << endl;
         ss_INCAR << aurostd::PaddedPOST("LWAVE=.FALSE.",_incarpad_)   <<  notes << endl;
         ss_INCAR << aurostd::PaddedPOST("LCHARG=.TRUE.",_incarpad_)   <<  notes << endl;
+        ss_INCAR << aurostd::PaddedPOST("ISMEAR=-5",_incarpad_)   <<  notes  << endl; 
+        ss_INCAR << aurostd::PaddedPOST("SIGMA=0.05",_incarpad_)   <<  notes  << endl; 
 
         string stmp = aurostd::file2string(xvasp.Directory+"/INCAR.orig");
         if (!aurostd::doesKeywordExist(stmp, "ENCUT"))
@@ -2669,13 +2671,13 @@ namespace KBIN {
             ss_INCAR << aurostd::PaddedPOST("NELM=120",_incarpad_)        <<  notes  << endl; //default is good since we can keep restarting
 
         if (RunType == "STATIC") {
-            if (aurostd::substring2bool(stmp, "ISMEAR")) {
-                xvasp.INCAR << GetLineWithKeyword(stmp, "ISMEAR") << endl;  //somtimes, one want to play with ISMEAR
-                xvasp.INCAR << GetLineWithKeyword(stmp, "SIGMA") << endl;  //in most case, one will not use it
-            } else {
-                ss_INCAR << aurostd::PaddedPOST("ISMEAR=-5",_incarpad_)   <<  notes  << endl; 
-                ss_INCAR << aurostd::PaddedPOST("SIGMA=0.05",_incarpad_)   <<  notes  << endl; 
-            }
+            //if (aurostd::substring2bool(stmp, "ISMEAR")) {
+            //    xvasp.INCAR << GetLineWithKeyword(stmp, "ISMEAR") << endl;  //somtimes, one want to play with ISMEAR
+            //    xvasp.INCAR << GetLineWithKeyword(stmp, "SIGMA") << endl;  //in most case, one will not use it
+            //} else {
+            //    ss_INCAR << aurostd::PaddedPOST("ISMEAR=-5",_incarpad_)   <<  notes  << endl; 
+            //    ss_INCAR << aurostd::PaddedPOST("SIGMA=0.05",_incarpad_)   <<  notes  << endl; 
+            //}
 
 
             if(vflags.KBIN_VASP_FORCE_OPTION_BADER.isentry && vflags.KBIN_VASP_FORCE_OPTION_BADER.option) {
@@ -3259,7 +3261,7 @@ namespace KBIN {
                 strline=aurostd::GetLineString(FileContent,i);
                 if(//aurostd::substring2bool(strline,"ISMEAR",TRUE) || 
                         aurostd::substring2bool(strline,"#ISMEAR",TRUE) ||
-                        // aurostd::substring2bool(strline,"SIGMA",TRUE) || 
+                        //aurostd::substring2bool(strline,"SIGMA",TRUE) || 
                         aurostd::substring2bool(strline,"#SIGMA",TRUE)) {
                     xvasp.INCAR << "";
                 } else {
@@ -3267,8 +3269,8 @@ namespace KBIN {
                 }
             }
             if(svalue=="DEFAULT") {
-                xvasp.INCAR << aurostd::PaddedPOST("ISMEAR=0",_incarpad_) << "# for default (as insulator, YANG, 20190429)" << endl;
-                xvasp.INCAR << aurostd::PaddedPOST("SIGMA=0.05",_incarpad_) << "# for default (as insulator, YANG, 20190429)" << endl;
+                xvasp.INCAR << aurostd::PaddedPOST("ISMEAR=0",_incarpad_) << "# default for high-throughput" << endl;
+                xvasp.INCAR << aurostd::PaddedPOST("SIGMA=0.05",_incarpad_) << "# default for high-throughput" << endl;
             }
             if(svalue=="METAL") {
                 xvasp.INCAR << aurostd::PaddedPOST("ISMEAR=1",_incarpad_) << "# for metal" << endl;
