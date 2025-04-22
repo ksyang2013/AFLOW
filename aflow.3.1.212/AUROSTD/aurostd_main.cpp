@@ -3718,6 +3718,7 @@ namespace aurostd {
 
   // ***************************************************************************
   // Function SubStringsPresent2 KESONG 2019-07-25
+  // Function SubStringsPresent2 (this function checks content after comment symbols like "#" "//")
   // ***************************************************************************
   bool substring2bool2(const string& strstream, const string& strsub1, bool CLEAN) {
       CLEAN = true;
@@ -5674,6 +5675,9 @@ namespace aurostd {
 namespace aurostd {
 
     // ***************************************************************************
+    // the blanck space in the FileContent was removed, it is safe to search 
+    // "EDIFF=" instead of "EDIFF ="
+    // ***************************************************************************
     bool doesKeywordExist(const string& FileContent, const string& keyword) {
         bool FLAG = FALSE;
         int imax; 
@@ -5687,6 +5691,8 @@ namespace aurostd {
     }
 
     // ***************************************************************************
+    // the content after the comment symbols are abandoned
+    // ***************************************************************************
     string GetLineWithKeyword(const string& FileContent, const string& keyword) {
         int imax; 
         string strline, ostr="";
@@ -5698,6 +5704,13 @@ namespace aurostd {
                 break;
             }
         }
+        return (ostr);
+    }
+
+    // ***************************************************************************
+    string GetLineWithKeywordAndRemoveWhiteSpaces(const string& FileContent, const string& keyword) {
+        string ostr = GetLineWithKeyword(FileContent, keyword);
+        ostr = aurostd::RemoveWhiteSpaces(ostr);
         return (ostr);
     }
 

@@ -20,6 +20,7 @@
 // ***************************************************************************
 using aurostd::doesKeywordExist;
 using aurostd::GetLineWithKeyword;
+using aurostd::GetLineWithKeywordAndRemoveWhiteSpaces;
 using aurostd::doesKeywordExistLine;
 using aurostd::capitalizeString;
 using aurostd::getUniquePart;
@@ -30,6 +31,24 @@ using aurostd::RemoveDuplicateLines;
 using aurostd::SortLinesAlphabetically;
 using aurostd::RemoveCommentLines;
 using aurostd::RemoveEmptyLines;
+
+//// ***************************************************************************
+//KESONG 2025-04-21
+namespace KBIN {
+    string ExtractINCARStrfromAflowIn(_xvasp& xvasp){
+        string AflowIn = aurostd::file2string(xvasp.Directory+string("/aflow.in"));
+        AflowIn=aurostd::RemoveComments(AflowIn);
+        stringstream ssINCAR_orig;
+
+        if (aurostd::substring2bool(AflowIn, "[VASP_INCAR_MODE_EXPLICIT]START") && 
+                aurostd::substring2bool(AflowIn, "[VASP_INCAR_MODE_EXPLICIT]STOP")) {
+            aurostd::ExtractToStringstreamEXPLICIT(AflowIn, ssINCAR_orig, 
+                    "[VASP_INCAR_MODE_EXPLICIT]START", 
+                    "[VASP_INCAR_MODE_EXPLICIT]STOP");
+        }
+        return (ssINCAR_orig.str());
+    }
+}
 
 //// ***************************************************************************
 //KESONG 2019-07-19
@@ -113,8 +132,6 @@ namespace KBIN {
         // VASP VASP WRITE
         if(Krun) Krun=(Krun && aurostd::stringstream2file(xvasp.POSCAR,string(xvasp.Directory+"/POSCAR")));
         //KESONG YANG, 2025-03-29
-        //if(Krun) Krun=(Krun && aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR")));
-        //string stmp = RemoveDuplicateLines(xvasp.INCAR.str()); 
         string stmp = RemoveCommentLines(aurostd::RemoveEmptyLines(SortLinesAlphabetically(RemoveDuplicateLines(xvasp.INCAR.str())))); 
         if(Krun) Krun=(Krun && aurostd::string2file(stmp,string(xvasp.Directory+"/INCAR")));
         if(Krun) Krun=(Krun && aurostd::stringstream2file(xvasp.KPOINTS,string(xvasp.Directory+"/KPOINTS")));
@@ -2527,10 +2544,6 @@ namespace KBIN {
         }
 
 
-        if (!aurostd::doesKeywordExist(xvasp.INCAR.str(), "ENCUT")) 
-            xvasp.INCAR << aurostd::PaddedPOST("ENCUT="+aurostd::utype2string(int(xvasp.POTCAR_ENMAX) * 1.0), _incarpad_) << endl;
-        if (!aurostd::doesKeywordExist(xvasp.INCAR.str(), "LREAL"))
-            xvasp.INCAR << aurostd::PaddedPOST("LREAL=Auto", _incarpad_) << endl;
 
         FileContent=xvasp.INCAR.str();
         xvasp.INCAR.str(std::string());
@@ -2604,9 +2617,8 @@ namespace KBIN {
                 xvasp.INCAR << aurostd::PaddedPOST(("EDIFFG=" + strEDIFFG), _incarpad_) << "# -0.001 for NIONS <=20, -0.01 for NIONS <=80, -0.03 for larger cell" << endl;
             }
         }
-
-        if(!aurostd::doesKeywordExist(FileContent, "EDIFF=")) {
-            xvasp.INCAR << aurostd::PaddedPOST("EDIFF=1E-5",_incarpad_) <<   "  # accurate enough for relax" << endl;  
+        
+        //EDIFF & ENCUT will be taken care in the Pecision setting, if not set, the default is ACCURATE
         
         // done now write if necessary
         if(vflags.KBIN_VASP_FORCE_OPTION_RELAX_TYPE.flag("IONS_CELL_VOLUME") && number>1) {  // whatever is the number
@@ -2615,7 +2627,6 @@ namespace KBIN {
             aurostd::string2file(stmp,string(xvasp.Directory+"/INCAR"));
         }
 
-        }
     }
 }
 
@@ -2652,11 +2663,21 @@ namespace KBIN {
         ss_INCAR << aurostd::PaddedPOST("ISMEAR=-5",_incarpad_)   <<  notes  << endl; 
         ss_INCAR << aurostd::PaddedPOST("SIGMA=0.05",_incarpad_)   <<  notes  << endl; 
 
-        string stmp = aurostd::file2string(xvasp.Directory+"/INCAR.orig");
-        if (!aurostd::doesKeywordExist(stmp, "ENCUT"))
-            ss_INCAR << aurostd::PaddedPOST("ENCUT="+aurostd::utype2string(int(xvasp.POTCAR_ENMAX)* 1.0 ), _incarpad_) << endl;
-        if (!aurostd::doesKeywordExist(xvasp.INCAR.str(), "EDIFF="))
+        string stmp = ExtractINCARStrfromAflowIn(xvasp);
+
+        if (aurostd::substring2bool(stmp, "ENCUT", TRUE))
+            xvasp.INCAR << GetLineWithKeywordAndRemoveWhiteSpaces(stmp, "ENCUT") << endl;
+
+        if (aurostd::substring2bool(stmp, "EDIFF=", TRUE)) 
+            xvasp.INCAR << GetLineWithKeywordAndRemoveWhiteSpaces(stmp, "EDIFF") << endl;
+        else
             ss_INCAR << aurostd::PaddedPOST("EDIFF=1E-6",_incarpad_) << endl;
+
+        if (aurostd::substring2bool(stmp, "NELM")) 
+            xvasp.INCAR << GetLineWithKeywordAndRemoveWhiteSpaces(stmp, "NELM") << endl;
+        else  
+            ss_INCAR << aurostd::PaddedPOST("NELM=120",_incarpad_)        <<  notes  << endl; //default is good since we can keep restarting
+
 
         if(vflags.KBIN_VASP_FORCE_OPTION_PREC.preserved==FALSE) {
             if (aurostd::doesKeywordExist(xvasp.INCAR.str(), "LHFCALC"))
@@ -2664,11 +2685,6 @@ namespace KBIN {
             else
                 ss_INCAR << aurostd::PaddedPOST("PREC=Accurate",_incarpad_) << endl; 
         }
-
-        if (aurostd::substring2bool(stmp, "NELM")) 
-            xvasp.INCAR << GetLineWithKeyword(stmp, "NELM") << endl;
-        else  
-            ss_INCAR << aurostd::PaddedPOST("NELM=120",_incarpad_)        <<  notes  << endl; //default is good since we can keep restarting
 
         if (RunType == "STATIC") {
             if(vflags.KBIN_VASP_FORCE_OPTION_BADER.isentry && vflags.KBIN_VASP_FORCE_OPTION_BADER.option) {
@@ -2692,6 +2708,7 @@ namespace KBIN {
             ss_INCAR << aurostd::PaddedPOST("ICHARG=11",_incarpad_)   <<  notes  << endl;
             ss_INCAR << aurostd::PaddedPOST("ISMEAR=0",_incarpad_)    <<  notes  << endl; 
         }
+
         return RemoveDuplicateLines(aurostd::RemoveEmptyLines(ss_INCAR.str()));
     }
 }
@@ -2826,24 +2843,23 @@ namespace KBIN {
 
         //if user set EDIFF=, then will use user's setting
         if (aurostd::doesKeywordExist(xvasp.INCAR_orig.str(), "ENCUT")) {
-            string etmp =  GetLineWithKeyword(xvasp.INCAR_orig.str(), "ENCUT");
+            string etmp =  GetLineWithKeywordAndRemoveWhiteSpaces(xvasp.INCAR_orig.str(), "ENCUT");
             xvasp.INCAR << aurostd::PaddedPOST(etmp, _incarpad_)  << "# Apply user-defined settings " << endl; }  
         else {
             string etmp = aurostd::utype2string(xvasp.POTCAR_ENMAX * std::stod(strPREC), _IVASP_DOUBLE2STRING_PRECISION_);
             xvasp.INCAR << aurostd::PaddedPOST("ENCUT="+etmp, _incarpad_) << "# " << strPREC << "*ENCUT (" << xvasp.POTCAR_ENMAX << ") of pseudopotentials " << endl; 
         }
 
-        //cout <<  "xvasp.INCAR_orig.str() " << xvasp.INCAR_orig.str() << endl;
-
-        if (aurostd::doesKeywordExist(xvasp.INCAR_orig.str(), "EDIFF")) {
-            string etmp =  GetLineWithKeyword(xvasp.INCAR_orig.str(), "EDIFF");
+        if (aurostd::substring2bool(xvasp.INCAR_orig.str(), "EDIFF=", TRUE)) {  
+            string etmp =  GetLineWithKeywordAndRemoveWhiteSpaces(xvasp.INCAR_orig.str(), "EDIFF=");
             xvasp.INCAR << aurostd::PaddedPOST(etmp, _incarpad_)  << "# Apply user-defined settings " << endl; }  
         else {
             xvasp.INCAR << aurostd::PaddedPOST("EDIFF=1E-6",_incarpad_) << endl;
         }
 
+
         if (aurostd::doesKeywordExist(xvasp.INCAR_orig.str(), "EDIFFG")) { 
-            string etmp =  GetLineWithKeyword(xvasp.INCAR_orig.str(), "EDIFFG");
+            string etmp =  GetLineWithKeywordAndRemoveWhiteSpaces(xvasp.INCAR_orig.str(), "EDIFFG");
             xvasp.INCAR << aurostd::PaddedPOST(etmp, _incarpad_)  << "# Apply user-defined settings " << endl; }  
         else {
             if(vflags.KBIN_VASP_FORCE_OPTION_RELAX_MODE.xscheme=="ENERGY"){
@@ -2858,7 +2874,6 @@ namespace KBIN {
                 xvasp.INCAR << aurostd::PaddedPOST("EDIFFG="+ stmp, _incarpad_) << "# " <<  DEFAULT_VASP_PREC_EDIFFG <<  " eV/AA [PREC=ACCURATE]" << endl;
             }
         }
-        //cout <<  "xvasp.INCAR.str() " << xvasp.INCAR.str() << endl;
     }
 }
 
@@ -3439,17 +3454,18 @@ namespace KBIN {
                 }
             }
             if(OPTION==ON) {
-                //KSY: if user specifies MAGMOM in aflow.in, do not generate new MAGMOM
+                //KY: if user specifies MAGMOM in aflow.in, do not generate new MAGMOM
                 // User's customization has a higher priority, 2024-09-06
                 if(aurostd::doesKeywordExist(xvasp.INCAR_orig.str(), "MAGMOM")) {  
                     xvasp.INCAR << GetLineWithKeyword(xvasp.INCAR_orig.str(), "MAGMOM") << endl;
                 } else {
-                    xvasp.INCAR << "MAGMOM= ";
+                    stringstream ss;
+                    ss << "MAGMOM=";
                     for(uint i=0;i<xvasp.str.atoms.size();i++) {
-                        if(xvasp.str.atoms.at(i).order_parameter_atom==FALSE) xvasp.INCAR << " 5"; 
-                        if(xvasp.str.atoms.at(i).order_parameter_atom==TRUE) xvasp.INCAR << " " << xvasp.str.atoms.at(i).order_parameter_value;
+                        if(xvasp.str.atoms.at(i).order_parameter_atom==FALSE) ss << " 5"; 
+                        if(xvasp.str.atoms.at(i).order_parameter_atom==TRUE)  ss << " " << xvasp.str.atoms.at(i).order_parameter_value;
                     }
-                    xvasp.INCAR << "   # " << xvasp.str.atoms.size() << " atoms " << endl;
+                    xvasp.INCAR << aurostd::PaddedPOST(ss.str(), _incarpad_)  << " # " << xvasp.str.atoms.size() << " atoms " << endl;
                 }
             }
             DONE=TRUE;

@@ -1599,6 +1599,8 @@ void DEVELOP(vector<string> argv) {
         //std::stringstream ss; 
         //aurostd::ExtractToStringstreamEXPLICIT(xvasp.Directory+"/aflow.in", ss, "[VASP_INCAR_MODE_EXPLICIT]START", "[VASP_INCAR_MODE_EXPLICIT]STOP");
         //cerr << "ss " << ss.str() << endl;
+        //cerr << "   # " << "2" << " atoms " << endl;
+        //cerr << aurostd::PaddedPOST("NSW="+tring(vflags.KBIN_VASP_FORCE_OPTION_NSW_EQUAL_VALUE),_incarpad_) << "# nsw " << endl;
     }
     if (1) {
         stringstream aus_exec;
@@ -1652,12 +1654,6 @@ void DEVELOP(vector<string> argv) {
         //// reload to restart ---------------------------------
         //// "reload" reads current INCAR (with above modifications) and restarts 
         //// reload means loading VASP files to xvasp
-        bool reload_incar = true;
-        _xvasp xvasp;
-        if(reload_incar) {
-            xvasp.INCAR_orig.str(std::string()); xvasp.INCAR_orig << xvasp.INCAR.str();
-            xvasp.INCAR.str(std::string()); xvasp.INCAR << aurostd::file2string(xvasp.Directory+"/INCAR");
-        }
         //if(reload_poscar) {
         //    xvasp.POSCAR_orig.str(std::string()); xvasp.POSCAR_orig << xvasp.POSCAR.str();
         //    xvasp.POSCAR.str(std::string()); xvasp.POSCAR << aurostd::file2string(xvasp.Directory+"/POSCAR");
@@ -1670,12 +1666,6 @@ void DEVELOP(vector<string> argv) {
         //// reload first (since INCAR may be changed), then rewrite? Kesong 2025-04-19, fixes bug in ZBRENT
         //// rewrite to restart ---------------------------------
         //// rewrite means writing xvasp to VASP files
-        bool rewrite_incar = true;
-        if(rewrite_incar) { 
-            //{aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));}
-            string stmp = aurostd::RemoveCommentLines(aurostd::RemoveEmptyLines(aurostd::SortLinesAlphabetically(aurostd::RemoveDuplicateLines(xvasp.INCAR.str())))); 
-            aurostd::string2file(stmp,string(xvasp.Directory+"/INCAR"));
-        }
 
         //if(rewrite_poscar) {aurostd::stringstream2file(xvasp.POSCAR,string(xvasp.Directory+"/POSCAR"));}
         //if(rewrite_kpoints) {aurostd::stringstream2file(xvasp.KPOINTS,string(xvasp.Directory+"/KPOINTS"));}
