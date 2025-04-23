@@ -1069,9 +1069,8 @@ namespace KBIN {
                                                                                                                       // make a dumb lock as soon as possible -------------------------------------
                 aus.clear();aus.str(std::string());
                 aus << "echo \"NNNNN  KBIN LOCK ASAP for NFS concurrent jobs (aflow" << string(AFLOW_VERSION) << ")\" >> " << aflags.Directory+"/"+_AFLOWLOCK_ << endl;
-                // aus << "/home/auro/bin/aflow -machine >> " << aflags.Directory+"/"+_AFLOWLOCK_ << endl;
-                // aus << XHOST.command("sensors") << " >> " << aflags.Directory+"/"+_AFLOWLOCK_ << endl;
                 aurostd::execute(aus);
+                
                 // now change its permission
                 aurostd::ChmodFile("664",string(aflags.Directory+"/"+_AFLOWLOCK_));
                 // now the lock should be done ----------------------------------------------
@@ -1088,27 +1087,16 @@ namespace KBIN {
                     string FileNameLOCK=aflags.Directory+"/"+_AFLOWLOCK_;
                     //	FileLOCK.open(FileNameLOCK.c_str(),std::ios::out);
                     FileLOCK.open(FileNameLOCK.c_str(),std::ios::app);
-                    // ***************************************************************************
-                    // WRITE LOCK
-                    if(0) {
-                        aus <<    "MMMMM  AFLOW VERSION " << string(AFLOW_VERSION) << " Automatic-Flow - " << Message(aflags,"user,host,time") << endl;
-                        aus <<    "MMMMM  (C) "<<XHOST.Copyright_Years<<", Stefano Curtarolo - Duke University   - " << Message(aflags,"user,host,time") << endl;
-                        aus <<    "MMMMM  High-Throughput ab-initio Computing - " << Message(aflags,"user,host,time") << endl;
-                        aurostd::PrintMessageStream(FileLOCK,aus,XHOST.QUIET);
-                        // ***************************************************************************
-                        // WRITE AFLOW VERSION
-                        // aus << "MMMMM  AFLOW VERSION " << string(AFLOW_VERSION) << " Automatic-Flow " << Message(aflags,"user,host,time") << endl;
-                        // aurostd::PrintMessageStream(FileLOCK,aus,XHOST.QUIET);
-                    }
+                    
                     // ***************************************************************************
                     // START DIRECTORY
                     aus      << "XXXXX  KBIN DIRECTORY BEGIN (aflow" << string(AFLOW_VERSION) << ")  "  << Message(aflags,"user,host,time") << endl;
-                    //	aurostd::PrintMessageStream(FileLOCK,aus,XHOST.QUIET);
                     aus      << "XXXXX  KBIN XHOST.CPU_Model : "<<  XHOST.CPU_Model << "" << endl;// << Message(aflags,"user,host,time") << endl;
                     aus      << "XXXXX  KBIN XHOST.CPU_Cores : "<<  XHOST.CPU_Cores << "" << endl;// << Message(aflags,"user,host,time") << endl;
                     aus      << "XXXXX  KBIN XHOST.CPU_MHz   : "<<  XHOST.CPU_MHz << "" << endl;// << Message(aflags,"user,host,time") << endl;
                     aus      << "XXXXX  KBIN XHOST.RAM_GB    : "<<  XHOST.RAM_GB << "" << endl;// << Message(aflags,"user,host,time") << endl;
                     aurostd::PrintMessageStream(FileLOCK,aus,XHOST.QUIET);
+                    
                     // ***************************************************************************
                     // FLUSH & REOPEN to avoid double writing
                     FileLOCK.flush();FileLOCK.close();FileLOCK.open(FileNameLOCK.c_str(),std::ios::app);
@@ -1740,9 +1728,13 @@ namespace KBIN {
                                 aurostd::substring2bool(AflowIn,"[AFLOW_MODE]EMAIL");
                             Krun=(Krun && KBIN::VASP_Directory(FileLOCK,aflags,kflags));
                         }
+                        
                         // ***************************************************************************
                         // COMPRESS
-                        if(Krun && kflags.KZIP_COMPRESS) KBIN::CompressDirectory(aflags,kflags);
+                        // Do not compress if only genrate vasp input files; saving time when operating vasp incar files; KY20250422
+                        if (!aflags.KBIN_GEN_VASP_FROM_AFLOWIN) {
+                            if(Krun && kflags.KZIP_COMPRESS) KBIN::CompressDirectory(aflags,kflags);
+                        }
                     }
                     // ************************************************************************************************************************************
                     // MATLAB MODE

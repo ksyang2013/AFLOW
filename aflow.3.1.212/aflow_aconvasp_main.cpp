@@ -705,7 +705,7 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
   vpflow.args2addattachedscheme(argv,cmds,"POCC_MAG","--pocc_mag=","./");
   vpflow.args2addattachedscheme(argv,cmds,"POCC_BANDGAP","--pocc_bandgap=","./");
 
-  vpflow.flag("POSCAR",aurostd::args2flag(argv,cmds,"--poscar"));
+  vpflow.flag("POSCAR",aurostd::args2flag(argv,cmds,"--poscar|-poscar"));
   vpflow.flag("POSCAR2AFLOWIN",aurostd::args2flag(argv,cmds,"--poscar2aflowin|--poscaraflowin|--poscar2aflow|--poscaraflow"));
   vpflow.flag("POSCAR2WYCKOFF",aurostd::args2flag(argv,cmds,"--poscar2wyckoff"));
   //corey
