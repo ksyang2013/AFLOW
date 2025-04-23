@@ -2553,7 +2553,7 @@ namespace KBIN {
         
         // RELAX_MODE=ENERGY mode
         if(vflags.KBIN_VASP_FORCE_OPTION_RELAX_MODE.xscheme=="ENERGY") {
-            double dvalue_EDIFFG = 1E-5*xvasp.str.atoms.size()*0.9;
+            double dvalue_EDIFFG = 1E-6*xvasp.str.atoms.size();   // 0.001 meV/atom
             
             // CHECK EDIFFG SETTING
             bool setEDIFFG = false; 
@@ -2581,7 +2581,7 @@ namespace KBIN {
             if(setEDIFFG){
                 stringstream stmp;
                 stmp << std::scientific << std::setprecision(0) << std::uppercase << dvalue_EDIFFG;
-                xvasp.INCAR << aurostd::PaddedPOST("EDIFFG=" + stmp.str(), _incarpad_) << "# 0.01meV/atom " << endl;
+                xvasp.INCAR << aurostd::PaddedPOST("EDIFFG=" + stmp.str(), _incarpad_) << "# 0.001meV/atom " << endl;
             }
         }
 
