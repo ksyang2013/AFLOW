@@ -2654,7 +2654,7 @@ namespace KBIN {
 // ***************************************************************************
 // KBIN::XVASP_WRITE_INCAR_Static  KESONG 20190715
 namespace KBIN {
-    string XVASP_WRITE_INCAR_Static(_xvasp& xvasp, _vflags& vflags, string RunType, string notes) {        // AFLOW_FUNCTION_IMPLEMENTATION
+    void XVASP_WRITE_INCAR_Static(_xvasp& xvasp, _vflags& vflags, string RunType, string notes) {        // AFLOW_FUNCTION_IMPLEMENTATION
         stringstream ss_INCAR; ss_INCAR.str(std::string());
         ss_INCAR << aurostd::PaddedPOST("IBRION=-1",_incarpad_)       <<  notes  << endl;
         ss_INCAR << aurostd::PaddedPOST("NSW=0",_incarpad_)           <<  notes  << endl;
@@ -2666,25 +2666,28 @@ namespace KBIN {
         ss_INCAR << aurostd::PaddedPOST("NEDOS= 7001",_incarpad_)     <<  notes  << endl;
         ss_INCAR << aurostd::PaddedPOST("LWAVE=.FALSE.",_incarpad_)   <<  notes << endl;
         ss_INCAR << aurostd::PaddedPOST("LCHARG=.TRUE.",_incarpad_)   <<  notes << endl;
-        ss_INCAR << aurostd::PaddedPOST("ISMEAR=-5",_incarpad_)   <<  notes  << endl; 
-        ss_INCAR << aurostd::PaddedPOST("SIGMA=0.05",_incarpad_)   <<  notes  << endl; 
 
         string stmp = ExtractINCARStrfromAflowIn(xvasp);
         if (stmp.empty())
             stmp = xvasp.INCAR_orig.str();
-        //cout << "here1 " << stmp << endl;
-        //exit(0);
+        
+        //plays with ismear for metal (Ni), 20250423 
+        if (RunType != "BANDS") {
+            if (aurostd::substring2bool(stmp, "ISMEAR", TRUE)) {
+                string stmp =  GetLineWithKeywordAndRemoveWhiteSpaces(xvasp.INCAR_orig.str(), "ISMEAR");
+                ss_INCAR << aurostd::PaddedPOST(stmp, _incarpad_)  << "# Apply user-defined settings " << endl; }  
+            else
+                ss_INCAR << aurostd::PaddedPOST("ISMEAR=-5",_incarpad_) << notes << endl;
 
-        if (aurostd::substring2bool(stmp, "ENCUT", TRUE))
-            xvasp.INCAR << GetLineWithKeywordAndRemoveWhiteSpaces(stmp, "ENCUT") << endl;
-
-        if (aurostd::substring2bool(stmp, "EDIFF=", TRUE)) 
-            xvasp.INCAR << GetLineWithKeywordAndRemoveWhiteSpaces(stmp, "EDIFF") << endl;
-        else
-            ss_INCAR << aurostd::PaddedPOST("EDIFF=1E-6",_incarpad_) << endl;
+            if (aurostd::substring2bool(stmp, "SIGMA", TRUE)) {
+                string stmp =  GetLineWithKeywordAndRemoveWhiteSpaces(xvasp.INCAR_orig.str(), "SIGMA");
+                ss_INCAR << aurostd::PaddedPOST(stmp, _incarpad_)  << "# Apply user-defined settings " << endl; }  
+            else
+                ss_INCAR << aurostd::PaddedPOST("SIGMA=0.05",_incarpad_) << notes << endl;
+        }
 
         if (aurostd::substring2bool(stmp, "NELM")) 
-            xvasp.INCAR << GetLineWithKeywordAndRemoveWhiteSpaces(stmp, "NELM") << endl;
+            ss_INCAR << GetLineWithKeywordAndRemoveWhiteSpaces(stmp, "NELM") << endl;
         else  
             ss_INCAR << aurostd::PaddedPOST("NELM=120",_incarpad_)        <<  notes  << endl; //default is good since we can keep restarting
 
@@ -2717,9 +2720,10 @@ namespace KBIN {
             ss_INCAR << aurostd::PaddedPOST("LELF=.FALSE.",_incarpad_) << notes << endl;
             ss_INCAR << aurostd::PaddedPOST("ICHARG=11",_incarpad_)   <<  notes  << endl;
             ss_INCAR << aurostd::PaddedPOST("ISMEAR=0",_incarpad_)    <<  notes  << endl; 
+            ss_INCAR << aurostd::PaddedPOST("SIGMA=0.1",_incarpad_)    <<  notes  << endl; 
         }
 
-        return RemoveDuplicateLines(aurostd::RemoveEmptyLines(ss_INCAR.str()));
+        xvasp.INCAR << RemoveDuplicateLines(aurostd::RemoveEmptyLines(ss_INCAR.str())) << endl;
     }
 }
 
@@ -2737,7 +2741,8 @@ namespace KBIN {
         aurostd::string2tokens(stag, vkey, ";");
         string stmp =  aurostd::RemoveLineWithKeyword(FileContent, vkey, true);
         xvasp.INCAR << aurostd::RemoveEmptyLines(stmp);  //remove empty line but not remove "\n" 
-        xvasp.INCAR << XVASP_WRITE_INCAR_Static(xvasp, vflags, "STATIC", "# Performing STATIC") << endl; 
+        //xvasp.INCAR << XVASP_WRITE_INCAR_Static(xvasp, vflags, "STATIC", "# Performing STATIC") << endl; 
+        KBIN::XVASP_WRITE_INCAR_Static(xvasp, vflags, "STATIC", "# Performing STATIC");
         // check for LDA/GGA
         if(xvasp.POTCAR_TYPE=="LDA" || xvasp.POTCAR_TYPE=="GGA") {
             xvasp.INCAR << "#Fixing RWIGS/LORBIG for LDA/GGA" << endl;
@@ -2760,7 +2765,8 @@ namespace KBIN {
         aurostd::string2tokens(stag, vkey, ";");
         string stmp =  aurostd::RemoveLineWithKeyword(FileContent, vkey, true);
         xvasp.INCAR << aurostd::RemoveEmptyLines(stmp); 
-        xvasp.INCAR << XVASP_WRITE_INCAR_Static(xvasp, vflags, "STATIC", "# Performing RELAX_STATIC") << endl; 
+        //xvasp.INCAR << XVASP_WRITE_INCAR_Static(xvasp, vflags, "STATIC", "# Performing RELAX_STATIC") << endl; 
+        KBIN::XVASP_WRITE_INCAR_Static(xvasp, vflags, "STATIC", "# Performing RELAX_STATIC"); 
 
         // check for LDA/GGA
         if(xvasp.POTCAR_TYPE=="LDA" || xvasp.POTCAR_TYPE=="GGA") {
@@ -2784,7 +2790,8 @@ namespace KBIN {
         aurostd::string2tokens(stag, vkey, ";");
         string stmp =  aurostd::RemoveLineWithKeyword(FileContent, vkey, true);
         xvasp.INCAR << aurostd::RemoveEmptyLines(stmp); 
-        xvasp.INCAR << XVASP_WRITE_INCAR_Static(xvasp, vflags, "BANDS", "# Performing RELAX_STATIC_BANDS") << endl; 
+        //xvasp.INCAR << XVASP_WRITE_INCAR_Static(xvasp, vflags, "BANDS", "# Performing RELAX_STATIC_BANDS") << endl; 
+        KBIN::XVASP_WRITE_INCAR_Static(xvasp, vflags, "BANDS", "# Performing RELAX_STATIC_BANDS"); 
 
         // check for LDA/GGA
         if(xvasp.POTCAR_TYPE=="LDA" || xvasp.POTCAR_TYPE=="GGA") {
@@ -3273,18 +3280,25 @@ namespace KBIN {
         // ***************************************************************************
         // TYPE 
         if(command=="TYPE"  && ! vflags.KBIN_VASP_FORCE_OPTION_NOTUNE.isentry) {
-            for(int i=1;i<=imax;i++) {
-                strline=aurostd::GetLineString(FileContent,i);
-                //will apply user's setting if they set
-                if(//aurostd::substring2bool(strline,"ISMEAR",TRUE) || 
-                        aurostd::substring2bool(strline,"#ISMEAR",TRUE) ||
-                        //aurostd::substring2bool(strline,"SIGMA",TRUE) || 
-                        aurostd::substring2bool(strline,"#SIGMA",TRUE)) {
-                    xvasp.INCAR << "";
-                } else {
-                    if(strline.length()) xvasp.INCAR << strline << endl;
-                }
-            }
+            // Apply user-defined settings, KY20250423
+            vector<string> vkey; 
+            string stag = "ISMEAR;SIGMA"; 
+            aurostd::string2tokens(stag, vkey, ";");
+            string stmp =  aurostd::RemoveLineWithKeyword(FileContent, vkey, true);
+            xvasp.INCAR << stmp << endl;
+
+            if (aurostd::substring2bool(FileContent, "ISMEAR", TRUE)) {
+                string FileContent =  GetLineWithKeywordAndRemoveWhiteSpaces(xvasp.INCAR_orig.str(), "ISMEAR");
+                xvasp.INCAR << aurostd::PaddedPOST(FileContent, _incarpad_)  << "# Apply user-defined settings " << endl; 
+            }  
+
+            if (aurostd::substring2bool(FileContent, "SIGMA", TRUE)) {
+                string FileContent =  GetLineWithKeywordAndRemoveWhiteSpaces(xvasp.INCAR_orig.str(), "SIGMA");
+                xvasp.INCAR << aurostd::PaddedPOST(FileContent, _incarpad_)  << "# Apply user-defined settings " << endl; 
+            }  
+            // Apply user-defined settings
+
+
             if(svalue=="DEFAULT") {
                 xvasp.INCAR << aurostd::PaddedPOST("ISMEAR=0",_incarpad_) << "# default for high-throughput" << endl;
                 xvasp.INCAR << aurostd::PaddedPOST("SIGMA=0.05",_incarpad_) << "# default for high-throughput" << endl;
@@ -3297,6 +3311,7 @@ namespace KBIN {
                 xvasp.INCAR << aurostd::PaddedPOST("ISMEAR=0",_incarpad_) << "# for insulators/semiconductors" << endl;
                 xvasp.INCAR << aurostd::PaddedPOST("SIGMA=0.05",_incarpad_) << "# for insulators/semiconductors" << endl;
             }
+
             DONE=TRUE;
         }
 
@@ -5196,7 +5211,7 @@ namespace KBIN {
         stringstream strline;
 
         directory=_directory; //Get directory
-        if(directory=="") directory="."; // here
+        if(directory=="") directory="."; // 
 
         if(LDEBUG){cerr << "KBIN::ExtractSystemName: directory=" << directory << endl;}
 
