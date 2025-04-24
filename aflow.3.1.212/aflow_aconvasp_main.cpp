@@ -35,7 +35,7 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
 
   vpflow.flag("PROTOS",(aurostd::args2flag(argv,cmds,"--protos|-protos|--prototypes|-prototypes") || aurostd::args2flag(argv,cmds,"--proto|-proto")));// && (argv.size()==2));
 
-  vpflow.args2addattachedscheme(argv,cmds,"PROTOS_ICSD","--protos_icsd=|--prototypes_icsd=","");
+  vpflow.args2addattachedscheme(argv,cmds,"PROTOS_ICSD","--protos_icsd=|-protos_icsd=|--prototypes_icsd=|-prototypes_icsd=","");
 
   if(!vpflow.flag("PROTOS_ICSD")) vpflow.flag("PROTOS_ICSD",aurostd::args2flag(argv,cmds,"--protos_icsd|--prototypes_icsd"));
 
