@@ -85,11 +85,6 @@ namespace KBIN {
         if(Krun) Krun=(Krun && KBIN::VASP_Produce_POTCAR(xvasp,AflowIn,FileMESSAGE,aflags,kflags,vflags));
         if(Krun) Krun=(Krun && KBIN::VASP_Produce_KPOINTS(xvasp,AflowIn,FileMESSAGE,aflags,kflags,vflags));
         return Krun;
-        //if (!XHOST.GENERATE_AFLOWIN_ONLY) { //CT 180719
-        //    if(LDEBUG) cerr << "VASP_Produce_INPUT: Calling VASP_Produce_POTCAR" << endl;  //CT 180719
-        //    if(Krun) Krun=(Krun && KBIN::VASP_Produce_POTCAR(xvasp,AflowIn,FileMESSAGE,aflags,kflags,vflags));
-        //} //CT 180719
-        //bool LDEBUG=(FALSE || XHOST.DEBUG);
     }
 }
 
@@ -100,10 +95,6 @@ namespace KBIN {
         if(Krun) Krun=(Krun && KBIN::VASP_Modify_POTCAR(xvasp,FileMESSAGE,aflags,vflags));
         if(Krun) Krun=(Krun && KBIN::VASP_Modify_KPOINTS(xvasp,FileMESSAGE,aflags,vflags));
         return Krun;
-        //bool LDEBUG=(FALSE || XHOST.DEBUG);
-        //if (!XHOST.GENERATE_AFLOWIN_ONLY) { //CT 180719
-        //    if(Krun) Krun=(Krun && KBIN::VASP_Modify_POTCAR(xvasp,FileMESSAGE,aflags,vflags));
-        //} //CT 180719
     }
 }
 
@@ -405,49 +396,49 @@ namespace KBIN {
                             "[VASP_INCAR_MODE_EXPLICIT]STOP");
             }
             else {
-                aus << "EEEEE  [VASP_INCAR_MODE_EXPLICIT] do not confuse aflow !!" << Message(aflags,"user,host,time") << endl;
-                aus << "EEEEE  [VASP_INCAR_MODE_EXPLICIT] Possible modes " << Message(aflags,"user,host,time") << endl;
-                aus << "----------------------------------------------------------------------------------------------------" << endl;
-                aus << "[AFLOW] INCAR EXPLICIT MODE without START/STOP (default)" << endl;
-                aus << "[VASP_INCAR_MODE_EXPLICIT]" << endl;
-                aus << "[VASP_INCAR_FILE]SYSTEM=AuTi.274_LDA" << endl;
-                aus << "[VASP_INCAR_FILE]#Prototype Ni2In" << endl;
-                aus << "[VASP_INCAR_FILE]PREC=med" << endl;
-                aus << "[VASP_INCAR_FILE]ISMEAR=1" << endl;
-                aus << "[VASP_INCAR_FILE]SIGMA=0.2" << endl;
-                aus << "[VASP_INCAR_FILE]IBRION=2" << endl;
-                aus << "[VASP_INCAR_FILE]NSW=160" << endl;
-                aus << "[VASP_INCAR_FILE]ISIF=3" << endl;
-                aus << "[VASP_INCAR_FILE]ENMAX=333.666" << endl;
-                aus << "[VASP_INCAR_FILE]NBANDS=47" << endl;
-                aus << "[VASP_INCAR_FILE]MAGMOM=  5 5 5 5 5 5" << endl;
-                aus << "[VASP_INCAR_FILE]ISPIND=2" << endl;
-                aus << "[VASP_INCAR_FILE]ISPIN=2" << endl;
-                aus << "[AFLOW]" << endl;
-                aus << "----------------------------------------------------------------------------------------------------" << endl;
-                aus << "[AFLOW] INCAR EXPLICIT MODE with START/STOP" << endl;
-                aus << "[VASP_INCAR_MODE_EXPLICIT]" << endl;
-                aus << "[VASP_INCAR_MODE_EXPLICIT]START" << endl;
-                aus << "SYSTEM=AuTi.274_LDA" << endl;
-                aus << "#Prototype Ni2In" << endl;
-                aus << "PREC=med" << endl;
-                aus << "ISMEAR=1" << endl;
-                aus << "SIGMA=0.2" << endl;
-                aus << "IBRION=2" << endl;
-                aus << "NSW=160" << endl;
-                aus << "ISIF=3" << endl;
-                aus << "ENMAX=333.666" << endl;
-                aus << "NBANDS=47" << endl;
-                aus << "MAGMOM=  5 5 5 5 5 5" << endl;
-                aus << "ISPIND=2" << endl;
-                aus << "ISPIN=2" << endl;
-                aus << "[VASP_INCAR_MODE_EXPLICIT]STOP" << endl;
-                aus << "[AFLOW]" << endl;
-                aus << "----------------------------------------------------------------------------------------------------" << endl;
-                aus << "EEEEE  [VASP_INCAR_MODE_EXPLICIT] Note " << Message(aflags,"user,host,time") << endl;
-                aus << "EEEEE  [VASP_INCAR_MODE_EXPLICIT]START must be present and no [VASP_INCAR_FILE]" << Message(aflags,"user,host,time") << endl;
-                aus << "EEEEE  [VASP_INCAR_MODE_EXPLICIT]STOP  must be present and no [VASP_INCAR_FILE]" << Message(aflags,"user,host,time") << endl;
-                aus << "EEEEE  or [VASP_INCAR_FILE] present and NO START/STOP" << Message(aflags,"user,host,time") << endl;
+                aus << "EEEEE  [VASP_INCAR_MODE_EXPLICIT] do not confuse aflow !!" << Message(aflags,"user,host,time") << "\n" 
+                    << "EEEEE  [VASP_INCAR_MODE_EXPLICIT] Possible modes " << Message(aflags,"user,host,time") << "\n"
+                    << R"(----------------------------------------------------------------------------------------------------
+[AFLOW] INCAR EXPLICIT MODE without START/STOP (default)
+[VASP_INCAR_MODE_EXPLICIT]
+[VASP_INCAR_FILE]SYSTEM=AuTi.274_LDA
+[VASP_INCAR_FILE]#Prototype Ni2In
+[VASP_INCAR_FILE]PREC=med
+[VASP_INCAR_FILE]ISMEAR=1
+[VASP_INCAR_FILE]SIGMA=0.2
+[VASP_INCAR_FILE]IBRION=2
+[VASP_INCAR_FILE]NSW=160
+[VASP_INCAR_FILE]ISIF=3
+[VASP_INCAR_FILE]ENMAX=333.666
+[VASP_INCAR_FILE]NBANDS=47
+[VASP_INCAR_FILE]MAGMOM=  5 5 5 5 5 5
+[VASP_INCAR_FILE]ISPIND=2
+[VASP_INCAR_FILE]ISPIN=2
+[AFLOW]
+----------------------------------------------------------------------------------------------------
+[AFLOW] INCAR EXPLICIT MODE with START/STOP
+[VASP_INCAR_MODE_EXPLICIT]
+[VASP_INCAR_MODE_EXPLICIT]START
+SYSTEM=AuTi.274_LDA
+#Prototype Ni2In
+PREC=med
+ISMEAR=1
+SIGMA=0.2
+IBRION=2
+NSW=160
+ISIF=3
+ENMAX=333.666
+NBANDS=47
+MAGMOM=  5 5 5 5 5 5
+ISPIND=2
+ISPIN=2
+[VASP_INCAR_MODE_EXPLICIT]STOP
+[AFLOW]
+----------------------------------------------------------------------------------------------------)" << "\n"
+                    << "EEEEE  [VASP_INCAR_MODE_EXPLICIT] Note " << Message(aflags,"user,host,time") << "\n"
+                    << "EEEEE  [VASP_INCAR_MODE_EXPLICIT]START must be present and no [VASP_INCAR_FILE]" << Message(aflags,"user,host,time") << "\n"
+                    << "EEEEE  [VASP_INCAR_MODE_EXPLICIT]STOP  must be present and no [VASP_INCAR_FILE]" << Message(aflags,"user,host,time") << "\n"
+                    << "EEEEE  or [VASP_INCAR_FILE] present and NO START/STOP" << Message(aflags,"user,host,time") << endl;
                 aurostd::PrintErrorStream(FileMESSAGE,aus,XHOST.QUIET);
                 Krun=FALSE;
                 return Krun;
@@ -1049,7 +1040,6 @@ namespace KBIN {
             if(vflags.KBIN_VASP_POSCAR_FILE.flag("KEYWORD") && !vflags.KBIN_VASP_POSCAR_MODE.flag("EXPLICIT_START_STOP") && !vflags.KBIN_VASP_POSCAR_MODE.flag("EXPLICIT_START_STOP_POINT")) {
                 aus << "00000  MESSAGE POSCAR  generation EXPLICIT file from " << _AFLOWIN_ << " " << Message(aflags,"user,host,time") << endl;
                 aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
-                // [OBSOLETE]    aurostd::ExtractToStringstreamEXPLICIT(FileAFLOWIN,xvasp.POSCAR,"[VASP_POSCAR_FILE]");
                 aurostd::ExtractToStringstreamEXPLICIT(AflowIn,xvasp.POSCAR,"[VASP_POSCAR_FILE]");
                 xvasp.str=xstructure(xvasp.POSCAR,IOVASP_AUTO);  // load structure
                 xvasp.POSCAR.str(std::string());xvasp.POSCAR.clear();
@@ -1062,7 +1052,6 @@ namespace KBIN {
                 if(vflags.KBIN_VASP_POSCAR_MODE.flag("EXPLICIT_START_STOP")) {
                     if(aurostd::substring2bool(AflowIn,"[VASP_POSCAR_MODE_EXPLICIT]START") &&
                             aurostd::substring2bool(AflowIn,"[VASP_POSCAR_MODE_EXPLICIT]STOP"))
-                        // [OBSOLETE]	  aurostd::ExtractLastToStringstreamEXPLICIT(FileAFLOWIN,xvasp.POSCAR,"[VASP_POSCAR_MODE_EXPLICIT]START","[VASP_POSCAR_MODE_EXPLICIT]STOP");
                         aurostd::ExtractLastToStringstreamEXPLICIT(AflowIn,xvasp.POSCAR,"[VASP_POSCAR_MODE_EXPLICIT]START","[VASP_POSCAR_MODE_EXPLICIT]STOP");
                     xvasp.str=xstructure(xvasp.POSCAR,IOVASP_AUTO);   // load structure
                 }
@@ -1075,50 +1064,50 @@ namespace KBIN {
                 xvasp.str.iomode=IOVASP_POSCAR;
                 xvasp.POSCAR << xvasp.str;
             } else {
-                aus << "EEEEE  [VASP_POSCAR_MODE_EXPLICIT] do not confuse aflow !!" << Message(aflags,"user,host,time") << endl;
-                aus << "EEEEE  [VASP_POSCAR_MODE_EXPLICIT] Possible modes " << Message(aflags,"user,host,time") << endl;
-                aus << "----------------------------------------------------------------------------------------------------" << endl;
-                aus << "[AFLOW] POSCAR EXPLICIT MODE without START/STOP (default)" << endl;
-                aus << "[VASP_POSCAR_MODE_EXPLICIT]" << endl;
-                aus << "[VASP_POSCAR_FILE]POSCAR of the structure example" << endl;
-                aus << "[VASP_POSCAR_FILE]-98.5397" << endl;
-                aus << "[VASP_POSCAR_FILE]   4.18890 0.00000 0.00000" << endl;
-                aus << "[VASP_POSCAR_FILE]  -2.09445 3.62769 0.00000" << endl;
-                aus << "[VASP_POSCAR_FILE]   0.00000 0.00000 5.12300" << endl;
-                aus << "[VASP_POSCAR_FILE]2 4" << endl;
-                aus << "[VASP_POSCAR_FILE]Direct" << endl;
-                aus << "[VASP_POSCAR_FILE]0.33333 0.66666 0.25000 Au" << endl;
-                aus << "[VASP_POSCAR_FILE]0.66666 0.33333 0.75000 Au" << endl;
-                aus << "[VASP_POSCAR_FILE]0.00000 0.00000 0.00000 Ti" << endl;
-                aus << "[VASP_POSCAR_FILE]0.00000 0.00000 0.50000 Ti" << endl;
-                aus << "[VASP_POSCAR_FILE]0.33333 0.66666 0.75000 Ti" << endl;
-                aus << "[VASP_POSCAR_FILE]0.66666 0.33333 0.25000 Ti" << endl;
-                aus << "[AFLOW]" << endl;
-                aus << "----------------------------------------------------------------------------------------------------" << endl;
-                aus << "[AFLOW] POSCAR EXPLICIT MODE with START/STOP" << endl;
-                aus << "[VASP_POSCAR_MODE_EXPLICIT]" << endl;
-                aus << "[VASP_POSCAR_MODE_EXPLICIT]START" << endl;
-                aus << "POSCAR of the structure example with START/STOP" << endl;
-                aus << "-98.5397" << endl;
-                aus << "   4.18890 0.00000 0.00000" << endl;
-                aus << "  -2.09445 3.62769 0.00000" << endl;
-                aus << "   0.00000 0.00000 5.12300" << endl;
-                aus << "2 4" << endl;
-                aus << "Direct" << endl;
-                aus << "0.33333 0.66666 0.25000 Au" << endl;
-                aus << "0.66666 0.33333 0.75000 Au" << endl;
-                aus << "0.00000 0.00000 0.00000 Ti" << endl;
-                aus << "0.00000 0.00000 0.50000 Ti" << endl;
-                aus << "0.33333 0.66666 0.75000 Ti" << endl;
-                aus << "0.66666 0.33333 0.25000 Ti" << endl;
-                aus << "[VASP_POSCAR_MODE_EXPLICIT]STOP" << endl;
-                aus << "[AFLOW]" << endl;
-                aus << "----------------------------------------------------------------------------------------------------" << endl;
-                aus << "EEEEE  [VASP_POSCAR_MODE_EXPLICIT] Note " << Message(aflags,"user,host,time") << endl;
-                aus << "EEEEE  [VASP_POSCAR_MODE_EXPLICIT]START must be present and no [VASP_POSCAR_FILE]" << Message(aflags,"user,host,time") << endl;
-                aus << "EEEEE  [VASP_POSCAR_MODE_EXPLICIT]STOP  must be present and no [VASP_POSCAR_FILE]" << Message(aflags,"user,host,time") << endl;
-                aus << "EEEEE  or [VASP_POSCAR_FILE] present and NO START/STOP" << Message(aflags,"user,host,time") << endl;
-                aurostd::PrintErrorStream(FileMESSAGE,aus,XHOST.QUIET);
+                aus << "EEEEE  [VASP_POSCAR_MODE_EXPLICIT] do not confuse aflow !!" << Message(aflags,"user,host,time") << "\n"
+                    << "EEEEE  [VASP_POSCAR_MODE_EXPLICIT] Possible modes " << Message(aflags,"user,host,time") << "\n"
+                    << R"(----------------------------------------------------------------------------------------------------
+[AFLOW] POSCAR EXPLICIT MODE without START/STOP (default)
+[VASP_POSCAR_MODE_EXPLICIT]
+[VASP_POSCAR_FILE]POSCAR of the structure example
+[VASP_POSCAR_FILE]-98.5397
+[VASP_POSCAR_FILE]   4.18890 0.00000 0.00000
+[VASP_POSCAR_FILE]  -2.09445 3.62769 0.00000
+[VASP_POSCAR_FILE]   0.00000 0.00000 5.12300
+[VASP_POSCAR_FILE]2 4
+[VASP_POSCAR_FILE]Direct
+[VASP_POSCAR_FILE]0.33333 0.66666 0.25000 Au
+[VASP_POSCAR_FILE]0.66666 0.33333 0.75000 Au
+[VASP_POSCAR_FILE]0.00000 0.00000 0.00000 Ti
+[VASP_POSCAR_FILE]0.00000 0.00000 0.50000 Ti
+[VASP_POSCAR_FILE]0.33333 0.66666 0.75000 Ti
+[VASP_POSCAR_FILE]0.66666 0.33333 0.25000 Ti
+[AFLOW]
+----------------------------------------------------------------------------------------------------
+[AFLOW] POSCAR EXPLICIT MODE with START/STOP
+[VASP_POSCAR_MODE_EXPLICIT]
+[VASP_POSCAR_MODE_EXPLICIT]START
+POSCAR of the structure example with START/STOP
+-98.5397
+   4.18890 0.00000 0.00000
+  -2.09445 3.62769 0.00000
+   0.00000 0.00000 5.12300
+2 4
+Direct
+0.33333 0.66666 0.25000 Au
+0.66666 0.33333 0.75000 Au
+0.00000 0.00000 0.00000 Ti
+0.00000 0.00000 0.50000 Ti
+0.33333 0.66666 0.75000 Ti
+0.66666 0.33333 0.25000 Ti
+[VASP_POSCAR_MODE_EXPLICIT]STOP
+[AFLOW]
+----------------------------------------------------------------------------------------------------)" << "\n"
+                    << "EEEEE  [VASP_POSCAR_MODE_EXPLICIT] Note " << Message(aflags,"user,host,time") << "\n"
+                    << "EEEEE  [VASP_POSCAR_MODE_EXPLICIT]START must be present and no [VASP_POSCAR_FILE]" << Message(aflags,"user,host,time") << "\n"
+                    << "EEEEE  [VASP_POSCAR_MODE_EXPLICIT]STOP  must be present and no [VASP_POSCAR_FILE]" << Message(aflags,"user,host,time") << "\n"
+                    << "EEEEE  or [VASP_POSCAR_FILE] present and NO START/STOP" << Message(aflags,"user,host,time") << endl;
+                    aurostd::PrintErrorStream(FileMESSAGE,aus,XHOST.QUIET);
                 Krun=FALSE;
                 return Krun;
             }
@@ -1657,33 +1646,33 @@ namespace KBIN {
                     aurostd::ExtractToStringstreamEXPLICIT(AflowIn,xvasp.KPOINTS,START,STOP);
                 KBIN::XVASP_string2numbers(xvasp);
             } else {
-                aus << "EEEEE  [VASP_KPOINTS_MODE_EXPLICIT] do not confuse aflow !!" << Message(aflags,"user,host,time") << endl;
-                aus << "EEEEE  [VASP_KPOINTS_MODE_EXPLICIT] Possible modes " << Message(aflags,"user,host,time") << endl;
-                aus << "----------------------------------------------------------------------------------------------------" << endl;
-                aus << "[AFLOW] KPOINTS EXPLICIT MODE without START/STOP (default)" << endl;
-                aus << "[VASP_KPOINTS_MODE_EXPLICIT]" << endl;
-                aus << "[VASP_KPOINTS_FILE]KPOINTS of the structure example with START/STOP" << endl;
-                aus << "[VASP_KPOINTS_FILE]0" << endl;
-                aus << "[VASP_KPOINTS_FILE]Monkhorst-Pack" << endl;
-                aus << "[VASP_KPOINTS_FILE]7 7 5" << endl;
-                aus << "[VASP_KPOINTS_FILE]0 0 0" << endl;
-                aus << "[AFLOW]" << endl;
-                aus << "----------------------------------------------------------------------------------------------------" << endl;
-                aus << "[AFLOW] KPOINTS EXPLICIT MODE with START/STOP" << endl;
-                aus << "[VASP_KPOINTS_MODE_EXPLICIT]" << endl;
-                aus << "[VASP_KPOINTS_MODE_EXPLICIT]START" << endl;
-                aus << "KPOINTS of the structure example with START/STOP" << endl;
-                aus << "0" << endl;
-                aus << "Monkhorst-Pack" << endl;
-                aus << "7 7 5" << endl;
-                aus << "0 0 0" << endl;
-                aus << "[VASP_KPOINTS_MODE_EXPLICIT]STOP" << endl;
-                aus << "[AFLOW]" << endl;
-                aus << "----------------------------------------------------------------------------------------------------" << endl;
-                aus << "EEEEE  [VASP_KPOINTS_MODE_EXPLICIT] Note " << Message(aflags,"user,host,time") << endl;
-                aus << "EEEEE  [VASP_KPOINTS_MODE_EXPLICIT]START must be present and no [VASP_KPOINTS_FILE]" << Message(aflags,"user,host,time") << endl;
-                aus << "EEEEE  [VASP_KPOINTS_MODE_EXPLICIT]STOP  must be present and no [VASP_KPOINTS_FILE]" << Message(aflags,"user,host,time") << endl;
-                aus << "EEEEE  or [VASP_KPOINTS_FILE] present and NO START/STOP" << Message(aflags,"user,host,time") << endl;
+                aus << "EEEEE  [VASP_KPOINTS_MODE_EXPLICIT] do not confuse aflow !!" << Message(aflags,"user,host,time") << "\n"
+                    << "EEEEE  [VASP_KPOINTS_MODE_EXPLICIT] Possible modes " << Message(aflags,"user,host,time") << "\n"
+                    << R"(----------------------------------------------------------------------------------------------------
+[AFLOW] KPOINTS EXPLICIT MODE without START/STOP (default)
+[VASP_KPOINTS_MODE_EXPLICIT]
+[VASP_KPOINTS_FILE]KPOINTS of the structure example with START/STOP
+[VASP_KPOINTS_FILE]0
+[VASP_KPOINTS_FILE]Monkhorst-Pack
+[VASP_KPOINTS_FILE]7 7 5
+[VASP_KPOINTS_FILE]0 0 0
+[AFLOW]
+----------------------------------------------------------------------------------------------------
+[AFLOW] KPOINTS EXPLICIT MODE with START/STOP
+[VASP_KPOINTS_MODE_EXPLICIT]
+[VASP_KPOINTS_MODE_EXPLICIT]START
+KPOINTS of the structure example with START/STOP
+0
+Monkhorst-Pack
+7 7 5
+0 0 0
+[VASP_KPOINTS_MODE_EXPLICIT]STOP
+[AFLOW]
+----------------------------------------------------------------------------------------------------)" << "\n"
+                    << "EEEEE  [VASP_KPOINTS_MODE_EXPLICIT] Note " << Message(aflags,"user,host,time") << "\n"
+                    << "EEEEE  [VASP_KPOINTS_MODE_EXPLICIT]START must be present and no [VASP_KPOINTS_FILE]" << Message(aflags,"user,host,time") << "\n"
+                    << "EEEEE  [VASP_KPOINTS_MODE_EXPLICIT]STOP  must be present and no [VASP_KPOINTS_FILE]" << Message(aflags,"user,host,time") << "\n"
+                    << "EEEEE  or [VASP_KPOINTS_FILE] present and NO START/STOP" << Message(aflags,"user,host,time") << endl;
                 aurostd::PrintErrorStream(FileMESSAGE,aus,XHOST.QUIET);
                 Krun=FALSE;
                 return Krun;
@@ -1761,8 +1750,6 @@ namespace KBIN {
                     xvasp.str.kpoints_kscheme=DEFAULT_KSCHEME;  // DEFAULT FIX
                     if(LOCAL_KBIN_VASP_KPOINTS_KSCHEME_content_string.at(0)=='M' || LOCAL_KBIN_VASP_KPOINTS_KSCHEME_content_string.at(0)=='m') xvasp.str.kpoints_kscheme="Monkhorst-Pack";
                     if(LOCAL_KBIN_VASP_KPOINTS_KSCHEME_content_string.at(0)=='G' || LOCAL_KBIN_VASP_KPOINTS_KSCHEME_content_string.at(0)=='g') xvasp.str.kpoints_kscheme="Gamma";
-                    //	if(LOCAL_KBIN_VASP_KPOINTS_KSCHEME_content_string.at(0)=='A' || LOCAL_KBIN_VASP_KPOINTS_KSCHEME_content_string.at(0)=='a') xvasp.str.kpoints_kscheme="Auto";
-                    //	if(LOCAL_KBIN_VASP_KPOINTS_KSCHEME_content_string.at(0)=='L' || LOCAL_KBIN_VASP_KPOINTS_KSCHEME_content_string.at(0)=='l') xvasp.str.kpoints_kscheme=DEFAULT_KSCHEME;
                     if(LOCAL_KBIN_VASP_KPOINTS_KSCHEME_content_string.at(0)=='A' || LOCAL_KBIN_VASP_KPOINTS_KSCHEME_content_string.at(0)=='a') xvasp.str.kpoints_kscheme=DEFAULT_KSCHEME;
                     if(LOCAL_KBIN_VASP_KPOINTS_KSCHEME_content_string.at(0)=='C' || LOCAL_KBIN_VASP_KPOINTS_KSCHEME_content_string.at(0)=='c') xvasp.str.kpoints_kscheme="Cartesian";
                     if(LOCAL_KBIN_VASP_KPOINTS_KSCHEME_content_string.at(0)=='K' || LOCAL_KBIN_VASP_KPOINTS_KSCHEME_content_string.at(0)=='k') xvasp.str.kpoints_kscheme="Cartesian";
@@ -1779,8 +1766,8 @@ namespace KBIN {
                     aus << "00000  MESSAGE " << STRING_KPOINTS_TO_SHOW << "_KSCHEME=\"" << xvasp.str.kpoints_kscheme << "\" " << Message(aflags,"user,host,time") << endl;
                     aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
                 }
-                // 
-                // exit(0); // DEBUG
+                
+               
                 // KPPRA ******************************
                 if(LOCAL_KBIN_VASP_KPOINTS_KPPRA_isentry==FALSE) {
                     NK=1; // DEFAULT FIX
@@ -1899,16 +1886,17 @@ namespace KBIN {
             }
             KBIN::XVASP_string2numbers(xvasp);                          // create KPOINTS numbers
         }
+        
         // KPOINTS DONE **************************************************
         if(IMPLICIT==FALSE) KBIN::XVASP_string2numbers(xvasp);
         xvasp.str.kpoints_kmax=max(xvasp.str.kpoints_k1,xvasp.str.kpoints_k2,xvasp.str.kpoints_k3);
         xvasp.str.kpoints_kppra=xvasp.str.kpoints_k1*xvasp.str.kpoints_k2*xvasp.str.kpoints_k3*xvasp.str.atoms.size();
+        
         // KPOINTS done
         xvasp.KPOINTS_orig << xvasp.KPOINTS.str();
         xvasp.aopts.flag("FLAG::XVASP_KPOINTS_generated",TRUE);
-        // cerr << xvasp.str.kpoints_kscheme << endl; exit(0);
         return Krun;
-    };  // KBIN::VASP_Produce_KPOINTS
+    };  
 }
 
 namespace KBIN {
@@ -2741,7 +2729,6 @@ namespace KBIN {
         aurostd::string2tokens(stag, vkey, ";");
         string stmp =  aurostd::RemoveLineWithKeyword(FileContent, vkey, true);
         xvasp.INCAR << aurostd::RemoveEmptyLines(stmp);  //remove empty line but not remove "\n" 
-        //xvasp.INCAR << XVASP_WRITE_INCAR_Static(xvasp, vflags, "STATIC", "# Performing STATIC") << endl; 
         KBIN::XVASP_WRITE_INCAR_Static(xvasp, vflags, "STATIC", "# Performing STATIC");
         // check for LDA/GGA
         if(xvasp.POTCAR_TYPE=="LDA" || xvasp.POTCAR_TYPE=="GGA") {
@@ -2765,7 +2752,6 @@ namespace KBIN {
         aurostd::string2tokens(stag, vkey, ";");
         string stmp =  aurostd::RemoveLineWithKeyword(FileContent, vkey, true);
         xvasp.INCAR << aurostd::RemoveEmptyLines(stmp); 
-        //xvasp.INCAR << XVASP_WRITE_INCAR_Static(xvasp, vflags, "STATIC", "# Performing RELAX_STATIC") << endl; 
         KBIN::XVASP_WRITE_INCAR_Static(xvasp, vflags, "STATIC", "# Performing RELAX_STATIC"); 
 
         // check for LDA/GGA
@@ -2790,7 +2776,6 @@ namespace KBIN {
         aurostd::string2tokens(stag, vkey, ";");
         string stmp =  aurostd::RemoveLineWithKeyword(FileContent, vkey, true);
         xvasp.INCAR << aurostd::RemoveEmptyLines(stmp); 
-        //xvasp.INCAR << XVASP_WRITE_INCAR_Static(xvasp, vflags, "BANDS", "# Performing RELAX_STATIC_BANDS") << endl; 
         KBIN::XVASP_WRITE_INCAR_Static(xvasp, vflags, "BANDS", "# Performing RELAX_STATIC_BANDS"); 
 
         // check for LDA/GGA
@@ -2827,7 +2812,8 @@ namespace KBIN {
                 if(vflags.KBIN_VASP_INCAR_VERBOSE) xvasp.INCAR << strline << endl;
             }
         }
-        // xvasp.INCAR << endl;
+        
+       
         if(vflags.KBIN_VASP_INCAR_VERBOSE && OPERATION==ON ) xvasp.INCAR << "# Performing RWIGS_STATIC=ON [AFLOW]" << endl;
         if(vflags.KBIN_VASP_INCAR_VERBOSE && OPERATION==OFF) xvasp.INCAR << "# Performing RWIGS_STATIC=OFF [AFLOW]" << endl;	
         if(OPERATION==ON) {
@@ -2839,7 +2825,7 @@ namespace KBIN {
                     aurostd::string2tokens(tokens.at(i),tokens2);
                     xvasp.INCAR << tokens2.at(5) << " ";
                 }
-            //xvasp.INCAR << "# Performing Density of states" << endl;
+            
             if(xvasp.POTCAR_TYPE!="LDA" && xvasp.POTCAR_TYPE!="GGA")
                 xvasp.INCAR << aurostd::PaddedPOST("LORBIT=0",_incarpad_) << "# Performing Density of states (PAW)" << endl;
             if(xvasp.POTCAR_TYPE=="LDA" || xvasp.POTCAR_TYPE=="GGA")
@@ -3008,7 +2994,7 @@ namespace KBIN {
             string stmp = aurostd::utype2string(DEFAULT_VASP_PREC_ENMAX_ACCURATE, _IVASP_DOUBLE2STRING_PRECISION_);
             KBIN::XVASP_INCAR_Set_User_Setting(xvasp, vflags, stmp); 
             xvasp.INCAR << aurostd::PaddedPOST("LREAL=.FALSE.",_incarpad_) << endl;
-            //xvasp.INCAR << aurostd::PaddedPOST("ALGO=FAST",_incarpad_) << endl;  
+            xvasp.INCAR << aurostd::PaddedPOST("ALGO=FAST",_incarpad_) << endl;  
         }
 
         if(vflags.KBIN_VASP_FORCE_OPTION_PREC.xscheme=="ACCURATE") {
@@ -3016,7 +3002,7 @@ namespace KBIN {
             string stmp = aurostd::utype2string(DEFAULT_VASP_PREC_ENMAX_ACCURATE, _IVASP_DOUBLE2STRING_PRECISION_);
             KBIN::XVASP_INCAR_Set_User_Setting(xvasp, vflags, stmp); 
             xvasp.INCAR << aurostd::PaddedPOST("LREAL=.FALSE.",_incarpad_) << endl;
-            //xvasp.INCAR << aurostd::PaddedPOST("ALGO=Normal",_incarpad_) << endl;  //FAST lead to error; normal is more stable
+            xvasp.INCAR << aurostd::PaddedPOST("ALGO=Normal",_incarpad_) << endl;  //FAST lead to error; normal is more stable; aflow will fix it automatically
         }
 
         // BEGIN JJPR
@@ -3030,6 +3016,8 @@ namespace KBIN {
             xvasp.INCAR << aurostd::PaddedPOST("NELMIN=4",_incarpad_) << " # The forces have to be well converged" << endl;
             xvasp.INCAR << aurostd::PaddedPOST("ADDGRID=.TRUE.",_incarpad_) << " # For finer forces" << endl;
         };
+
+        xvasp.INCAR << aurostd::PaddedPOST("LREAL=AUTO",_incarpad_) << endl;
     }
 }
 
@@ -3188,8 +3176,6 @@ namespace KBIN {
         xvasp.aopts.flag("FLAG::XVASP_INCAR_changed",TRUE);
         dvalue = dvalue * 1;  //not used 
         int imax=aurostd::GetNLinesString(FileContent);
-
-        //if (aurostd::doesKeywordExist(FileContent, "ALGO")) vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme = aurostd::GetValueOfKey(FileContent, "ALGO"); //KESONG, get ALGO from user's INCAR, 2020-03-12
 
         // ***************************************************************************
         if(command=="GENERIC") {
@@ -3625,9 +3611,7 @@ namespace KBIN {
 namespace KBIN {
     void XVASP_KPOINTS_IBZKPT_UPDATE(_xvasp& xvasp,_aflags &aflags,_vflags& vflags,int step,ofstream &FileMESSAGE) {        // AFLOW_FUNCTION_IMPLEMENTATION
         ostringstream aus;
-        // aus << "00000  MESSAGE IBZKPT.relax1 - step=" << step << " " << Message(aflags,"user,host,time") << endl;
-        // aus << "00000  MESSAGE IBZKPT.relax1 - vflags.KBIN_VASP_FORCE_OPTION_KPOINTS.flag("IBZKPT")=" << vflags.KBIN_VASP_FORCE_OPTION_KPOINTS.flag("IBZKPT") << " " << Message(aflags,"user,host,time") << endl;
-        // aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
+
         if(step>=1 && vflags.KBIN_VASP_FORCE_OPTION_KPOINTS.flag("IBZKPT")) {
             aus << "00000  MESSAGE FORCE KPOINTS from IBZKPT.relax1 - " << Message(aflags,"user,host,time") << endl;
             aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
@@ -3636,6 +3620,7 @@ namespace KBIN {
             aurostd::file2stringstream(string(xvasp.Directory+"/IBZKPT.relax1"),xvasp.KPOINTS);
             xvasp.aopts.flag("FLAG::XVASP_KPOINTS_changed",TRUE);
         }
+
         if(xvasp.aopts.flag("FLAG::XVASP_KPOINTS_changed")) {
             xvasp.aopts.flag("FLAG::XVASP_KPOINTS_generated",TRUE);
             xvasp.KPOINTS_orig.str(std::string()); xvasp.KPOINTS_orig << xvasp.KPOINTS.str();
@@ -3888,7 +3873,6 @@ namespace KBIN {
         // xvasp.INCAR << endl;
         // rewrite incar
         aurostd::RemoveFile(string(xvasp.Directory+"/INCAR"));
-        //aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));
         string stmp = RemoveCommentLines(aurostd::RemoveEmptyLines(SortLinesAlphabetically(RemoveDuplicateLines(xvasp.INCAR.str())))); 
         aurostd::string2file(stmp,string(xvasp.Directory+"/INCAR"));
     }
@@ -3973,9 +3957,7 @@ namespace KBIN {
         E(1)*=dvalue;E(2)*=dvalue;E(3)*=dvalue;
         // for(uint i=1;i<=3;i++) cerr << "E(" << i << ")=" << E(i) << endl;
 
-        //if(VERBOSE) xvasp.INCAR << "# Performing EFIELD_PEAD [AFLOW] begin dvalue=" << dvalue << endl;
         xvasp.INCAR << aurostd::PaddedPOST("EFIELD_PEAD="+aurostd::utype2string(E(1),6)+" "+aurostd::utype2string(E(2),6)+" "+aurostd::utype2string(E(3),6)+" ",_incarpad_) << "# EFIELD_PEAD" << endl;
-        //if(VERBOSE) xvasp.INCAR << "# Performing EFIELD_PEAD [AFLOW] end " << endl;
     }
 }
 
@@ -5137,11 +5119,6 @@ namespace KBIN {
 
         if(aurostd::FileExist(file_outcar_tmp)) aurostd::RemoveFile(file_outcar_tmp);
 
-        /****************************************************************************************************
-          for (unsigned int i=0; i<AtomicName.size(); i++) {
-          cout <<AtomicName.at(i) << endl;
-          }
-          */
         return AtomicName;
     }
 } // namespace KBIN
