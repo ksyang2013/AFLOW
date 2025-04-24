@@ -13,16 +13,11 @@
 #include<sys/stat.h>
 #include "aflow.h"
 #include "aflow_pflow.h"
-// [OBSOLETE] #include "aflow_contrib_wahyu.h"
-// [OBSOLETE] #include "aflow_contrib_roman_funcs.h"
 #include "aflow_contrib_shidong_main.h"
 #include "aflow_symmetry_spacegroup.h"
-// [OBSOLETE] [JUNKAI] #include "aflow_contrib_junkai_basic.h"
-// [OBSOLETE] [KESONG] #include "aflow_contrib_kesong.h"
 #include "aflow_pocc_old.h"
 #include "aflow_bader.h"
 #include "aflow_chull.h"
-// [OBSOLETE] #include "aflow_contrib_cormac.h"
 #include "aflowlib.h"
 
 extern double NearestNeighbour(const xstructure& a);
@@ -34,23 +29,18 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
   bool LDEBUG=(FALSE || XHOST.DEBUG);
   // GENERAL STUFF
 
-  vpflow.flag("PFLOW_HELP",aurostd::args2flag(argv,cmds,"--HELP|--help"));
+  vpflow.flag("PFLOW_HELP",aurostd::args2flag(argv,cmds,"--HELP|--help|-help"));
   //KESONG
-  vpflow.flag("DEVELOP",aurostd::args2flag(argv,cmds,"--develop"));
+  vpflow.flag("DEVELOP",aurostd::args2flag(argv,cmds,"--develop|-develop"));
 
-  vpflow.flag("PROTOS",(aurostd::args2flag(argv,cmds,"--protos|--prototypes") || aurostd::args2flag(argv,cmds,"--proto")));// && (argv.size()==2));
-  // [OBSOLETE]  vpflow.flag("PROTOS_ICSD",(aurostd::args2flag(argv,cmds,"--protos_icsd|--prototypes_icsd") || aurostd::args2flag(argv,cmds,"--proto_icsd")) && (argv.size()==2));
+  vpflow.flag("PROTOS",(aurostd::args2flag(argv,cmds,"--protos|-protos|--prototypes|-prototypes") || aurostd::args2flag(argv,cmds,"--proto|-proto")));// && (argv.size()==2));
 
   vpflow.args2addattachedscheme(argv,cmds,"PROTOS_ICSD","--protos_icsd=|--prototypes_icsd=","");
 
   if(!vpflow.flag("PROTOS_ICSD")) vpflow.flag("PROTOS_ICSD",aurostd::args2flag(argv,cmds,"--protos_icsd|--prototypes_icsd"));
 
-  //  bool XXX=aurostd::args2flag(argv,cmds,"--xxx") && argv.at(1)=="--xxx";
-  //  bool YYY=aurostd::args2flag(argv,cmds,"--yyy");
-
-  vpflow.flag("ABCCAR",aurostd::args2flag(argv,cmds,"--abccar"));
-  vpflow.flag("ACE",aurostd::args2flag(argv,cmds,"--ace"));
-  // DX 8/18/17 [OBSOLETE] vpflow.flag("AGROUP",aurostd::args2flag(argv,cmds,"--sitepointgroup|--agroup"));
+  vpflow.flag("ABCCAR",aurostd::args2flag(argv,cmds,"--abccar|-abccar"));
+  vpflow.flag("ACE",aurostd::args2flag(argv,cmds,"--ace|-ace"));
   // DX 8/18/17 - Added tolerance and no_scan options to Xgroups - START
   vpflow.args2addattachedscheme(argv,cmds,"AGROUP","--sitepointgroup=|--agroup=","");
   if(vpflow.flag("AGROUP")){
@@ -68,11 +58,8 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
   vpflow.flag("AGROUP2m",aurostd::args2flag(argv,cmds,"--sitepointgroup2m|--agroup2m"));
   vpflow.flag("AFLOWIN",aurostd::args2flag(argv,cmds,"--aflowin"));
   vpflow.flag("ALPHABETIC",aurostd::args2flag(argv,cmds,"--alpha|--alphabetic"));
-  // [OBSOLETE] vpflow.flag("ALPHA_COMPOUND",aurostd::args2flag(argv,cmds,"--alpha_compound|--alpha_compounds"));
   vpflow.args2addattachedscheme(argv,cmds,"ALPHA_COMPOUND","--alpha_compound=|--alpha_compounds=","");
-  // [OBSOLETE] vpflow.flag("ALPHA_SPECIES",aurostd::args2flag(argv,cmds,"--alpha_species|--alpha_specie"));
   vpflow.args2addattachedscheme(argv,cmds,"ALPHA_SPECIES","--alpha_species=|--alpha_specie=","");
-  // [OBSOLETE] vpflow.flag("ANGLES",aurostd::args2flag(argv,cmds,"--angle|--angles"));
   vpflow.args2addattachedscheme(argv,cmds,"ANGLES","--angle=|--angles=","0.0");
 
   vpflow.args2addattachedscheme(argv,cmds,"AFLOWLIB","--aflowlib=","");
@@ -86,9 +73,6 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
   if(vpflow.flag("DOSDATA2JSON")){vpflow.args2addattachedscheme(argv,cmds,"DOSDATA2JSON::PARAMS","--dos_parameters=","");}  // CO 180214 removed params confusion
   vpflow.args2addattachedscheme(argv,cmds,"BANDSDATA2JSON","--bandsdata2json=","./"); // Eric G
   // End commands
-
-
-  // bool APENNSY=aurostd::args2flag(argv,cmds,"--apennsy|-apennsy|--pennsy|-pennsy");
 
   //corey
   vpflow.flag("BADER",aurostd::args2flag(argv,cmds,"--bader"));
@@ -129,18 +113,14 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
     }
   }
 
-  // [OBSOLETE] vpflow.flag("BANDS",aurostd::args2flag(argv,cmds,"--bands") && argv.at(1)=="--bands");
   vpflow.args2addattachedscheme(argv,cmds,"BANDS","--bands=","");
 
   vpflow.flag("BANDSTRUCTURE",aurostd::args2flag(argv,cmds,"--bandstructure|--bandsstructures|--bands_structures|--band_structures|--bands_structure|--band_structure|--bs"));
   vpflow.flag("BZPLOT",aurostd::args2flag(argv,cmds,"--plotbz|--bzplot"));
-  // [OBSOLETE] vpflow.flag("BZPLOTUSEKPOINTS",aurostd::args2flag(argv,cmds,"--bzplotuseKPOINTS|--bzplotdusekpoints"));
   vpflow.args2addattachedscheme(argv,cmds,"BZPLOTUSEKPOINTS","--bzplotuseKPOINTS=|--bzplotdusekpoints=","");   
   vpflow.flag("BZPLOTDATA",aurostd::args2flag(argv,cmds,"--bzplotdata"));
-  // [OBSOLETE] vpflow.flag("BZPLOTDATAUSEKPOINTS",aurostd::args2flag(argv,cmds,"--bzplotdatauseKPOINTS|--bzplotdatausekpoints"));
   vpflow.args2addattachedscheme(argv,cmds,"BZPLOTDATAUSEKPOINTS","--bzplotdatauseKPOINTS=|--bzplotdatausekpoints=","");
 
-  // [OBSOLETE]  vpflow.flag("FIX_BANDS",aurostd::args2flag(argv,cmds,"--fix_bands"));// && argv.size()==9);
   vpflow.args2addattachedscheme(argv,cmds,"FIX_BANDS","--fix_bands=","");
 
   // DX AND COREY - START
@@ -159,13 +139,11 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
   // DX AND COREY - END
 
   vpflow.flag("BANDGAP_WAHYU",aurostd::args2flag(argv,cmds,"--bandgap_wahyu|--gap_wahyu"));
-  // [OBSOLETE] vpflow.flag("BANDGAP",aurostd::args2flag(argv,cmds,"--bandgap" ) ); // CAMILO
   vpflow.args2addattachedscheme(argv,cmds,"BANDGAP","--bandgap=","./");
 
   vpflow.flag("BANDGAPS",aurostd::args2flag(argv,cmds,"--bandgaps|--gaps"));
   vpflow.flag("BANDGAPDOS",aurostd::args2flag(argv,cmds,"--bandgap_from_dos|--bandgap_from_DOS"));
   vpflow.flag("BANDGAPLISTDOS",aurostd::args2flag(argv,cmds,"--bandgaplist_from_dos|--bandgaplist_from_DOS"));
-  // [OBSOLETE] vpflow.flag("BZDIRECTION",aurostd::args2flag(argv,cmds,"--bzdirection|--bzdirections|--bzd"));
   vpflow.args2addattachedscheme(argv,cmds,"BZDIRECTION","--bzdirection=|--bzdirections=|--bzd=","");
   //DX 20181102 - add transform2original option - START
   if(vpflow.flag("BZDIRECTION")){
@@ -178,32 +156,13 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
   //DX 20181102 - add transform2original option - END
   vpflow.flag("BZMAX",aurostd::args2flag(argv,cmds,"--BZmax"));
 
-  // [OBSOLETE] vpflow.flag("CAGES",aurostd::args2flag(argv,cmds,"--cages"));
   vpflow.args2addattachedscheme(argv,cmds,"CAGES","--cages=","-1.0");
-  // cerr << "vpflow.flag(\"CAGES\")=" << vpflow.flag("CAGES") << endl;
-  // cerr << "vpflow.getattachedscheme(\"CAGES\")=" << vpflow.getattachedscheme("CAGES") << endl;
-  // exit(0);
 
   vpflow.flag("CALCULATED_ICSD_RANDOM",(aurostd::args2flag(argv,cmds,"--calculated=icsd")) && aurostd::args2flag(argv,cmds,"--random|--rnd"));
-  // [OBSOLETE] string calculated=aurostd::args2attachedstring(argv,"--calculated=","");
-  // [OBSOLETE] vpflow.flag("CALCULATED_ALL",aurostd::args2flag(argv,cmds,"--calculated|--calcs"));
-  // [OBSOLETE] vpflow.flag("CALCULATED_ICSD",aurostd::substring2bool(calculated,"icsd"));
-  // [OBSOLETE] vpflow.flag("CALCULATED_LIB1",aurostd::substring2bool(calculated,"lib1"));
-  // [OBSOLETE] vpflow.flag("CALCULATED_LIB2",aurostd::substring2bool(calculated,"lib2"));
-  // [OBSOLETE] vpflow.flag("CALCULATED_LIB3",aurostd::substring2bool(calculated,"lib3"));
-  // [OBSOLETE] vpflow.flag("CALCULATED_LIB4",aurostd::substring2bool(calculated,"lib4"));
-  // [OBSOLETE] vpflow.flag("CALCULATED_LIB5",aurostd::substring2bool(calculated,"lib5"));
-  // [OBSOLETE] vpflow.flag("CALCULATED_LIB6",aurostd::substring2bool(calculated,"lib6"));
-  // [OBSOLETE] vpflow.flag("CALCULATED_LIB7",aurostd::substring2bool(calculated,"lib7"));
-  // [OBSOLETE] vpflow.flag("CALCULATED_LIB8",aurostd::substring2bool(calculated,"lib8"));
-  // [OBSOLETE] vpflow.flag("CALCULATED_LIB9",aurostd::substring2bool(calculated,"lib9"));
   vpflow.args2addattachedscheme(argv,cmds,"CALCULATED","--calculated=","all");
-  // cerr << "vpflow.flag(\"CALCULATED\")=" << vpflow.flag("CALCULATED") << endl;
-  // cerr << vpflow.getattachedscheme("CALCULATED") << endl;
 
   vpflow.flag("CART",aurostd::args2flag(argv,cmds,"--cart|-cart|-c|--cartesian"));
   vpflow.flag("CHECKINTEGRITIY",aurostd::args2flag(argv, cmds,"--check_integrity|--checki"));
-  //DX 20180806 [OBSOLETE] vpflow.flag("CIF",aurostd::args2flag(argv,cmds,"--cif"));
   vpflow.args2addattachedscheme(argv,cmds,"CIF","--cif=|--CIF=","");
   //DX 20180806 - added symmetry option - START
   if(vpflow.flag("CIF")){
@@ -217,8 +176,6 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
     }
   }
   //DX 20180806 - added symmetry option - END
-  // [OBSOLETE] vpflow.flag("CHANGESUFFIX",aurostd::args2attachedflag(argv,cmds,"--suffix=")); //KESONG DEC. 22ND, 2013
-  // [OBSOLETE] if(vpflow.flag("CHANGESUFFIX")) vpflow.push_attached("CHANGESUFFIX",aurostd::args2attachedstring(argv,"--suffix=",""));
   vpflow.args2addattachedscheme(argv,cmds,"CHANGESUFFIX","--suffix=","./");
 
   //corey
@@ -245,7 +202,6 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
 
   vpflow.flag("CLEANALL",aurostd::args2flag(argv,cmds,"--cleanall|--clean_all"));
 
-  // [OBSOLETE] vpflow.flag("COMPARE",aurostd::args2flag(argv,cmds,"--compare"));
   vpflow.args2addattachedscheme(argv,cmds,"COMPARE","--compare=","");
   vpflow.flag("CMPSTR",aurostd::args2flag(argv,cmds,"--cmp_str") && argv.at(1)=="--cmp_str");
 
@@ -322,8 +278,6 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
     vpflow.args2addattachedscheme(argv,cmds,"CHULL::STABILITY_CRITERION","--stability_criterion=|--stabilitycriterion=|--stable_criterion=|--scriterion=|--sc=",""); //calculate stable criterion for point
     vpflow.args2addattachedscheme(argv,cmds,"CHULL::HULL_FORMATION_ENTHALPY","--hull_formation_enthalpy=|--hull_energy=",""); //calculate stable criterion for point
     if(vpflow.flag("CHULL::STABILITY_CRITERION")||vpflow.flag("CHULL::HULL_FORMATION_ENTHALPY")){
-      //vpflow.flag("CHULL::TEXT_DOC",FALSE);   //turn off  //leave on, as user might request json/text format output
-      //vpflow.flag("CHULL::JSON_DOC",FALSE);   //turn off  //leave on, as user might request json/text format output
       vpflow.flag("CHULL::WEB_DOC",FALSE);    //turn off
       vpflow.flag("CHULL::LATEX_DOC",FALSE);  //turn off
     }
@@ -350,9 +304,7 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
     }
   }
   
-  // [OBSOLETE] vpflow.flag("CLAT",aurostd::args2flag(argv,cmds,"--clat"));
   vpflow.args2addattachedscheme(argv,cmds,"CLAT","--clat=","");
-  // [OBSOLETE] vpflow.flag("COMPARE",aurostd::args2flag(argv,cmds,"--compare"));
   vpflow.args2addattachedscheme(argv,cmds,"COMPARE","--compare=","");
 
   //DAVID
@@ -393,7 +345,6 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
 
   vpflow.flag("CORNERS",aurostd::args2flag(argv,cmds,"--corner|--corners"));
 
-  // DX 9/1/17 [OBSOLETE] vpflow.flag("DATA",aurostd::args2flag(argv,cmds,"--data"));
   vpflow.args2addattachedscheme(argv,cmds,"DATA","--data=",""); // DX 9/1/17 - SGDATA + JSON
   if(vpflow.flag("DATA")){ // DX 9/1/17 - SGDATA + JSON
     vpflow.flag("DATA::NO_SCAN",aurostd::args2flag(argv,cmds,"--no_scan")); // DX 9/1/17 - SGDATA + JSON
@@ -404,20 +355,14 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
       vpflow.args2addattachedscheme(argv,cmds,"DATA::SETTING","--setting=","1");
     }
   } // DX 9/1/17 - SGDATA + JSON
-  // [OBSOLETE] vpflow.flag("DATA1",aurostd::args2flag(argv,cmds,"--data1") && argv.at(1)=="--data1");
   vpflow.args2addattachedscheme(argv,cmds,"DATA1","--data1=","");
   vpflow.flag("DATA2",aurostd::args2flag(argv,cmds,"--data2"));
-  // [OBSOLETE] vpflow.flag("DEBYE",aurostd::args2flag(argv,cmds,"--debye")); 	
   vpflow.args2addattachedscheme(argv,cmds,"DEBYE","--debye=","");
-  // [OBSOLETE] vpflow.flag("DIFF",aurostd::args2attachedflag(argv,cmds,"--diff="));
   vpflow.args2addattachedscheme(argv,cmds,"DIFF","--diff=","./");
 
-  // [OBSOLETE] vpflow.flag("DISP",aurostd::args2flag(argv,cmds,"--disp"));
   vpflow.args2addattachedscheme(argv,cmds,"DISP","--disp=","");
-  // [OBSOLETE] vpflow.flag("DIST",aurostd::args2flag(argv,cmds,"--dist"));
   vpflow.args2addattachedscheme(argv,cmds,"DIST","--dist=","");
  
-  // DX 9/1/17 [OBSOLETE] vpflow.flag("EDATA",aurostd::args2flag(argv,cmds,"--edata"));
   vpflow.args2addattachedscheme(argv,cmds,"EDATA","--edata=",""); // DX 9/1/17 - SGDATA + JSON
   if(vpflow.flag("EDATA")){ // DX 9/1/17 - SGDATA + JSON
     vpflow.flag("DATA::NO_SCAN",aurostd::args2flag(argv,cmds,"--no_scan")); // DX 9/1/17 - SGDATA + JSON
@@ -433,10 +378,8 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
   } // DX 9/1/17 - SGDATA + JSON
   vpflow.flag("EDOS",aurostd::args2flag(argv,cmds,"--edos"));
   vpflow.flag("EFFMASS",aurostd::args2flag(argv,cmds,"--em")) ; // CAMILO
-  // [OBSOLETE] vpflow.flag("EWALD",aurostd::args2flag(argv,cmds,"--ewald") && argv.at(1)=="--ewald");
   vpflow.args2addattachedscheme(argv,cmds,"EWALD","--ewald=","");
  
-  // DX 8/18/17 [OBSOLETE] vpflow.flag("EQUIVALENT",aurostd::args2flag(argv,cmds,"--equivalent|--equiv|--inequivalent|--inequiv|--iatoms|--eatoms"));
   // DX 8/18/17 - Added tolerance and no_scan options to Xgroups - START
   vpflow.args2addattachedscheme(argv,cmds,"EQUIVALENT","--equivalent=|--equiv=|--inequivalent=|--inequiv=|--iatoms=|--eatoms=","");
   if(vpflow.flag("EQUIVALENT")){
@@ -451,10 +394,8 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
   // DX 8/18/17 - Added tolerance and no_scan options to Xgroups - END
   vpflow.flag("EXTRACT_SYMMETRY",aurostd::args2flag(argv,cmds,"--extract_symmetry|--xsymmetry"));
 
-  // [OBSOLETE] vpflow.flag("EIGCURV",aurostd::args2flag(argv,cmds,"--eigcurv" ) ); // CAMILO
   vpflow.args2addattachedscheme(argv,cmds,"EIGCURV","--eigcurv=","./") ; // CAMILO
 
-  // DX 8/18/17 [OBSOLETE] vpflow.flag("FGROUP",aurostd::args2flag(argv,cmds,"--factorgroup|--fgroup"));
   // DX 8/18/17 - Added tolerance and no_scan options to Xgroups - START
   vpflow.args2addattachedscheme(argv,cmds,"FGROUP","--factorgroup=|--fgroup=","");
   if(vpflow.flag("FGROUP")){
@@ -480,22 +421,16 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
   vpflow.flag("GULP",aurostd::args2flag(argv,cmds,"--gulp"));
   vpflow.flag("GETTEMP",aurostd::args2flag(argv,cmds,"--getTEMP|--getTEMPS|--Init::GetTEMPs|--gettemp|--gettemps|--getemp|--getemps"));
  
-  // [OBSOLETE] vpflow.flag("KPOINTS",aurostd::args2flag(argv,cmds,"--kpoints|--kppra|-kpoints|-kppra|-k"));
   vpflow.args2addattachedscheme(argv,cmds,"KPOINTS","--kpoints=|--kppra=|-kpoints=|-kppra=|-k=","1");
-  // [OBSOLETE] vpflow.flag("FLAG::XVASP_KPOINTS_DELTA",aurostd::args2flag(argv,cmds,"--delta_kpoints|--dkpoints|-dkpoints|-dk"));
   vpflow.args2addattachedscheme(argv,cmds,"FLAG::XVASP_KPOINTS_DELTA","--delta_kpoints=|--dkpoints=|-dkpoints=|-dk=","0.01"); // CO 171025
  
   vpflow.flag("KPATH",aurostd::args2flag(argv,cmds,"--kpath"));
 
   vpflow.flag("JOINSTRLIST",aurostd::args2flag(argv,cmds,"--join_strlist") && argv.at(1)=="--join_strlist");
 
-  // [OBSOLETE] vpflow.flag("HKL",aurostd::args2flag(argv,cmds,"--hkl"));
   vpflow.args2addattachedscheme(argv,cmds,"HKL","--hkl=","");
-  // [OBSOLETE] vpflow.flag("HKL_SEARCH_TRIVIAL",aurostd::args2flag(argv,cmds,"--hkl_search"));
   vpflow.args2addattachedscheme(argv,cmds,"HKL_SEARCH_TRIVIAL","--hkl_search=","");
-  // [OBSOLETE] vpflow.flag("HKL_SEARCH_SIMPLE",aurostd::args2flag(argv,cmds,"--hkl_search_simple"));
   vpflow.args2addattachedscheme(argv,cmds,"HKL_SEARCH_SIMPLE","--hkl_search_simple=","");
-  // [OBSOLETE] vpflow.flag("HKL_SEARCH_COMPLETE",aurostd::args2flag(argv,cmds,"--hkl_search_complete"));
   vpflow.args2addattachedscheme(argv,cmds,"HKL_SEARCH_COMPLETE","--hkl_search_complete=","");
 
   vpflow.flag("ICSD",aurostd::args2flag(argv,cmds,"--icsd"));
@@ -553,18 +488,14 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
   vpflow.flag("INCELL",aurostd::args2flag(argv,cmds,"--incell"));
   vpflow.flag("INCOMPACT",aurostd::args2flag(argv,cmds,"--incompact"));
   vpflow.flag("INSPHERE",aurostd::args2flag(argv,cmds,"--insphere"));
-  // [OBSOLETE] vpflow.flag("INTPOL",(aurostd::args2flag(argv,cmds,"--intpol") && argv.at(1)=="--intpol"));
   vpflow.args2addattachedscheme(argv,cmds,"INTPOL","--intpol=","");
 
   vpflow.flag("INWS",aurostd::args2flag(argv,cmds,"--inwignerseitz|--inws"));
 
-  // [OBSOLETE] vpflow.flag("INFLATE_LATTICE",aurostd::args2flag(argv,cmds,"--inflate_lattice|--ilattice"));
   vpflow.args2addattachedscheme(argv,cmds,"INFLATE_LATTICE","--inflate_lattice=|--ilattice=","");
-  // [OBSOLETE] vpflow.flag("INFLATE_VOLUME",aurostd::args2flag(argv,cmds,"--inflate_volume|--ivolume"));
   vpflow.args2addattachedscheme(argv,cmds,"INFLATE_VOLUME","--inflate_volume=|--ivolume=","");
   
   vpflow.flag("KBAND",aurostd::args2flag(argv,cmds,"--kband"));
-  // [OBSOLETE] vpflow.flag("KILL",aurostd::args2flag(argv,cmds,"--kill"));
   vpflow.args2addattachedscheme(argv,cmds,"KILL","--kill=","");
 
   vpflow.flag("HNF",(aurostd::args2flag(argv,cmds,"--hnf|--HNF|--hfn|--HFN")));
@@ -594,14 +525,10 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
 
   vpflow.flag("MAGNETICPARAMETERS",aurostd::args2flag(argv,cmds,"--magpara") ||aurostd::args2attachedflag(argv,cmds,"--magpara="));
 
-  // [OBSOLETE] vpflow.flag("MAGNETICPARAMETERSHEUSLER",aurostd::args2flag(argv,cmds,"--magpara_h"));
-  // [OBSOLETE] vpflow.flag("MAXATOMS",aurostd::args2flag(argv,cmds,"--maxatoms|--max_atoms|--atomsmax|--atoms_max"));
   vpflow.args2addattachedscheme(argv,cmds,"MAXATOMS","--maxatoms=|--max_atoms=|--atomsmax=|--atoms_max=","");
   
   vpflow.flag("MAKESTRLIST",aurostd::args2flag(argv,cmds,"--make_strlist") && argv.at(1)=="--make_strlist");
   
-  // [OBSOLETE] vpflow.flag("MILLER",aurostd::args2flag(argv,cmds,"--miller|--MILLER"));
-  // [OBSOLETE] vpflow.args2addattachedscheme(argv,cmds,"MILLER","--miller=","");
   
   vpflow.flag("MINKOWSKI_BASIS_REDUCTION",aurostd::args2flag(argv,cmds,"--minkowski_basis_reduction|--minkowski|--mink"));
   vpflow.flag("MISCIBILITY",aurostd::args2flag(argv,cmds,"--MIX|--mix|--MISCIBILITY|--miscibility|--MISCIBILE|--miscibile"));
@@ -638,7 +565,6 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
 
   vpflow.flag("PDB",aurostd::args2flag(argv,cmds,"--pdb"));
   vpflow.flag("PDOS",aurostd::args2flag(argv,cmds,"--pdos") && argv.at(1)=="--pdos");
-  // DX 8/18/17 [OBSOLETE] vpflow.flag("PGROUP",aurostd::args2flag(argv,cmds,"--pointgroup|--pgroup"));
   // DX 8/18/17 - Added tolerance and no_scan options to Xgroups - START
   vpflow.args2addattachedscheme(argv,cmds,"PGROUP","--pointgroup=|--pgroup=","");
   if(vpflow.flag("PGROUP")){
@@ -649,7 +575,6 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
     vpflow.flag("SYMMETRY::SCREEN_ONLY",aurostd::args2flag(argv,cmds,"--screen_only")); // DX 8/3/17
   }
   // DX 8/18/17 - Added tolerance and no_scan options to Xgroups - END
-  // DX 8/18/17 [OBSOLETE] vpflow.flag("PGROUPX",aurostd::args2flag(argv,cmds,"--pointgroup_crystal|--pgroup_crystal|--pgroup_xtal|--pgroupx|--pgroupX"));
   // DX 8/18/17 - Added tolerance and no_scan options to Xgroups - START
   vpflow.args2addattachedscheme(argv,cmds,"PGROUPX","--pointgroup_crystal=|--pgroup_crystal=|--pgroup_xtal=|--pgroupx=|--pgroupX=","");
   if(vpflow.flag("PGROUPX")){
@@ -663,7 +588,6 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
     // DX 9/21/17 - MAGNETIC SYMMETRY - END
   }
   // DX 8/18/17 - Added tolerance and no_scan options to Xgroups - END
-  // DX 8/18/17 [OBSOLETE] vpflow.flag("PGROUPK",aurostd::args2flag(argv,cmds,"--pointgroupklattice|--pgroupk"));
   // DX 8/18/17 - Added tolerance and no_scan options to Xgroups - START
   vpflow.args2addattachedscheme(argv,cmds,"PGROUPK","--pointgroupklattice=|--pgroupk=","");
   if(vpflow.flag("PGROUPK")){
@@ -685,7 +609,6 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
   }
   // DX 12/5/17 - Added pgroupk_xtal - END
   vpflow.flag("PLANEDENS",aurostd::args2flag(argv,cmds,"--planedens") && argv.at(1)=="--planedens");
-  // [OBSOLETE]  vpflow.flag("PLATON",aurostd::args2flag(argv,cmds,"--platon") && argv.at(1)=="--platon");
   vpflow.args2addattachedscheme(argv,cmds,"PLATON","--platon=",""); 
 
   vpflow.args2addattachedscheme(argv,cmds,"PLOT_BAND","--plotband=","./");
@@ -719,11 +642,6 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
   vpflow.flag("PRIM1",aurostd::args2flag(argv,cmds,"--prim1"));
   vpflow.flag("PRIM2",aurostd::args2flag(argv,cmds,"--prim2"));
   vpflow.flag("PRIM3",aurostd::args2flag(argv,cmds,"--prim3"));
-  // [OBSOLETE] vpflow.flag("PRIMJ",aurostd::args2flag(argv,cmds,"--primj"));
-  // [OBSOLETE] vpflow.flag("PROTO", (aurostd::args2attachedflag(argv,cmds,"--proto=")) ||           // --proto=123:A:B:C ..
-  // [OBSOLETE]            (aurostd::args2attachedflag(argv,cmds,"--proto_icsd=")));                 // --proto_icsd=Gd1Mn2Si2_ICSD_54947
-  // [OBSOLETE] vpflow.flag("PROTO_AFLOW",(aurostd::args2attachedflag(argv,cmds,"--aflow_proto=")) ||   // --aflow_proto=123:A:B:C ..
-  // [OBSOLETE]            (aurostd::args2attachedflag(argv,cmds,"--aflow_proto_icsd=")));         // --aflow_proto_icsd=Gd1Mn2Si2_ICSD_54947
   
   vpflow.args2addattachedscheme(argv,cmds,"PROTO","--proto=|--proto_icsd=","");                                                    // --proto=123:A:B:C --proto_icsd=Gd1Mn2Si2_ICSD_54947
   vpflow.args2addattachedscheme(argv,cmds,"PARAMS","--params=|--parameters=","");                                                  // --proto=123:A:B:C --proto_icsd=Gd1Mn2Si2_ICSD_54947
@@ -831,59 +749,38 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
     vpflow.flag("AIMS",FALSE);      // PRIORITIES
   }  
 
-  // [OBSOLETE]  vpflow.flag("PROTOCLASSIFY",aurostd::args2flag(argv,cmds,"--protoclassify|--PROTOCLASSIFY"));
-  // [OBSOLETE]  vpflow.flag("PROTOCLASSIFYH",aurostd::args2flag(argv,cmds,"--protoclassify_h|--PROTOCLASSIFY_H"));
-  // [OBSOLETE]  vpflow.flag("PROTOCLASSIFYM",aurostd::args2flag(argv,cmds,"--protoclassify_m|--PROTOCLASSIFY_M"));
-  // [OBSOLETE]  vpflow.flag("PROTOTYPER",aurostd::args2flag(argv,cmds,"--prototyper|--PROTOTYPER"));
-  // [OBSOLETE]  vpflow.flag("PROTOTYPERH",aurostd::args2flag(argv,cmds,"--prototyper_h|--PROTOTYPER_H"));
-  // [OBSOLETE]  vpflow.flag("PROTOTYPERM",aurostd::args2flag(argv,cmds,"--prototyper_m|--PROTOTYPER_M"));
-  // [OBSOLETE]  vpflow.flag("PROTOTYPER_ANGLE",aurostd::args2flag(argv,cmds,"--prototyper_angle|--PROTOTYPER_ANGLE"));
-  // [OBSOLETE]  vpflow.flag("PROTOTYPER_MULT",aurostd::args2flag(argv,cmds,"--prototypermult|--PROTOTYPERMULT"));
   vpflow.flag("PROTOINITIAL",aurostd::args2flag(argv,cmds,"--initial"));
 
   vpflow.flag("QE",aurostd::args2flag(argv,cmds,"--qe") && !vpflow.flag("PROTO_AFLOW") && !vpflow.flag("PROTO"));
   vpflow.flag("ABINIT",aurostd::args2flag(argv,cmds,"--abinit") && !vpflow.flag("PROTO_AFLOW") && !vpflow.flag("PROTO"));
   vpflow.flag("AIMS",aurostd::args2flag(argv,cmds,"--aims") && !vpflow.flag("PROTO_AFLOW") && !vpflow.flag("PROTO"));
-  // [OBSOLETE]  vpflow.flag("QSUB",aurostd::args2flag(argv,cmds,"--qsub|--qstart"));
   vpflow.args2addattachedscheme(argv,cmds,"QSUB","--qsub=|--qstart=|--bsub=|--sbatch=","");
-  // [OBSOLETE]  vpflow.flag("QDEL",aurostd::args2flag(argv,cmds,"--qdel|--scancel|--bkill"));
   vpflow.args2addattachedscheme(argv,cmds,"QDEL","--qdel=|--scancel=|--bkill=","");
   
   vpflow.flag("QMVASP",aurostd::args2flag(argv,cmds,"--qmvasp"));
   vpflow.flag("QMVASP::STATIC",aurostd::args2flag(argv,cmds,"--static")); //CO 180703
-  // [OBSOLETE] vpflow.flag("BSUB",aurostd::args2flag(argv,cmds,"--bsub"));
-  // [OBSOLETE] vpflow.args2addattachedscheme(argv,cmds,"BSUB","--bsub=","");
-  // [OBSOLETE] vpflow.flag("SBATCH",aurostd::args2flag(argv,cmds,"--sbatch"));
-  // [OBSOLETE] vpflow.args2addattachedscheme(argv,cmds,"SBATCH","--sbatch=","");
 
-  // [OBSOLETE]  vpflow.flag("RASMOL",aurostd::args2flag(argv,cmds,"--rasmol"));
   vpflow.args2addattachedscheme(argv,cmds,"RASMOL","--rasmol=","");
 
   vpflow.flag("RAYTRACE",(aurostd::args2flag(argv,cmds,"--raytrace") && argv.at(1)=="--raytrace"));
   vpflow.flag("RBANAL",aurostd::args2flag(argv,cmds,"--rbanal") && argv.at(1)=="--rbanal");
   vpflow.flag("RBDIST",aurostd::args2flag(argv,cmds,"--rbdist") && argv.at(1)=="--rbdist");
-  // [OBSOLETE]  vvpflow.flag("RDF",(aurostd::args2flag(argv,cmds,"--rdf") && argv.at(1)=="--rdf"));
   vpflow.args2addattachedscheme(argv,cmds,"RDF","--rdf=","");
-  // [OBSOLETE]  vpflow.flag("RDFCMP",(aurostd::args2flag(argv,cmds,"--rdfcmp") && argv.at(1)=="--rdfcmp"));
   vpflow.args2addattachedscheme(argv,cmds,"RDFCMP","--rdfcmp=","");
 
   vpflow.flag("RMATOM",aurostd::args2flag(argv,cmds,"--rm_atom") && argv.at(1)=="--rm_atom");
   vpflow.flag("RMCOPIES",aurostd::args2flag(argv,cmds,"--rm_copies") && argv.at(1)=="--rm_copies");
   vpflow.flag("RSM",aurostd::args2flag(argv,cmds,"--rsm"));
 
-  // [OBSOLETE]  vpflow.flag("SCALE",aurostd::args2flag(argv,cmds,"--scale"));
   vpflow.args2addattachedscheme(argv,cmds,"SCALE","--scale=","0.0");
   
   vpflow.flag("SD",(aurostd::args2flag(argv,cmds,"--sd") && argv.at(1)=="--sd"));
   vpflow.flag("SETCM",(aurostd::args2flag(argv,cmds,"--setcm") && argv.at(1)=="--setcm"));
   vpflow.flag("SETORIGIN",(aurostd::args2flag(argv,cmds,"--setorigin") && argv.at(1)=="--setorigin"));
   vpflow.flag("SEWALD",aurostd::args2flag(argv,cmds,"--sewald") && argv.at(1)=="--sewald");
-  // [OBSOLETE] vpflow.flag("SHELL",(aurostd::args2flag(argv,cmds,"--shell") && argv.at(1)=="--shell"));
   vpflow.args2addattachedscheme(argv,cmds,"SHELL","--shell=","");
-  // [OBSOLETE] vpflow.flag("SHIFT",(aurostd::args2flag(argv,cmds,"--shift") && argv.at(1)=="--shift"));
   vpflow.args2addattachedscheme(argv,cmds,"SHIFT","--shift=","");
   vpflow.flag("SG",aurostd::args2flag(argv,cmds,"--sg|-sg"));
-  // DX 8/18/17 [OBSOLETE] vpflow.flag("SGROUP",aurostd::args2flag(argv,cmds,"--spacegroup|--sgroup"));
   // DX 8/18/17 - Added tolerance and no_scan options to Xgroups - START
   vpflow.args2addattachedscheme(argv,cmds,"SGROUP","--spacegroup=|--sgroup=","");
   if(vpflow.flag("SGROUP")){
@@ -900,9 +797,6 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
   // DX 8/18/17 - Added tolerance and no_scan options to Xgroups - END
   // vpflow.flag("SPLINE",aurostd::args2flag(argv,cmds,"--spline") && argv.at(1)=="--spline");
 
-  // [OBSOLETE] vpflow.flag("SG::AFLOW",aurostd::args2flag(argv,cmds,"--aflowSG") && argv.at(1)=="--aflowSG");
-  // [OBSOLETE] vpflow.flag("SG::AFLOW_LABEL",aurostd::args2flag(argv,cmds,"--aflowSG_label") && argv.at(1)=="--aflowSG_label");
-  // [OBSOLETE] vpflow.flag("SG::AFLOW_NUMBER",aurostd::args2flag(argv,cmds,"--aflowSG_number|--aflowSGn|--aflowSGN") && argv.at(1)=="--aflowSG_number");
   vpflow.args2addattachedscheme(argv,cmds,"SG::AFLOW","--aflowSG=",""); 
   vpflow.args2addattachedscheme(argv,cmds,"SG::AFLOW_LABEL","--aflowSG_label=",""); 
   vpflow.args2addattachedscheme(argv,cmds,"SG::AFLOW_NUMBER","--aflowSG_number=",""); 
@@ -918,9 +812,6 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
   }
   // DX 9/26/17 - Create flags for SG functions - END
  
-  // [OBSOLETE] vpflow.flag("SG::PLATON",aurostd::args2flag(argv,cmds,"--platonSG") && argv.at(1)=="--platonSG");
-  // [OBSOLETE] vpflow.flag("SG::PLATON_LABEL",aurostd::args2flag(argv,cmds,"--platonSG_label") && argv.at(1)=="--platonSG_label");
-  // [OBSOLETE] vpflow.flag("SG::PLATON_NUMBER",aurostd::args2flag(argv,cmds,"--platonSG_number|--platonSGn|--platonSGN") && argv.at(1)=="--platonSG_number");
   vpflow.args2addattachedscheme(argv,cmds,"SG::PLATON","--platonSG=",""); 
   vpflow.args2addattachedscheme(argv,cmds,"SG::PLATON_LABEL","--platonSG_label=",""); 
   vpflow.args2addattachedscheme(argv,cmds,"SG::PLATON_NUMBER","--platonSG_number=",""); 
@@ -932,9 +823,6 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
   } 
   // DX 9/26/17 - Create flags for SG functions - END 
  
-  // [OBSOLETE] vpflow.flag("SG::FINDSYM",aurostd::args2flag(argv,cmds,"--findsymSG") && argv.at(1)=="--findsymSG");
-  // [OBSOLETE] vpflow.flag("SG::FINDSYM_LABEL",aurostd::args2flag(argv,cmds,"--findsymSG_label") && argv.at(1)=="--findsymSG_label");
-  // [OBSOLETE] vpflow.flag("SG::FINDSYM_NUMBER",aurostd::args2flag(argv,cmds,"--findsymSG_number|--findsymSGn|--findsymSGN") && argv.at(1)=="--findsymSG_number");
   vpflow.args2addattachedscheme(argv,cmds,"SG::FINDSYM","--findsymSG=",""); 
   vpflow.args2addattachedscheme(argv,cmds,"SG::FINDSYM_LABEL","--findsymSG_label=",""); 
   vpflow.args2addattachedscheme(argv,cmds,"SG::FINDSYM_NUMBER","--findsymSG_number=",""); 
@@ -963,7 +851,6 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
     vpflow.args2addattachedscheme(argv,cmds,"SGDATA::MAGNETIC","--mag=|--magnetic=|--magmom=","1"); // DX 8/3/17
     // DX 9/21/17 - MAGNETIC SYMMETRY - END
   }
-  // [OBSOLETE] vpflow.flag("SLAB",aurostd::args2flag(argv,cmds,"--slab|--SLAB"));
   vpflow.args2addattachedscheme(argv,cmds,"SLAB","--slab=","");
 
   vpflow.flag("SOF",aurostd::args2flag(argv,cmds,"--sof"));
@@ -973,9 +860,7 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
   vpflow.flag("STDPRIMCELL",aurostd::args2flag(argv,cmds,"--sp|--standard_primitive|--std_prim|--sprim"));
   vpflow.flag("SUMPDOS",(aurostd::args2flag(argv,cmds,"--sumpdos") && argv.at(1)=="--sumpdos"));
 
-  // [OBSOLETE] vpflow.flag("SUPERCELL",aurostd::args2flag(argv,cmds,"--supercell"));
   vpflow.args2addattachedscheme(argv,cmds,"SUPERCELL","--supercell=","");
-  // [OBSOLETE] vpflow.flag("SUPERCELLSTRLIST",aurostd::args2flag(argv,cmds,"--supercell_strlist") && argv.at(1)=="--supercell_strlist");
   vpflow.args2addattachedscheme(argv,cmds,"SUPERCELLSTRLIST","--supercell_strlist=","");
 
   vpflow.flag("SWAP",aurostd::args2flag(argv,cmds,"--swap"));
@@ -995,9 +880,7 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
   vpflow.flag("WWW",aurostd::args2flag(argv,cmds,"--web|--www|--http"));
   vpflow.flag("WYCKOFF",aurostd::args2flag(argv,cmds,"--wyckoff|--wy"));
 
-  // [OBSOLETE] vpflow.flag("XRAY",aurostd::args2flag(argv,cmds,"--xray"));
   vpflow.args2addattachedscheme(argv,cmds,"XRAY","--xray=","");
-  // [OBSOLETE] vpflow.flag("XYZ",aurostd::args2flag(argv,cmds,"--xyz"));
   vpflow.args2addattachedscheme(argv,cmds,"XYZ","--xyz=","");
   vpflow.flag("XYZWS",aurostd::args2flag(argv,cmds,"--xyzwignerseitz|--xyzws"));
 
@@ -1007,24 +890,14 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
   vpflow.flag("XXX",(aurostd::args2flag(argv,cmds,"--xxx")));
   if(vpflow.flag("XXX")) cout << "XXX" << endl;
 
-  // [OBSOLETE] vpflow.flag("LIB2RAW_ALL",aurostd::args2flag(argv,cmds,"--lib2raw_all|--xraw_all"));
-  // [OBSOLETE]  if(vpflow.flag("LIB2RAW_ALL")) vpflow.flag("MULTI=SH",FALSE);
-  // [OBSOLETE] 
-  // [OBSOLETE] if(LIB2RAW_ALL) MULTI=SH=FALSE;
-  // [OBSOLETE] ivpflow.flag("LIB2RAW_ALL_FORCE",aurostd::args2flag(argv,cmds,"--lib2raw_all_force|--xraw_all_force"));
-  // [OBSOLETE] if(LIB2RAW_ALL_FORCE) MULTI=SH=FALSE;
-  // [OBSOLETE] vpflow.flag("LIB2RAW_FORCE",aurostd::args2flag(argv,cmds,"--lib2raw_force|--xraw_force") || aurostd::args2attachedflag(argv,cmds,"--lib2raw_force=|--xraw_force="));
-  // [OBSOLETE] vpflow.flag("LIB2RAW",aurostd::args2flag(argv,cmds,"--lib2raw|--xraw") || aurostd::args2attachedflag(argv,cmds,"--lib2raw=|--xraw="));
   vpflow.args2addattachedscheme(argv,cmds,"LIB2RAW","--lib2raw=","");
   if(vpflow.flag("LIB2RAW")){vpflow.flag("LIB2RAW_LOCAL",aurostd::args2flag(argv,cmds,"--local"));}
   vpflow.flag("FORCE",aurostd::args2flag(argv,cmds,"--force"));
 
   vpflow.flag("XPLUG",aurostd::args2flag(argv,cmds,"--xplug"));
 
-  // [OBSOLETE] vpflow.flag("XRD_DIST",aurostd::args2flag(argv,cmds,"--xrd_dist"));
   vpflow.args2addattachedscheme(argv,cmds,"XRD_DIST","--xrd_dist=|--XRD_DIST=","");
 
-  // [OBSOLETE] vpflow.flag("ZVAL",aurostd::args2flag(argv,cmds,"--zval|--ZVAL|--zval_cell|--ZVAL_CELL|--pomass|--POMASS|--pomass_cell|--POMASS_CELL"));
   vpflow.args2addattachedscheme(argv,cmds,"ZVAL","--zval=|--ZVAL=","");
   vpflow.args2addattachedscheme(argv,cmds,"ZVAL::CELL","--zval_cell=|--ZVAL_CELL=|--zvalcell=|--ZVALCELL=","");
   vpflow.args2addattachedscheme(argv,cmds,"ZVAL::ATOM","--zval_atom=|--ZVAL_ATOM=|--zvalatom=|--ZVALATOM=","");
@@ -1051,24 +924,19 @@ uint PflowARGs(vector<string> &argv,vector<string> &cmds,aurostd::xoption &vpflo
     vpflow.args2addattachedscheme(argv,cmds,"WYCCAR::MAGNETIC","--mag=|--magnetic=|--magmom=","1");
     //DX 20180807 - added more wyccar flags (--usage, --no_scan, setting, --magmom) - END
   }
-  // [OBSOLETE]  vpflow.flag("AFLOWSG",aurostd::args2flag(argv,cmds, "--aflowSG")); //RHT  // FIX
   // end Richard's symmetry (RHT)
   // WE MIGHT NEED TO PUT THEM AROUND IN ALPHABETIC ORDER, keep the //RHT
   // DX - END
 
   // *************************************
   // cluster expansion method
-  // [OBSOLETE] vpflow.flag("CE::CLUSTEREXPANSION",aurostd::args2flag(argv,cmds,"--cluster-expansion|--ce") && (argv.size() == 7));
   vpflow.args2addattachedscheme(argv,cmds,"CE::CLUSTEREXPANSION","--cluster-expansion=|--ce=","");
   
   // special Quasirandom Structure (SQS)
-  // [OBSOLETE] vpflow.flag("CE::SQS",aurostd::args2flag(argv,cmds,"--special-quasirandom-structure|--sqs") && ((argv.size() == 9) || (argv.size() == 5)));
   vpflow.args2addattachedscheme(argv,cmds,"CE::SQS","--special-quasirandom-structure=|--sqs=",""); 
   // get all clusters
-  // [OBSOLETE] vpflow.flag("CE::CLUSTERS",aurostd::args2flag(argv,cmds,"--cluster") && (argv.size() == 7));
   vpflow.args2addattachedscheme(argv,cmds,"CE::CLUSTERS","--cluster=|--clusters=","");
   // get all superlattices
-  // [OBSOLETE] vpflow.flag("CE::SUPERLATTICE",aurostd::args2flag(argv,cmds,"--superlattice=") && (argv.size() == 5));
   vpflow.args2addattachedscheme(argv,cmds,"CE::SUPERLATTICE","--superlattice=","");
   
   // *************************************
@@ -1108,7 +976,6 @@ namespace pflow {
     aurostd::args2flag(argv,cmds,"--np="); // put them in cmds
     aurostd::args2flag(argv,cmds,"--npmax"); // put them in cmds
   
-    // [OBSOLETE]  PflowARGs(argv,cmds,XHOST.vflag_pflow);         // inside init::InitMachine
     vpflow=XHOST.vflag_pflow;
 
     if(vpflow.flag("PFLOW_HELP") && argv.size() == 2) {
@@ -1128,11 +995,8 @@ namespace pflow {
     string EXTRACT_POTCAR=aurostd::args2string(argv,cmds,"--extract_potcar|--xpotcar","nan");
 
     // aflow style operations
-    // [OBSOLETE] aflags.AFLOW_PERFORM_CLEAN=aurostd::args2flag(argv,cmds,"--CLEAN|--clean");
     aflags.AFLOW_PERFORM_CLEAN=XHOST.vflag_aflow.flag("CLEAN");
     vpflow.flag("CLEAN",aflags.AFLOW_PERFORM_CLEAN);
-    // [OBSOLETE] aflags.AFLOW_PERFORM_DIRECTORY=aurostd::args2flag(argv,cmds,"--DIRECTORY|--D|--d|-D|-d");
-    // [OBSOLETE] aflags.AFLOW_PERFORM_FILE=aurostd::args2flag(argv,cmds,"--F|--FILE|--f");
     aflags.AFLOW_PERFORM_DIRECTORY=XHOST.vflag_control.flag("DIRECTORY");
     aflags.AFLOW_PERFORM_FILE=XHOST.vflag_control.flag("FILE");
     if(vpflow.flag("CLEAN")) {
@@ -1154,7 +1018,6 @@ namespace pflow {
     // if(pflow::CheckCommands(argv,cmds)==FALSE) exit(0);
   
     xstructure a;
-    // [OBSOLETE] a.iomode=IOVASP_AUTO;
     //  a.iomode=IOAFLOW_AUTO;
     a.iomode=IOVASP_AUTO;
     xvector<double> _emptyv(1);
@@ -1200,16 +1063,11 @@ namespace pflow {
       // put cartesian or fractional
       if(vpflow.flag("BZPLOT")) {LATTICE::BZPLOTDATA("",cin,1); _PROGRAMRUN=true;}
       if(vpflow.flag("BZPLOTDATA")) {LATTICE::BZPLOTDATA("",cin,0); _PROGRAMRUN=true;}
-      // [OBSOLETE] if(vpflow.flag("EWALD")) {pflow::EWALD(argv,cin); _PROGRAMRUN=true;}
       if(vpflow.flag("HNFTOL")) {pflow::HNFTOL(argv,cin,cout); _PROGRAMRUN=true;}
       if(vpflow.flag("ICSD_MAKELABEL")) {pflow::ICSD(argv,cin); _PROGRAMRUN=true;}
       if(vpflow.flag("JMOLGIF")) {pflow::JMOLAnimation(cin,argv); _PROGRAMRUN=true;}
       if(vpflow.flag("KPATH")) {pflow::KPATH(cin,aurostd::args2attachedutype<double>(argv,"--grid=",16.0),vpflow.flag("WWW")); _PROGRAMRUN=true;}
       if(vpflow.flag("NANOPARTICLE")) {cout << pflow::NANOPARTICLE(cin,xvector<double>(0)); _PROGRAMRUN=true;}
-      // [OBSOLETE CO 180703]if(vpflow.flag("QMVASP")) {pflow::QMVASP(argv); _PROGRAMRUN=true;}
-      // [OBSOLETE] if(vpflow.flag("SG::FINDSYM_PRINT")) {pflow::FINDSYM(vpflow.getattachedscheme("SG::FINDSYM_PRINT"),0,cin); _PROGRAMRUN=true;}
-      // [OBSOLETE] if(vpflow.flag("SG::FINDSYM_EXEC")) {pflow::FINDSYM(vpflow.getattachedscheme("SG::FINDSYM_EXEC"),1,cin); _PROGRAMRUN=true;}
-      // if(vpflow.flag("PROTO_GUS_CPP")) {pflow::PROTO_GUS_CPP(argv); _PROGRAMRUN=true;}
     }
     // *********************************************************************
     if(argv.size()>=2 && !_PROGRAMRUN) {
@@ -1219,7 +1077,6 @@ namespace pflow {
       if(vpflow.flag("ABCCAR")) {cout << pflow::ABCCAR(cin); _PROGRAMRUN=true;}
       if(vpflow.flag("ACE")) {pflow::ACE(cin); _PROGRAMRUN=true;}
       if(vpflow.flag("AFLOWIN")) {cout << pflow::AFLOWIN(cin); _PROGRAMRUN=true;}
-      // DX 8/18/17 [OBSOLETE] if(vpflow.flag("AGROUP")) {pflow::AGROUP(aflags,cin); _PROGRAMRUN=true;}
       if(vpflow.flag("AGROUP")) {pflow::SYMMETRY_GROUPS(aflags,cin,vpflow,cout); _PROGRAMRUN=true;} // DX 8/18/17
       if(vpflow.flag("AGROUP2")) {pflow::AGROUP2(cin); _PROGRAMRUN=true;}
       if(vpflow.flag("AGROUP2m")) {pflow::AGROUP2m(cin); _PROGRAMRUN=true;}
@@ -1242,11 +1099,6 @@ namespace pflow {
       if(vpflow.flag("BANDGAPDOS")) {AConvaspBandgapFromDOS(cin); _PROGRAMRUN=true;}
       if(vpflow.flag("BANDGAPLISTDOS")) {AConvaspBandgapListFromDOS(cin); _PROGRAMRUN=true;}
       if(vpflow.flag("BZDIRECTION")) {
-        //DX 20181102 [OBSOLETE] if(vpflow.getattachedscheme("BZDIRECTION").empty()) {
-        //DX 20181102 [OBSOLETE]  cout << pflow::BZDirectionsSTRUCTURE(cin,vpflow); //DX 20181101
-        //DX 20181102 [OBSOLETE]} else {
-        //DX 20181102 [OBSOLETE]  cout << pflow::BZDirectionsLATTICE(vpflow.getattachedscheme("BZDIRECTION"));
-        //DX 20181102 [OBSOLETE]}
         if(vpflow.flag("BZDIRECTION::LATTICE")) {
 	cerr << "[" << vpflow.getattachedscheme("BZDIRECTION") << "]" << endl;
           cout << pflow::BZDirectionsLATTICE(vpflow.getattachedscheme("BZDIRECTION::LATTICE"));
@@ -1276,7 +1128,6 @@ namespace pflow {
       if(vpflow.flag("CE::SUPERLATTICE")) {pflow::Superlattice(vpflow.getattachedscheme("CE::SUPERLATTICE")); _PROGRAMRUN=true;}
       if(vpflow.flag("CE::SQS")) {pflow::SQS(vpflow.getattachedscheme("CE::SQS")); _PROGRAMRUN=true;}
       // D
-      // DX 9/1/17 [OBSOLETE] if(vpflow.flag("DATA")) {pflow::DATA("DATA",cin); _PROGRAMRUN=true;}
       if(vpflow.flag("DATA")) {pflow::DATA("DATA",cin,vpflow,cout); _PROGRAMRUN=true;}
       if(vpflow.flag("DATA1")) {pflow::DATA1(vpflow.getattachedscheme("DATA1"),cin); _PROGRAMRUN=true;}
       if(vpflow.flag("DATA2")) {pflow::DATA2(cin); _PROGRAMRUN=true;}
@@ -1286,13 +1137,11 @@ namespace pflow {
       if(vpflow.flag("DIST")) {pflow::DIST(vpflow.getattachedscheme("DIST"),cin); _PROGRAMRUN=true;}
       //if(DYNADIEL) {pflow::DYNADIEL(argv) ; _PROGRAMRUN=true ;} // CAMILO
       // E
-      // DX 9/1/17 [OBSOLETE] if(vpflow.flag("EDATA")) {pflow::DATA("EDATA",cin); _PROGRAMRUN=true;}
       if(vpflow.flag("EDATA")) {pflow::DATA("EDATA",cin,vpflow,cout); _PROGRAMRUN=true;}
       if(vpflow.flag("EDOS")) {pflow::EDOS(argv); _PROGRAMRUN=true;}
       if(vpflow.flag("EFFMASS")) { pflow::EFFMASS(argv, cout) ; _PROGRAMRUN=true ; } // CAMILO
       //  if(vpflow.flag("EFFECTIVEMASS")) {pflow::EffectiveMass(argv,aurostd::args2string(argv,"--em","./"),cout); _PROGRAMRUN=true;}
       if(vpflow.flag("EIGCURV")) {pflow::EIGCURV(vpflow.getattachedscheme("EIGCURV"),cout) ; _PROGRAMRUN=true ;} // CAMILO
-      // DX 8/18/17 [OBSOLETE] if(vpflow.flag("EQUIVALENT")) {cout << pflow::EQUIVALENT(aflags,cin); _PROGRAMRUN=true;}
       if(vpflow.flag("EQUIVALENT")) {cout << pflow::EQUIVALENT(aflags,cin,vpflow); _PROGRAMRUN=true;}
       if(vpflow.flag("EWALD")) {pflow::EWALD(vpflow.getattachedscheme("EWALD"),cin); _PROGRAMRUN=true;}
       // F
@@ -1302,7 +1151,6 @@ namespace pflow {
       if(vpflow.flag("FROZSL_README")) {cout << init::InitGlobalObject("README_AFLOW_FROZSL_TXT") << endl; _PROGRAMRUN=true;}
       if(vpflow.flag("FROZSL_INPUT")) {cout << pflow::FROZSL_INPUT(); _PROGRAMRUN=true;}
       if(vpflow.flag("FROZSL_OUTPUT")) {cout << pflow::FROZSL_OUTPUT(); _PROGRAMRUN=true;}
-      // DX 8/18/17 [OBSOLETE] if(vpflow.flag("FGROUP")) {pflow::FGROUP(aflags,cin); _PROGRAMRUN=true;}
       if(vpflow.flag("FGROUP")) {pflow::SYMMETRY_GROUPS(aflags,cin,vpflow,cout); _PROGRAMRUN=true;} // DX 8/18/17
       if(vpflow.flag("FRAC")) {cout << pflow::FRAC(cin); _PROGRAMRUN=true;}
       // G
@@ -1347,8 +1195,6 @@ namespace pflow {
       if(vpflow.flag("INCOMPACT")) {cout << pflow::INCOMPACT(cin); _PROGRAMRUN=true;}
       if(vpflow.flag("INTPOL")) {pflow::INTPOL(vpflow.getattachedscheme("INTPOL")); _PROGRAMRUN=true;}
       if(vpflow.flag("INWS")) {cout << pflow::INWS(cin); _PROGRAMRUN=true;}
-      // [OBSOLETE] if(vpflow.flag("INFLATE_LATTICE")) {cout << pflow::INFLATE_LATTICE(cin,aurostd::args2utype(argv,"--inflate_lattice|--ilattice",1.0)); _PROGRAMRUN=true;}
-      // [OBSOLETE] if(vpflow.flag("INFLATE_VOLUME")) {cout << pflow::INFLATE_VOLUME(cin,aurostd::args2utype(argv,"--inflate_volume|--ivolume",1.0)); _PROGRAMRUN=true;}
       if(vpflow.flag("INFLATE_LATTICE")) {cout << pflow::INFLATE_LATTICE(vpflow.getattachedscheme("INFLATE_LATTICE"),cin); _PROGRAMRUN=true;}
       if(vpflow.flag("INFLATE_VOLUME")) {cout << pflow::INFLATE_VOLUME(vpflow.getattachedscheme("INFLATE_VOLUME"),cin); _PROGRAMRUN=true;}
       // L
@@ -1360,7 +1206,6 @@ namespace pflow {
       if(vpflow.flag("LTCELL")) {cout << pflow::LTCELL(vpflow.getattachedscheme("LTCELL"),cin); _PROGRAMRUN=true;}
       if(vpflow.flag("LTCELLFV")) {cout << pflow::LTCELL(vpflow.getattachedscheme("LTCELLFV"),cin); _PROGRAMRUN=true;}
       // M
-      // [OBSOLETE] if(vpflow.flag("MILLER")) {cout << pflow::MILLER(vpflow.getattachedscheme("MILLER"),cin); _PROGRAMRUN=true;}
       if(vpflow.flag("MULTI=BZIP2")) {AFLOW_PTHREADS::MULTI_compress("bzip2",argv);_PROGRAMRUN=true;}
       if(vpflow.flag("MULTI=BUNZIP2")) {AFLOW_PTHREADS::MULTI_compress("bunzip2",argv);_PROGRAMRUN=true;}
       if(vpflow.flag("MULTI=GZIP")) {AFLOW_PTHREADS::MULTI_compress("gzip",argv);_PROGRAMRUN=true;}
@@ -1421,11 +1266,8 @@ namespace pflow {
       if(vpflow.flag("POMASS::ATOM")) {pflow::ZVAL("POMASS::ATOM,"+vpflow.getattachedscheme("POMASS::ATOM")); _PROGRAMRUN=true;}
       if(vpflow.flag("PEARSON_SYMBOL")) {cout << pflow::PEARSON_SYMBOL(cin); _PROGRAMRUN=true;}
       if(vpflow.flag("PDB")) {pflow::PDB(cin); _PROGRAMRUN=true;}
-      // DX 8/18/17 [OBSOLETE] if(vpflow.flag("PGROUP")) {pflow::PGROUP(aflags,cin); _PROGRAMRUN=true;}
       if(vpflow.flag("PGROUP")) {pflow::SYMMETRY_GROUPS(aflags,cin,vpflow,cout); _PROGRAMRUN=true;} // DX 8/18/17
-      // DX 8/18/17 [OBSOLETE] if(vpflow.flag("PGROUPX")) {pflow::PGROUPXTAL(aflags,cin); _PROGRAMRUN=true;}
       if(vpflow.flag("PGROUPX")) {pflow::SYMMETRY_GROUPS(aflags,cin,vpflow,cout); _PROGRAMRUN=true;} // DX 8/18/17
-      // DX 8/18/17 [OBSOLETE] if(vpflow.flag("PGROUPK")) {pflow::PGROUPK(aflags,cin); _PROGRAMRUN=true;}
       if(vpflow.flag("PGROUPK")) {pflow::SYMMETRY_GROUPS(aflags,cin,vpflow,cout); _PROGRAMRUN=true;} // DX 8/18/17
       if(vpflow.flag("PGROUPK_XTAL")) {pflow::SYMMETRY_GROUPS(aflags,cin,vpflow,cout); _PROGRAMRUN=true;} // DX 12/5/17
       if(vpflow.flag("POSCAR")) {cout << pflow::POSCAR(cin); _PROGRAMRUN=true;}
@@ -1512,7 +1354,6 @@ namespace pflow {
       if(vpflow.flag("REVERSE_SPACEGROUP_RHT")) {cout << SYM::ReverseSpaceGroup(argv) << endl; _PROGRAMRUN=true;}
       if(vpflow.flag("ORTHODEFECT_RHT")) {SYM::OrthoDefect(cin); _PROGRAMRUN=true;}
       if(vpflow.flag("PRIMITIVE_LATTICE_RHT")) {
-        //[OBSOLETE] SetTolerance(argv);
         xstructure str(cin);
         str.GetPrimitiveCell(); cout << str << endl;_PROGRAMRUN=true;}
 
@@ -2388,7 +2229,6 @@ namespace pflow {
     // DX 170804 - need to rescale, so we make a fast copy and calculate
     xstructure a(_a);
     a.ReScale(1.0);
-    // DX 2/21/18 [OBSOLETE] string directory=".";
     string directory=aurostd::execute2string("pwd"); // DX 2/21/18 - use pwd
     if(XHOST.vflag_control.flag("DIRECTORY")) {
       directory=XHOST.vflag_control.getattachedscheme("DIRECTORY");
@@ -2488,18 +2328,6 @@ namespace pflow {
 
     bool tocompress = TRUE;
     ofstream FileMESSAGE("/dev/null");
-    // DX 2/21/18 [OBSOLETE] string directory=".";
-    // DX 2/21/18 [OBSOLETE] if(XHOST.vflag_control.flag("DIRECTORY")) {
-    // DX 2/21/18 [OBSOLETE]   directory=XHOST.vflag_control.getattachedscheme("DIRECTORY");
-    // DX 2/21/18 [OBSOLETE] }
-    // DX 2/21/18 [OBSOLETE] aflags.Directory=directory;
-    // DX 2/21/18 [OBSOLETE] if(!aurostd::FileExist(directory)) {
-    // DX 2/21/18 [OBSOLETE]  oss << "ERROR: Unable to locate " << directory << "." << endl;
-    // DX 2/21/18 [OBSOLETE]  oss << "Exiting." << endl;
-    // DX 2/21/18 [OBSOLETE]  oss << endl;
-    // DX 2/21/18 [OBSOLETE]  //return oss.str();
-    // DX 2/21/18 [OBSOLETE]  return FALSE;
-    // DX 2/21/18 [OBSOLETE]}
 
     //while(symmetry_commensurate==FALSE){
     if(print == false){  // DX 8/3/17 - PRINT
@@ -2822,7 +2650,6 @@ namespace pflow {
     for(uint i=0;i<vspecies.size();i++) {
       data.species+=vspecies.at(i);if(i<vspecies.size()-1) data.species+=",";
     }
-    // [OBSOLETE]  aflowlib::LIB2RAW_Loop_Bands(directory_LIB,directory_RAW,vfiles,aflowlib_out,data,"pflow::BANDSTRUCTURE");
     aflowlib::LIB2RAW_Loop_Bands(directory_LIB,directory_RAW,vfiles,data,"pflow::BANDSTRUCTURE");
   }
 } // namespace pflow
@@ -2904,7 +2731,6 @@ namespace pflow {
 // pflow::BZDirectionsSTRUCTURE
 // ***************************************************************************
 namespace pflow {
-  //DX 20181101 [OBSOLETE] string BZDirectionsSTRUCTURE(istream& input) {
   string BZDirectionsSTRUCTURE(istream& input, aurostd::xoption& vpflow) {
    
     xstructure a(input,IOAFLOW_AUTO);
@@ -4675,7 +4501,6 @@ namespace pflow {
     xstructure str_in(input,IOAFLOW_AUTO);
     xstructure str_sp,str_sc;
     // str_in.SetCoordinates(_COORDS_CARTESIAN_);
-    // DX 8/29/17 [OBSOLETE] LATTICE::Standard_Lattice_StructureDefault(str_in,str_sp,str_sc);
     bool full_sym=false; // DX 8/29/17 - Speed increase
     LATTICE::Standard_Lattice_Structure(str_in,str_sp,str_sc,full_sym); // DX 8/29/17 - Speed increase
     cerr << "ORIGINAL" << endl;
@@ -5105,7 +4930,6 @@ namespace pflow {
 // pflow::EQUIVALENT
 // ***************************************************************************
 namespace pflow {
-  // DX 8/18/17 [OBSOLETE] xstructure EQUIVALENT(_aflags &aflags,istream& input) {
   string EQUIVALENT(_aflags &aflags,istream& input, aurostd::xoption& vpflow) {
     bool LDEBUG=(FALSE || XHOST.DEBUG);
     if(LDEBUG) cerr << "pflow::EQUIVALENT: BEGIN" << endl;
@@ -5264,9 +5088,7 @@ namespace pflow {
     double eta=-1.0;
     if(tokens.size()>=1) eta=aurostd::string2utype<double>(tokens.at(0));
     // cout << aflow::Banner("BANNER_TINY") << endl;
-    // [OBSOLETE] double eta=-1.0;
     double SUMTOL=1.0e-16;
-    // [OBSOLETE] if(argv.size()==3) eta=atof(argv.at(2).c_str());
     xstructure str(input,IOAFLOW_AUTO);
     str = GetNiggliStr(str);
     double epoint,ereal,erecip,eewald;
@@ -5295,13 +5117,11 @@ namespace pflow {
     aflags.QUIET=TRUE;XHOST.QUIET=TRUE;
     if(mode=="POSCAR") {
       vflags=KBIN::VASP_Get_Vflags_from_AflowIN(AflowIn,aflags,kflags);
-      //  OBSOLETE]  KBIN::VASP_Produce_POSCAR(xvasp,AflowIn,FileAFLOWIN,FileMESSAGE,aflags,kflags,vflags);
       KBIN::VASP_Produce_POSCAR(xvasp,AflowIn,FileMESSAGE,aflags,kflags,vflags);
       return xvasp.POSCAR.str();
     }
     if(mode=="INCAR") {
       vflags=KBIN::VASP_Get_Vflags_from_AflowIN(AflowIn,aflags,kflags);
-      // [OBSOLETE]  KBIN::VASP_Produce_INCAR(xvasp,AflowIn,FileAFLOWIN,FileMESSAGE,aflags,kflags,vflags);
       KBIN::VASP_Produce_INCAR(xvasp,AflowIn,FileMESSAGE,aflags,kflags,vflags);
       KBIN::VASP_Modify_INCAR(xvasp,FileMESSAGE,aflags,kflags,vflags);
       return xvasp.INCAR.str();
@@ -5309,14 +5129,12 @@ namespace pflow {
     if(mode=="KPOINTS") {
       vflags=KBIN::VASP_Get_Vflags_from_AflowIN(AflowIn,aflags,kflags);
       KBIN::VASP_Produce_POSCAR(xvasp,AflowIn,FileMESSAGE,aflags,kflags,vflags);
-      // OBSOLETE]   KBIN::VASP_Produce_KPOINTS(xvasp,AflowIn,FileAFLOWIN,FileMESSAGE,aflags,kflags,vflags);
       KBIN::VASP_Produce_KPOINTS(xvasp,AflowIn,FileMESSAGE,aflags,kflags,vflags);
       KBIN::VASP_Modify_KPOINTS(xvasp,FileMESSAGE,aflags,vflags);
       return xvasp.KPOINTS.str();
     }
     if(mode=="POTCAR") {
       vflags=KBIN::VASP_Get_Vflags_from_AflowIN(AflowIn,aflags,kflags);
-      // [OBSOLETE]    KBIN::VASP_Produce_POTCAR(xvasp,AflowIn,FileAFLOWIN,FileMESSAGE,aflags,kflags,vflags);
       KBIN::VASP_Produce_POTCAR(xvasp,AflowIn,FileMESSAGE,aflags,kflags,vflags);
       return xvasp.POTCAR.str();
     }
@@ -5408,7 +5226,6 @@ namespace pflow {
       cerr << "pflow::PerformFullSymmetry: ERROR! Atoms too close (min_dist=" << min_dist << print_directory << endl;
       return FALSE;
     }
-    // DX 9/5/17 [OBSOLETE] int change_sym_count=1;    
     //if(a.sym_eps!=AUROSTD_NAN){ //Tolerance came from user or was calculated
     //  a.sym_eps;
     //}
@@ -5430,24 +5247,12 @@ namespace pflow {
     aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET,osswrite,oss);
     
     while(symmetry_commensurate==FALSE){
-      //[DX OBSOLETE] a.SpaceGroup_ITC(a.sym_eps,orig_tolerance,-1,change_sym_count,no_scan); //rescales to 1.0 internally, but doesn't affect a
-      //[DX OBSOLETE] if(a.space_group_ITC == 0){
-      //[DX OBSOLETE]   // DXreturn FALSE;
-      //[DX OBSOLETE]   if(!no_scan){
-      //[DX OBSOLETE]     cerr << "pflow::PerformFullSymmetry: ERROR: Space group routine could not find space group at given tolerance." << endl;
-      //[DX OBSOLETE]     return FALSE;
-      //[DX OBSOLETE]   }else{
-      //[DX OBSOLETE]   cerr << "pflow::PerformFullSymmetry: WARNING: Space group routine could not find space group at given tolerance." << endl;
-      //[DX OBSOLETE]     //keep going, calculate rest of properties (though they are probably bad)
-      //[DX OBSOLETE]   }
-      //[DX OBSOLETE] }
       a.sym_eps_calculated=true;
       // Calculate Lattice Point Group 
       if(kflags.KBIN_SYMMETRY_CALCULATE_PGROUP){ // DX 8/14/17
 	if(!SYM::CalculatePointGroup(FileMESSAGE,a,aflags,kflags.KBIN_SYMMETRY_PGROUP_WRITE,osswrite,oss,format)){
 	  if(!no_scan){
 	    a.ClearSymmetry();
-	    // DX 9/5/17 [OBSOLETE] if(!SYM::change_tolerance(a,a.sym_eps,orig_tolerance,change_sym_count,min_dist,no_scan)){
 	    if(!SYM::change_tolerance(a,a.sym_eps,min_dist,no_scan)){
 	      a=b;  //pretty printing, unmodified structure
 	      if(force_perform){
@@ -5469,7 +5274,6 @@ namespace pflow {
 	  //exit(1);
 	  if(!no_scan){
 	    a.ClearSymmetry();
-	    // DX 9/5/17 [OBSOLETE] if(!SYM::change_tolerance(a,a.sym_eps,orig_tolerance,change_sym_count,min_dist,no_scan)){
 	    if(!SYM::change_tolerance(a,a.sym_eps,min_dist,no_scan)){
 	      a=b;  //pretty printing, unmodified structure
 	      if(force_perform){
@@ -5492,7 +5296,6 @@ namespace pflow {
         }
         if(!no_scan){
           a.ClearSymmetry();
-          // DX 9/5/17 [OBSOLETE] if(!SYM::change_tolerance(a,a.sym_eps,orig_tolerance,change_sym_count,min_dist,no_scan)){
           if(!SYM::change_tolerance(a,a.sym_eps,min_dist,no_scan)){
             a=b;  //pretty printing, unmodified structure
             if(force_perform){
@@ -5512,7 +5315,6 @@ namespace pflow {
 	if(!SYM::CalculateFactorGroup(FileMESSAGE,a,aflags,kflags.KBIN_SYMMETRY_FGROUP_WRITE,osswrite,oss,format)){
 	  if(!no_scan){
 	    a.ClearSymmetry();
-	    // DX 9/5/17 [OBSOLETE] if(!SYM::change_tolerance(a,a.sym_eps,orig_tolerance,change_sym_count,min_dist,no_scan)){
 	    if(!SYM::change_tolerance(a,a.sym_eps,min_dist,no_scan)){
 	      a=b;  //pretty printing, unmodified structure
 	      if(force_perform){
@@ -5533,7 +5335,6 @@ namespace pflow {
 	if(!SYM::CalculatePointGroupCrystal(FileMESSAGE,a,aflags,kflags.KBIN_SYMMETRY_PGROUP_XTAL_WRITE,osswrite,oss,format)){
 	  if(!no_scan){
 	    a.ClearSymmetry();
-	    // DX 9/5/17 [OBSOLETE] if(!SYM::change_tolerance(a,a.sym_eps,orig_tolerance,change_sym_count,min_dist,no_scan)){
 	    if(!SYM::change_tolerance(a,a.sym_eps,min_dist,no_scan)){
 	      a=b;  //pretty printing, unmodified structure
 	      if(force_perform){
@@ -5556,7 +5357,6 @@ namespace pflow {
         }
         if(!no_scan){
 	  a.ClearSymmetry();
-          // DX 9/5/17 [OBSOLETE] if(!SYM::change_tolerance(a,a.sym_eps,orig_tolerance,change_sym_count,min_dist,no_scan)){
           if(!SYM::change_tolerance(a,a.sym_eps,min_dist,no_scan)){
 	    a=b;  //pretty printing, unmodified structure
             if(force_perform){
@@ -5581,7 +5381,6 @@ namespace pflow {
 	  }
 	  if(!no_scan){
 	    a.ClearSymmetry();
-	    // DX 9/5/17 [OBSOLETE] if(!SYM::change_tolerance(a,a.sym_eps,orig_tolerance,change_sym_count,min_dist,no_scan)){
 	    if(!SYM::change_tolerance(a,a.sym_eps,min_dist,no_scan)){
 	      a=b;  //pretty printing, unmodified structure
 	      if(force_perform){
@@ -5601,7 +5400,6 @@ namespace pflow {
         if(!SYM::CalculatePointGroupKCrystal(FileMESSAGE,a,aflags,kflags.KBIN_SYMMETRY_PGROUPK_XTAL_WRITE,osswrite,oss,format)){ // DX 1/18/18 - PGROUPK_XTAL not PGROUPK
           if(!no_scan){
             a.ClearSymmetry();
-            // DX 9/5/17 [OBSOLETE] if(!SYM::change_tolerance(a,a.sym_eps,orig_tolerance,change_sym_count,min_dist,no_scan)){
             if(!SYM::change_tolerance(a,a.sym_eps,min_dist,no_scan)){
               a=b;  //pretty printing, unmodified structure
               if(force_perform){
@@ -5617,41 +5415,6 @@ namespace pflow {
           }
         }
       } // DX 8/14/17
-      //[DX OBSOLETE]// Check if point group and space group are consistent       
-      //[DX OBSOLETE]bool derivative_structure = true;
-      //[DX OBSOLETE]bool space_and_point_group_match = SYM::ComparePointGroupAndSpaceGroupString(a,multiplicity_of_primitive,derivative_structure);
-      //[DX OBSOLETE]if(!space_and_point_group_match && !derivative_structure){
-      //[DX OBSOLETE]  if(LDEBUG){ 
-      //[DX OBSOLETE]    cerr << "WARNING: Point group crystal and space group are not commensurate. " << endl;
-      //[DX OBSOLETE]    cerr << "Point Group Crystal: " << a.point_group_Hermann_Mauguin;
-      //[DX OBSOLETE]    if(a.space_group_ITC != 0){ 
-      //[DX OBSOLETE]      cerr << " | Space Group: " << GetSpaceGroupName(a.space_group_ITC) << endl; 
-      //[DX OBSOLETE]    }
-      //[DX OBSOLETE]    else{
-      //[DX OBSOLETE]      cerr << " | Space Group: --" << endl; 
-      //[DX OBSOLETE]    }
-      //[DX OBSOLETE]  }
-      //[DX OBSOLETE]  if(!no_scan){
-      //[DX OBSOLETE]    a.ClearSymmetry();
-      //[DX OBSOLETE]    // DX 9/5/17 [OBSOLETE] if(!SYM::change_tolerance(a,a.sym_eps,orig_tolerance,change_sym_count,min_dist,no_scan)){
-      //[DX OBSOLETE]    if(!SYM::change_tolerance(a,a.sym_eps,min_dist,no_scan)){
-      //[DX OBSOLETE]	    a=b;  //pretty printing, unmodified structure
-      //[DX OBSOLETE]      if(force_perform){
-      //[DX OBSOLETE]        cerr << "Scan failed. Reverting back to original tolerance and recalculating as is (with aforementioned inconsistencies)." << endl;
-      //[DX OBSOLETE]        PerformFullSymmetry(a,orig_tolerance,true,false,FileMESSAGE,aflags,kflags,osswrite,oss,format);
-      //[DX OBSOLETE]      }else{
-      //[DX OBSOLETE]        return FALSE;
-      //[DX OBSOLETE]      }
-      //[DX OBSOLETE]    }
-      //[DX OBSOLETE]	 if(!aflags.QUIET) aus << (aflags.QUIET?"":"00000  MESSAGE ") << "PGROUP_XTAL Symmetry: changing tolerance to " << a.sym_eps << " " << Message(aflags,"user,host,time") << endl;
-      //[DX OBSOLETE]  aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET,osswrite,oss);
-      //[DX OBSOLETE]	  continue;
-      //[DX OBSOLETE]  }
-      //[DX OBSOLETE]}
-      //[DX OBSOLETE]else if(!space_and_point_group_match && derivative_structure){
-      //[DX OBSOLETE]  if(!aflags.QUIET) aus << (aflags.QUIET?"":"00000  MESSAGE ") << "PGROUP_XTAL WARNING: Point Group Crystal of Original Cell: " << a.point_group_Hermann_Mauguin << " | Space Group of Primitive Cell: " << GetSpaceGroupName(a.space_group_ITC) << " -- This is a derivative structure." << Message(aflags,"user,host,time") << endl;
-      //[DX OBSOLETE]  aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET,osswrite,oss);
-      //[DX OBSOLETE]}
       if(kflags.KBIN_SYMMETRY_CALCULATE_SGROUP){ // DX 8/14/17
 	if(kflags.KBIN_SYMMETRY_SGROUP_RADIUS>0.0) {
 	  if(!aflags.QUIET) aus << (aflags.QUIET?"":"00000  MESSAGE ") << "POSCAR SGROUP: found RADIUS="<<kflags.KBIN_SYMMETRY_SGROUP_RADIUS<<" " << Message(aflags,"user,host,time") << endl;
@@ -5666,7 +5429,6 @@ namespace pflow {
 	if(!SYM::CalculateSpaceGroup(FileMESSAGE,a,aflags,kflags.KBIN_SYMMETRY_SGROUP_WRITE,osswrite,oss,format)){
 	  if(!no_scan){
 	    a.ClearSymmetry();
-	    // DX 9/5/17 [OBSOLETE] if(!SYM::change_tolerance(a,a.sym_eps,orig_tolerance,change_sym_count,min_dist,no_scan)){
 	    if(!SYM::change_tolerance(a,a.sym_eps,min_dist,no_scan)){
 	      a=b;  //pretty printing, unmodified structure
 	      if(force_perform){
@@ -5687,7 +5449,6 @@ namespace pflow {
 	if(!SYM::CalculateInequivalentAtoms(FileMESSAGE,a,aflags,kflags.KBIN_SYMMETRY_IATOMS_WRITE,osswrite,oss,format)){
 	  if(!no_scan){
 	    a.ClearSymmetry();
-	    // DX 9/5/17 [OBSOLETE] if(!SYM::change_tolerance(a,a.sym_eps,orig_tolerance,change_sym_count,min_dist,no_scan)){
 	    if(!SYM::change_tolerance(a,a.sym_eps,min_dist,no_scan)){
 	      a=b;  //pretty printing, unmodified structure
 	      if(force_perform){
@@ -5716,7 +5477,6 @@ namespace pflow {
 	  }
 	  if(!no_scan){
 	    a.ClearSymmetry();
-	    // DX 9/5/17 [OBSOLETE] if(!SYM::change_tolerance(a,a.sym_eps,orig_tolerance,change_sym_count,min_dist,no_scan)){
 	    if(!SYM::change_tolerance(a,a.sym_eps,min_dist,no_scan)){
 	      a=b;  //pretty printing, unmodified structure
 	      if(force_perform){
@@ -5737,7 +5497,6 @@ namespace pflow {
 	if(!SYM::CalculateSitePointGroup(FileMESSAGE,a,aflags,kflags.KBIN_SYMMETRY_AGROUP_WRITE,osswrite,oss,format)){
 	  if(!no_scan){
 	    a.ClearSymmetry();
-	    // DX 9/5/17 [OBSOLETE] if(!SYM::change_tolerance(a,a.sym_eps,orig_tolerance,change_sym_count,min_dist,no_scan)){
 	    if(!SYM::change_tolerance(a,a.sym_eps,min_dist,no_scan)){
 	      a=b;  //pretty printing, unmodified structure
 	      if(force_perform){
@@ -5920,7 +5679,6 @@ namespace pflow {
 
     bool tocompress = TRUE;
     ofstream FileMESSAGE("/dev/null");
-    // DX 2/21/18 [OBSOLETE] string directory=".";
     string directory=aurostd::execute2string("pwd"); // DX 2/21/18 - use pwd
     if(XHOST.vflag_control.flag("DIRECTORY")) { 
       directory=XHOST.vflag_control.getattachedscheme("DIRECTORY");
@@ -6166,7 +5924,6 @@ namespace pflow {
 // pflow::FINDSYM
 // ***************************************************************************
 namespace pflow {
-  // DX 9/21/17 [OBSOLETE] void FINDSYM(string options,uint mode,istream& input) {
   void FINDSYM(aurostd::xoption& vpflow,uint mode,istream& input) {
     bool LDEBUG=(FALSE || XHOST.DEBUG);
     if(LDEBUG) cerr << "pflow::FINDSYM: BEGIN" << endl;
@@ -6195,7 +5952,6 @@ namespace pflow {
       if(tol_tokens.size()==0) tolerance=DEFAULT_FINDSYM_TOL;
       if(tol_tokens.size()==1) tolerance=aurostd::string2utype<double>(tol_tokens.at(0));
     }
-    // DX 9/26/17 [OBSOLETE] if(tol_tokens.size()>=1) tolerance=aurostd::string2utype<double>(tol_tokens.at(0));
     // Read in input file.
     if(mode==0) {cout << a.findsym2print(tolerance) << endl;}
     if(mode==1) {cout << a.findsym2execute(tolerance) << endl;}
@@ -6235,7 +5991,6 @@ namespace pflow {
       cout << "pflow::FIXBANDS: Load File POSCAR: " << FILE_POSCAR_IN << endl;
     }
     ifstream File_POSCAR_IN(FILE_POSCAR_IN.c_str());
-    // [OBSOLETE] xstructure str(File_POSCAR_IN,IOVASP_POSCAR);
     xstructure str(File_POSCAR_IN,IOAFLOW_AUTO);
     File_POSCAR_IN.close();
     // FILE_KPOINTS_BANDS_OLD_IN ---------------------------------------
@@ -7299,7 +7054,6 @@ namespace pflow {
   void KPATH(istream& input,double grid,bool WWW) {
     xstructure str_in(input,IOAFLOW_AUTO);
     xstructure str_sp,str_sc;
-    // DX 8/29/17 [OBSOLETE] LATTICE::Standard_Lattice_StructureDefault(str_in,str_sp,str_sc);
     bool full_sym=false; // DX 8/29/17 - Speed increase
     LATTICE::Standard_Lattice_Structure(str_in,str_sp,str_sc,full_sym); // DX 8/29/17 - Speed increase
     string lattice_type;
@@ -7381,13 +7135,6 @@ namespace pflow {
 namespace pflow {
   xstructure KPOINTS_DELTA(aurostd::xoption& vpflow, istream& input, ostream& oss) {
     bool LDEBUG=(FALSE || XHOST.DEBUG);
-    //[OBSOLETE CO 171010]if(LDEBUG) cerr << "pflow::KPOINTS_DELTA: BEGIN" << endl;
-    //[OBSOLETE CO 171010]vector<string> tokens;
-    //[OBSOLETE CO 171010]aurostd::string2tokens(options,tokens,",");
-    //[OBSOLETE CO 171010]if(tokens.size()!=1 ) {
-    //[OBSOLETE CO 171010]  init::ErrorOption(cout,options,"pflow::KPOINTS_DELTA","aflow --delta_kpoints=number [or --dkpoints=number | -dkpoints=number | -dk=number] < POSCAR");
-    //[OBSOLETE CO 171010]  exit(0);
-    //[OBSOLETE CO 171010]}
     double DK=aurostd::string2utype<double>(vpflow.getattachedscheme("FLAG::XVASP_KPOINTS_DELTA")); //tokens.at(0));  // CO 171010
     
     oss << aflow::Banner("BANNER_TINY") << endl;
@@ -7446,7 +7193,6 @@ namespace pflow {
   string LATTICE_TYPE(istream& input) {
     stringstream sss;
     xstructure a(input,IOAFLOW_AUTO);
-    // DX 8/24/17 [OBSOLETE] a.GetLatticeType();
     xstructure str_sp,str_sc; // DX 8/24/17 - Speed increase
     bool full_sym=false; // DX 8/29/17 - Speed increase
     LATTICE::Standard_Lattice_Structure(a,str_sp,str_sc,full_sym); // DX 8/29/17 - Speed increase
@@ -7467,7 +7213,6 @@ namespace pflow {
   string LATTICE_LATTICE_TYPE(istream& input) {
     stringstream sss;
     xstructure a(input,IOAFLOW_AUTO);
-    // DX 8/24/17 [OBSOLETE] a.GetLatticeType();
     xstructure str_sp,str_sc; // DX 8/24/17 - Speed increase
     bool full_sym=false; // DX 8/29/17 - Speed increase
     LATTICE::Bravais_Lattice_StructureDefault(a,str_sp,str_sc,full_sym); // DX 8/29/17 - Speed increase
@@ -8737,18 +8482,6 @@ namespace pflow {
   // ***************************************************************************
   // for given set of elements, will return nary combinations
   // binary combinations of MnPdPt: MnPd, MnPt, PdPt
-  //[OBSOLETE CO 180528]void getCombination(const vector<string>& velements, vector<string>& combination,
-	//[OBSOLETE CO 180528]	      vector<vector<string> >& combinations, uint offset, uint nary) {
-  //[OBSOLETE CO 180528]  if(!nary) {
-  //[OBSOLETE CO 180528]    combinations.push_back(combination);
-  //[OBSOLETE CO 180528]    return;
-  //[OBSOLETE CO 180528]  }
-  //[OBSOLETE CO 180528]  for (uint i = offset; i <= velements.size() - nary; i++) {
-  //[OBSOLETE CO 180528]    combination.push_back(velements[i]);
-  //[OBSOLETE CO 180528]    getCombination(velements, combination, combinations, i + 1, nary - 1);
-  //[OBSOLETE CO 180528]    combination.pop_back();
-  //[OBSOLETE CO 180528]  }
-  //[OBSOLETE CO 180528]}
 
   vector<vector<string> > elementalCombinations(const vector<string>& velements,
 						uint nary) {
@@ -8765,8 +8498,6 @@ namespace pflow {
         for(uint i=0;i<combos.back().size();i++){cerr << combos.back()[i];}
         cerr << endl;
       }
-      //[OBSOLETE CO 180528]vector<vector<string> > combinations;
-      //[OBSOLETE CO 180528]pflow::getCombination(velements, combination, combinations, 0, nary);
     }
   return combos;
   }
@@ -9660,32 +9391,6 @@ namespace pflow {
 // ***************************************************************************
 // pflow::LTCELLFV
 // ***************************************************************************
-// [OBSOLETE] namespace pflow {
-// [OBSOLETE]   xstructure LTCELLFV(string options,istream& input) {
-// [OBSOLETE]     //  if(argv.size()!=a.num_each_type.size()+2) {
-// [OBSOLETE]     //  cerr << "ERROR - pflow::LTCELLFV: you need to specify as many names as atom types" << endl;
-// [OBSOLETE]     //   exit(0);
-// [OBSOLETE]     // }
-// [OBSOLETE]     // Read in input file.
-// [OBSOLETE]     bool LDEBUG=1;//(FALSE || XHOST.DEBUG);
-// [OBSOLETE]     if(LDEBUG) cerr << "pflow::LTCELLFV: BEGIN" << endl;
-// [OBSOLETE]     xstructure str(input,IOAFLOW_AUTO);
-// [OBSOLETE]     vector<string> tokens;
-// [OBSOLETE]     aurostd::string2tokens(options,tokens,",");
-// [OBSOLETE]  
-// [OBSOLETE]    if(tokens.size()!=4) {
-// [OBSOLETE]       init::ErrorOption(cout,options,"pflow::LTCELLFV","aflow --ltcellfv=v1,v2,v3,phi < POSCAR");
-// [OBSOLETE]       exit(0);
-// [OBSOLETE]     }
-// [OBSOLETE] 
-// [OBSOLETE]     xvector<double> nvec(3);
-// [OBSOLETE]     nvec(1)=atof(tokens.at(0).c_str());
-// [OBSOLETE]     nvec(2)=atof(tokens.at(1).c_str());
-// [OBSOLETE]     nvec(3)=atof(tokens.at(2).c_str());
-// [OBSOLETE]     double angle=atof(tokens.at(3).c_str())/rad2deg;
-// [OBSOLETE]     return GetLTFVCell(nvec,angle,str);
-// [OBSOLETE]   }
-// [OBSOLETE] } // namespace pflow
 
 // ***************************************************************************
 // pflow::MagneticParameters
@@ -9761,91 +9466,6 @@ namespace pflow {
   }
 } // namespace pflow
 
-// [OBSOLETE] // ***************************************************************************
-// [OBSOLETE] // pflow::MILLER
-// [OBSOLETE] // ***************************************************************************
-// [OBSOLETE] namespace pflow {
-// [OBSOLETE]   xstructure MILLER(string options,istream& input) {
-// [OBSOLETE]     bool LDEBUG=(FALSE || XHOST.DEBUG);
-// [OBSOLETE]     if(LDEBUG) cerr << "pflow::MILLER: BEGIN" << endl;  
-// [OBSOLETE]     vector<string> tokens;
-// [OBSOLETE]     aurostd::string2tokens(options,tokens,",");
-// [OBSOLETE]     if(tokens.size()!=3 && tokens.size()!=4 && tokens.size()!=5) {
-// [OBSOLETE]       init::ErrorOption(cout,options,"pflow::MILLER","aflow -miller=h,k,l[,nlayer[,elayer] < POSCAR");
-// [OBSOLETE]       exit(0);
-// [OBSOLETE]     }
-// [OBSOLETE] 
-// [OBSOLETE]     xstructure a(input,IOAFLOW_AUTO); // LOAD fixes all lattices
-// [OBSOLETE]     double minradius=0.0,epsilon=0.01;
-// [OBSOLETE]     a.ReScale(1.0);
-// [OBSOLETE]     a.FixLattices(); // redundant
-// [OBSOLETE]     xvector<int> dims(3);
-// [OBSOLETE]     xvector<double> hkl(3),n(3),r(3),r2(3),s1(3),s2(3),s3(3),spoint(3);
-// [OBSOLETE]     int nlayers=1,elayers=0;
-// [OBSOLETE]     hkl(1)=0.0;hkl(2)=0.0;hkl(3)=0.0;
-// [OBSOLETE]     if(tokens.size()>=1) hkl(1)=aurostd::string2utype<double>(tokens.at(0));
-// [OBSOLETE]     if(tokens.size()>=2) hkl(2)=aurostd::string2utype<double>(tokens.at(1));
-// [OBSOLETE]     if(tokens.size()>=3) hkl(3)=aurostd::string2utype<double>(tokens.at(2));
-// [OBSOLETE]     if(tokens.size()>=4) nlayers=aurostd::string2utype<int>(tokens.at(3));
-// [OBSOLETE]     if(tokens.size()>=5) elayers=aurostd::string2utype<int>(tokens.at(4));
-// [OBSOLETE] 
-// [OBSOLETE]     if(LDEBUG) cerr << "DEBUG nlayers=" << nlayers << endl;
-// [OBSOLETE]     if(LDEBUG) cerr << "DEBUG elayers=" << elayers << endl;
-// [OBSOLETE]     xmatrix<double> plattice(3,3),slattice(3,3);
-// [OBSOLETE]     n=hkl*trasp(a.klattice)/(2*pi); // divided by 2pi
-// [OBSOLETE]     // double h=hkl[1],k=hkl[2],l=hkl[3];
-// [OBSOLETE]     // n=n/modulus(n); // normal
-// [OBSOLETE]     dims=LatticeDimensionSphere(a.lattice,modulus(n)*1.1);
-// [OBSOLETE]     vector<xvector<double> > nvectors,pvectors;
-// [OBSOLETE]     for(int i=dims[1];i>=-dims[1];i--)
-// [OBSOLETE]       for(int j=dims[2];j>=-dims[2];j--)
-// [OBSOLETE] 	for(int k=dims[3];k>=-dims[3];k--) {
-// [OBSOLETE] 	  r=((double)i)*a.lattice(1)+((double)j)*a.lattice(2)+((double)k)*a.lattice(3);
-// [OBSOLETE] 	  if(modulus(r)>epsilon && abs(scalar_product(r,n))<epsilon) nvectors.push_back(r);
-// [OBSOLETE] 	  if(modulus(r)>epsilon && abs(angle(r,n))<epsilon) pvectors.push_back(r);
-// [OBSOLETE] 	}
-// [OBSOLETE]     if(LDEBUG) cerr << "DEBUG nvectors.size()=" << nvectors.size() << endl;
-// [OBSOLETE]     if(LDEBUG) cerr << "DEBUG pvectors.size()=" << pvectors.size() << endl;
-// [OBSOLETE] 
-// [OBSOLETE]     // choose shortest pvectors
-// [OBSOLETE]     s3=pvectors.at(0);
-// [OBSOLETE]     for(uint i=0;i<pvectors.size();i++) if(modulus(pvectors.at(i))<modulus(s3)) s3=pvectors.at(i);
-// [OBSOLETE]     if(LDEBUG) cerr << "DEBUG s3=" << s3 << endl;
-// [OBSOLETE]     if(LDEBUG) cerr << "DEBUG n=" << n << endl;
-// [OBSOLETE]     // test couples in plane to get the in-plane basis, and optimize with respect to minkowski
-// [OBSOLETE]     minradius=modulus(nvectors.at(0))+modulus(nvectors.at(1))+modulus(n); // some default to break
-// [OBSOLETE]     for(int ii=1;ii<=3;ii++) plattice[ii][3]=s3[ii];
-// [OBSOLETE]     for(uint i=0;i<nvectors.size();i++) {
-// [OBSOLETE]       for(int ii=1;ii<=3;ii++) plattice[ii][1]=nvectors.at(i)[ii];
-// [OBSOLETE]       for(uint j=i+1;j<nvectors.size();j++) {
-// [OBSOLETE] 	for(int ii=1;ii<=3;ii++) plattice[ii][2]=nvectors.at(j)[ii];
-// [OBSOLETE] 	if(det(plattice)>epsilon) { // check only for well defined lattices
-// [OBSOLETE] 	  bool basisflag=TRUE;
-// [OBSOLETE] 	  for(uint k=0;k<nvectors.size() && basisflag==TRUE;k++)
-// [OBSOLETE] 	    if(k!=i && k!=j && i!=j) {
-// [OBSOLETE] 	      spoint=inverse(plattice)*nvectors.at(k);  // get the spoint in fractional coordinates
-// [OBSOLETE] 	      if(!aurostd::isinteger(spoint[1]) || !aurostd::isinteger(spoint[2]) || !aurostd::isinteger(spoint[3])) basisflag=FALSE;
-// [OBSOLETE] 	    }
-// [OBSOLETE] 	  if(basisflag==TRUE && RadiusSphereLattice(trasp(plattice))<minradius) {
-// [OBSOLETE] 	    minradius=RadiusSphereLattice(trasp(plattice));
-// [OBSOLETE] 	    slattice=trasp(plattice);
-// [OBSOLETE] 	  }
-// [OBSOLETE] 	}
-// [OBSOLETE]       }
-// [OBSOLETE]     }
-// [OBSOLETE]     // this is a good lattice now s1,s2 are planar s3 is in the orthogonal direction
-// [OBSOLETE]     s1=slattice(1);s2=slattice(2);s3=slattice(3);
-// [OBSOLETE]     // DEBUG=TRUE;
-// [OBSOLETE]     if(LDEBUG) cerr << "DEBUG s1=  " << s1 << endl;
-// [OBSOLETE]     if(LDEBUG) cerr << "DEBUG s2=  " << s2 << endl;
-// [OBSOLETE]     if(LDEBUG) cerr << "DEBUG s3=  " << s3 << endl;
-// [OBSOLETE]     if(LDEBUG) cerr << "DEBUG  n=  " << n << endl;
-// [OBSOLETE]     a.lattice=slattice;
-// [OBSOLETE]     cerr << det(a.lattice) << " " << det(slattice) << endl;
-// [OBSOLETE]     if(LDEBUG) cerr << "pflow::MILLER: END" << endl;  
-// [OBSOLETE]     return a;
-// [OBSOLETE]   }
-// [OBSOLETE] } // namespace pflow
 
 // ***************************************************************************
 // pflow::MINKOWSKIBASISREDUCTION
@@ -10215,7 +9835,6 @@ namespace pflow {
     stringstream sss;
     xstructure a(input,IOAFLOW_AUTO);
     if(LDEBUG) cerr << "pflow::PEARSON_SYMBOL: X1" << endl;
-    // DX 8/24/17 [OBSOLETE] a.GetLatticeType();
     xstructure str_sp,str_sc;
     bool full_sym=false; // DX 8/29/17 - Speed increase
     LATTICE::Standard_Lattice_Structure(a,str_sp,str_sc,full_sym); // DX 8/29/17 - Speed increase
@@ -10355,7 +9974,6 @@ namespace pflow {
     string findsym_in=aurostd::TmpFileCreate("findsym.in");
   
     stringstream oss;
-    // [OBSOLETE] xstructure str(input,IOVASP_POSCAR);
     xstructure str(input,IOAFLOW_AUTO);
     oss << str.findsym2print();
     aurostd::stringstream2file(oss,findsym_in);  
@@ -11332,47 +10950,10 @@ namespace pflow {
       }
     }
 
-    //[OBSOLETE CO 180703]//vector<string> vCARS,vCARS_relax;
-    //[OBSOLETE CO 180703]//bool found=FALSE;
-    //[OBSOLETE CO 180703]//vCARS.push_back("CONTCAR");vCARS.push_back("OSZICAR");vCARS.push_back("OUTCAR");
-    //[OBSOLETE CO 180703]//if(!found&&argv.size()<2) found=TRUE; // nothing to do
-    //[OBSOLETE CO 180703]//if(!found&&argv.size()==2) {  // DEFAULT
-    //[OBSOLETE CO 180703]  vCARS_relax.push_back("CONTCAR.relax2");vCARS_relax.push_back("OSZICAR.relax2");vCARS_relax.push_back("OUTCAR.relax2");
-    //[OBSOLETE CO 180703]  found=TRUE;
-    //[OBSOLETE CO 180703]}
-    //[OBSOLETE CO 180703]if(!found&&argv.size()==3 && aurostd::args2flag(argv,"--static")) {  // DEFAULT
-    //[OBSOLETE CO 180703]  vCARS_relax.push_back("CONTCAR.static");vCARS_relax.push_back("OSZICAR.static");vCARS_relax.push_back("OUTCAR.static");
-    //[OBSOLETE CO 180703]  found=TRUE;
-    //[OBSOLETE CO 180703]}
-    //[OBSOLETE CO 180703]// [OBSOLETE] if(!found&&argv.size()==4 && aurostd::args2flag(argv,"--DIRECTORY|--D|--d|./")) {  // DEFAULT
-    //[OBSOLETE CO 180703]if(!found&&argv.size()==4 && XHOST.vflag_control.flag("DIRECTORY")) {  // DEFAULT
-    //[OBSOLETE CO 180703]  // [OBSOLETE]     directory=aurostd::args2string(argv,"--DIRECTORY|--D|--d","./")+"/";    //   cerr << directory << endl;
-    //[OBSOLETE CO 180703]  directory=XHOST.vflag_control.getattachedscheme("DIRECTORY");
-    //[OBSOLETE CO 180703]  vCARS_relax.push_back("CONTCAR.relax2");vCARS_relax.push_back("OSZICAR.relax2");vCARS_relax.push_back("OUTCAR.relax2");
-    //[OBSOLETE CO 180703]  found=TRUE;
-    //[OBSOLETE CO 180703]}
-    //[OBSOLETE CO 180703]// [OBSOLETE] if(!found&&argv.size()==5 && aurostd::args2flag(argv,"--static") && aurostd::args2flag(argv,"--DIRECTORY|--D|--d|./")) {  // DEFAULT
-    //[OBSOLETE CO 180703]if(!found&&argv.size()==5 && aurostd::args2flag(argv,"--static") && XHOST.vflag_control.flag("DIRECTORY")) {  // DEFAULT
-    //[OBSOLETE CO 180703]  // [OBSOLETE]    directory=aurostd::args2string(argv,"--DIRECTORY|--D|--d","./")+"/";    //   cerr << directory << endl;
-    //[OBSOLETE CO 180703]  directory=XHOST.vflag_control.getattachedscheme("DIRECTORY");
-    //[OBSOLETE CO 180703]  vCARS_relax.push_back("CONTCAR.static");vCARS_relax.push_back("OSZICAR.static");vCARS_relax.push_back("OUTCAR.static");
-    //[OBSOLETE CO 180703]  found=TRUE;
-    //[OBSOLETE CO 180703]}
-    //[OBSOLETE CO 180703]if(!found) return FALSE; // error
-    //[OBSOLETE CO 180703]for(uint i=0;i<vCARS_relax.size();i++) {
-    //[OBSOLETE CO 180703]  //      cerr <<  vCARS_relax.at(i) << endl;
-    //[OBSOLETE CO 180703]  deque<string> vext; aurostd::string2tokens(".bz2,.xz,.gz",vext,",");vext.push_front(""); // cheat for void string
-    //[OBSOLETE CO 180703]  deque<string> vcmd; aurostd::string2tokens("cat,bzcat,xzcat,gzcat",vcmd,",");
-    //[OBSOLETE CO 180703]  for(uint iext=0;iext<vext.size();iext++) {
-	  //[OBSOLETE CO 180703]if(aurostd::FileExist(directory+"/"+vCARS_relax.at(i)+vext.at(iext)))
-	  //[OBSOLETE CO 180703]aurostd::execute(XHOST.command(vcmd.at(iext))+" "+directory+"/"+vCARS_relax.at(i)+vext.at(iext)+ " > "+directory+"/"+vCARS.at(i));
-    //[OBSOLETE CO 180703]  }
-    //[OBSOLETE CO 180703]}
 
     cout << soliloquy << " Performing: " << directory << endl;
     _xvasp xvasp;
     xvasp.Directory=directory;
-    // [OBSOLETE]  xvasp.str=xstructure(directory+"/CONTCAR",IOVASP_POSCAR);
     xvasp.str=xstructure(directory+"/CONTCAR",IOAFLOW_AUTO);
     //  cout <<
     KBIN::VASP_Analyze(xvasp,TRUE);
@@ -11396,16 +10977,6 @@ namespace pflow {
       }
     }
     
-	  //[OBSOLETE CO 180703]aurostd::execute(XHOST.command(vcmd.at(iext))+" -9q "+xvasp.Directory+"/"+DEFAULT_AFLOW_QMVASP_OUT);
-    //[OBSOLETE CO 180703]deque<string> vext; aurostd::string2tokens(".bz2,.xz,.gz",vext,",");
-    //[OBSOLETE CO 180703]deque<string> vcmd; aurostd::string2tokens("bzip2,xz,gzip",vcmd,",");
-    //[OBSOLETE CO 180703]for(uint iext=0;iext<vext.size();iext++) {
-    //[OBSOLETE CO 180703]  if(aurostd::FileExist(directory+"/"+vCARS_relax.at(0)+vext.at(iext))) {
-	  //aurostd::execute("rm -f "+xvasp.Directory+"/"+DEFAULT_AFLOW_QMVASP_OUT+vext.at(iext)); //CO 180703 - why delete before you zip????
-	  //[OBSOLETE CO 180703]aurostd::execute(XHOST.command(vcmd.at(iext))+" -9q "+xvasp.Directory+"/"+DEFAULT_AFLOW_QMVASP_OUT);
-    //[OBSOLETE CO 180703]  }
-    //[OBSOLETE CO 180703]}
-    //  cout << a << endl;
     return FALSE;
   }
 } // namespace pflow
@@ -11832,7 +11403,6 @@ namespace pflow {
 // pflow::SG
 // ***************************************************************************
 namespace pflow {
-  // DX 9/21/17 [OBSOLETE] string SG(string options,istream& input,string mode,string print) {
   string SG(aurostd::xoption& vpflow,istream& input,string mode,string print) {
     bool LDEBUG=(FALSE || XHOST.DEBUG);
     string flag_name = "SG::"+mode; // DX 9/26/17
@@ -11866,7 +11436,6 @@ namespace pflow {
     // check usage
     //   if(LDEBUG) cerr << "pflow::SG: vpflow.getattachedscheme(\"SG::USAGE\")=" << vpflow.flag("SG::USAGE") << endl;
     
-    // [OBSOLETE] xstructure a(input,IOVASP_POSCAR);
     if(input.peek() == EOF) {
       cerr << "File is empty. Check POSCAR." << endl;
       exit(0);
@@ -11877,7 +11446,6 @@ namespace pflow {
       a.directory = aurostd::execute2string("pwd");
     }
     // DX 20180527 - use pwd - END
-    // DX 1/24/18 [OBSOLETE] a.is_vasp4_poscar_format=TRUE; a.is_vasp5_poscar_format=FALSE;
     //   cerr << a << endl; exit(0);
     // AFLOW ENGINE RHT
     if(mode=="AFLOW" || mode=="aflow") { // RHT
@@ -11912,25 +11480,8 @@ namespace pflow {
           cerr << "pflow::SG: ERROR: Could not detect collinear or non-collinear spin(s). Check spin input." << endl;// DX 12/5/17 - added non-collinear
           exit(0);                                                                                                   // DX 12/5/17 - added non-collinear
         }
-        // DX [OBSOLETE] 12/5/17 - if(!AddSpinToXstructure(a,vmag)){
-        // DX [OBSOLETE] 12/5/17 -   exit(0);
-        // DX [OBSOLETE] 12/5/17 - } 
       }
       // DX 9/21/17 - MAGNETIC SYMMETRY - END
-      // DX [OBSOLETE] 9/21/17 - double default_tolerance=SYM::defaultTolerance(a);
-      // DX [OBSOLETE] 9/21/17 - double tolerance = default_tolerance;
-      // DX [OBSOLETE] 9/21/17 - if(tokens.size()==0) {tolerance=default_tolerance;}
-      // DX [OBSOLETE] 9/21/17 -if(tokens.size()>=1 && tokens.at(0) != "--debug") {
-      // DX [OBSOLETE] 9/21/17 -  if(tokens.at(0).at(0) == 't' || tokens.at(0).at(0) == 'T'){ //Tight
-      // DX [OBSOLETE] 9/21/17 -    tolerance=default_tolerance;
-      // DX [OBSOLETE] 9/21/17 -  }
-      // DX [OBSOLETE] 9/21/17 -  else if(tokens.at(0).at(0) == 'l' || tokens.at(0).at(0) == 'L'){ //Loose
-      // DX [OBSOLETE] 9/21/17 -    tolerance=default_tolerance*10.0;
-      // DX [OBSOLETE] 9/21/17 -  }
-      // DX [OBSOLETE] 9/21/17 -  else{
-      // DX [OBSOLETE] 9/21/17 -    tolerance=aurostd::string2utype<double>(tokens.at(0));
-      // DX [OBSOLETE] 9/21/17 -  }
-      // DX [OBSOLETE] 9/21/17 -}
       // DX - END
       double default_tolerance=SYM::defaultTolerance(a);
       double tolerance = AUROSTD_NAN;
@@ -11960,9 +11511,7 @@ namespace pflow {
       }
       // DX 9/26/17 - NO SCAN - END
       uint sgroup=a.SpaceGroup_ITC(tolerance,no_scan);
-      // [OBSOLETE] uint sgroup=a.SpaceGroup_ITC(false,argv);    
       a.spacegroup=GetSpaceGroupName(sgroup)+" #"+aurostd::utype2string(sgroup);
-      // [OBSOLETE] a.spacegroup=GetSpaceGroupName(a.SpaceGroup_ITC(false,argv))+" #"+aurostd::utype2string(a.SpaceGroup_ITC(false,argv)); // RHT
       //  return a.spacegroup; // RHT
     }
     
