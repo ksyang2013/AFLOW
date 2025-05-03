@@ -6780,6 +6780,7 @@ xmatrix<double> ReciprocalLattice(const xmatrix<double>& rlattice,double scale) 
 //  return ReciprocalLattice(rlattice,1.0);
 //}
 
+
 // **************************************************************************
 // Function KPPRA
 // **************************************************************************
@@ -6804,6 +6805,7 @@ string KPPRA(int& k1,int& k2,int& k3,const xmatrix<double>& rlattice,const int& 
     b3=klattice(3);nb3=aurostd::modulus(b3);
     if(LDEBUG) aus << "KPPRA LDEBUG:  " << endl << rlattice << endl << endl << klattice << endl << b1 << endl << b2 << endl << b3 << endl << nb1 << endl << nb2 << endl << nb3 << endl;
     if(LDEBUG) aus << "KPPRA LDEBUG:  " << nb1 << " " << nb2 << " " << nb3 << " " << endl;
+
     if(NK>1) {
         bool found=FALSE;
         double dkdelta,dk;
@@ -6812,33 +6814,39 @@ string KPPRA(int& k1,int& k2,int& k3,const xmatrix<double>& rlattice,const int& 
         kk1=0;kk2=0;kk3=0;
         kk=0;
         int iverbose=0;
+
         while(!found) {
             kk++;
             if(dk<=1e-5) {
                 k1=1;k2=1;k3=1;
                 aus << "00000  MESSAGE KPOINTS KPPRA minimun not found k=[" << k1 << "," << k2 << "," << k3 << "]=" << k1*k2*k3 << endl;
             }
-            kk1=(int) floor((double) nb1/dk);db1=b1/((double) kk1);
-            kk2=(int) floor((double) nb2/dk);db2=b2/((double) kk2);
-            kk3=(int) floor((double) nb3/dk);db3=b3/((double) kk3);
+
+            kk1=(int) floor((double) nb1/dk); db1=b1/((double) kk1);
+            kk2=(int) floor((double) nb2/dk); db2=b2/((double) kk2);
+            kk3=(int) floor((double) nb3/dk); db3=b3/((double) kk3);
+
+            
             if(kk1+kk2+kk3>iverbose) {
-                //aus << "00000  MESSAGE KPOINTS KPPRA minimizing k=[" << kk1 << "," << kk2 << "," << kk3 << "]=" << kk1*kk2*kk3 << " =[" << aurostd::modulus(db1) << "," << aurostd::modulus(db2) << "," << aurostd::modulus(db3) << "]   dk=" << dk << endl;
-                aus << "00000  MESSAGE KPOINTS KPPRA minimizing (in unit of 2*pi) k=[" << kk1 << "," << kk2 << "," << kk3 << "]=" << kk1*kk2*kk3 << " =[" << aurostd::modulus(db1/(2*pi)) << "," << aurostd::modulus(db2/(2*pi)) << "," << aurostd::modulus(db3/(2*pi)) << "]   dk=" << dk/(2*pi) << endl;
+                aus << "00000  MESSAGE KPOINTS KPPRA minimizing (in unit of 2*pi) k=[" << kk1 << "," << kk2 << "," << kk3 << "]=" << kk1*kk2*kk3 << " =[" 
+                    << aurostd::modulus(db1/(2*pi)) << "," << aurostd::modulus(db2/(2*pi)) << "," << aurostd::modulus(db3/(2*pi)) << "]   dk=" << dk/(2*pi) << endl;
                 iverbose=kk1+kk2+kk3;
             }
+
             if(kk1*kk2*kk3>=NK) {
                 k1=kk1;k2=kk2;k3=kk3;
                 found=TRUE;
             }
             dk=dk*dkdelta;
         }
-    } else { // force 1 1 1 for Gamma
+    } 
+    else { // force 1 1 1 for Gamma
         k1=1;k2=1;k3=1;
     }
+
     db1=b1/((double) k1); db2=b2/((double) k2); db3=b3/((double) k3);
-    //aus << "00000  MESSAGE KPOINTS KPPRA routine [" << k1 << "," << k2 << "," << k3 << "]=" << k1*k2*k3 << "=[" << aurostd::modulus(db1) << "," << aurostd::modulus(db2) << "," << aurostd::modulus(db3) << "]   "  << endl;
-    aus << "00000  MESSAGE KPOINTS KPPRA routine (in unit of 2*pi) [" << k1 << "," << k2 << "," << k3 << "]=" << k1*k2*k3 << "=[" << aurostd::modulus(db1)/(2*pi) << "," << aurostd::modulus(db2)/(2*pi) << "," << aurostd::modulus(db3)/(2*pi) << "]   "  << endl;
-    cerr << "00000  MESSAGE KPOINTS KPPRA per atom NK=" << NK << endl; 
+    aus << "00000  MESSAGE KPOINTS KPPRA routine (in unit of 2*pi) [" << k1 << "," << k2 << "," << k3 << "]=" << k1*k2*k3 << "=[" 
+        << aurostd::modulus(db1)/(2*pi) << "," << aurostd::modulus(db2)/(2*pi) << "," << aurostd::modulus(db3)/(2*pi) << "]   "  << endl;
     return aus.str();
 }
 
@@ -6993,9 +7001,9 @@ int GetNBANDS(int electrons,int nions,int spineach,bool ispin) {
     out=out+5;        // Sun Nov  1 10:41:20 EDT 2009 // ICSD PROJECT ORC
     out=out*1.03;     // Tue Feb 26 15:15:36 EST 2013 // HELPS dielectric CALS
     out=out*1.05;     // Mon Apr 23 13:40:02 EST 2018 // HELPS SCAN
-    //cerr << "GetNBANDS=" << out << endl;
+                      //cerr << "GetNBANDS=" << out << endl;
     out=out*std::pow((double) nions,(double) 0.025);  // rescale so for big numbers of ions you get extra bands // Wed Jun 23 12:29:01 EDT 2010
-    //cerr << "GetNBANDS=" << out << endl;
+                                                      //cerr << "GetNBANDS=" << out << endl;
     int nbands = (int) ceil(out);
     nbands += (4-remainder(nbands,4));  //works mostly for integer times of four (most machines) //KESONG 20190715
     return nbands;
