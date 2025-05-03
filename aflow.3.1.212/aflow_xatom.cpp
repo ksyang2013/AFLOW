@@ -6822,11 +6822,10 @@ string KPPRA(int& k1,int& k2,int& k3,const xmatrix<double>& rlattice,const int& 
             kk2=(int) floor((double) nb2/dk);db2=b2/((double) kk2);
             kk3=(int) floor((double) nb3/dk);db3=b3/((double) kk3);
             if(kk1+kk2+kk3>iverbose) {
-                //  if(!mod(kk,50) || kk1*kk2*kk3>=NK)
-                aus << "00000  MESSAGE KPOINTS KPPRA minimizing k=[" << kk1 << "," << kk2 << "," << kk3 << "]=" << kk1*kk2*kk3 << " =[" << aurostd::modulus(db1) << "," << aurostd::modulus(db2) << "," << aurostd::modulus(db3) << "]   dk=" << dk << endl;
+                //aus << "00000  MESSAGE KPOINTS KPPRA minimizing k=[" << kk1 << "," << kk2 << "," << kk3 << "]=" << kk1*kk2*kk3 << " =[" << aurostd::modulus(db1) << "," << aurostd::modulus(db2) << "," << aurostd::modulus(db3) << "]   dk=" << dk << endl;
+                aus << "00000  MESSAGE KPOINTS KPPRA minimizing (in unit of 2*pi) k=[" << kk1 << "," << kk2 << "," << kk3 << "]=" << kk1*kk2*kk3 << " =[" << aurostd::modulus(db1/(2*pi)) << "," << aurostd::modulus(db2/(2*pi)) << "," << aurostd::modulus(db3/(2*pi)) << "]   dk=" << dk/(2*pi) << endl;
                 iverbose=kk1+kk2+kk3;
             }
-            //cout << "NK in xatoms: " << NK << endl;
             if(kk1*kk2*kk3>=NK) {
                 k1=kk1;k2=kk2;k3=kk3;
                 found=TRUE;
@@ -6837,7 +6836,9 @@ string KPPRA(int& k1,int& k2,int& k3,const xmatrix<double>& rlattice,const int& 
         k1=1;k2=1;k3=1;
     }
     db1=b1/((double) k1); db2=b2/((double) k2); db3=b3/((double) k3);
-    aus << "00000  MESSAGE KPOINTS KPPRA routine [" << k1 << "," << k2 << "," << k3 << "]=" << k1*k2*k3 << "=[" << aurostd::modulus(db1) << "," << aurostd::modulus(db2) << "," << aurostd::modulus(db3) << "]   "  << endl;
+    //aus << "00000  MESSAGE KPOINTS KPPRA routine [" << k1 << "," << k2 << "," << k3 << "]=" << k1*k2*k3 << "=[" << aurostd::modulus(db1) << "," << aurostd::modulus(db2) << "," << aurostd::modulus(db3) << "]   "  << endl;
+    aus << "00000  MESSAGE KPOINTS KPPRA routine (in unit of 2*pi) [" << k1 << "," << k2 << "," << k3 << "]=" << k1*k2*k3 << "=[" << aurostd::modulus(db1)/(2*pi) << "," << aurostd::modulus(db2)/(2*pi) << "," << aurostd::modulus(db3)/(2*pi) << "]   "  << endl;
+    cerr << "00000  MESSAGE KPOINTS KPPRA per atom NK=" << NK << endl; 
     return aus.str();
 }
 
@@ -6894,7 +6895,8 @@ string KPPRA_LAT(int& k1,int& k2,int& k3,const xmatrix<double>& rlattice,const i
         k1=1;k2=1;k3=1;
     }
     db1=b1/((double) k1); db2=b2/((double) k2); db3=b3/((double) k3);
-    aus << "00000  MESSAGE KPOINTS KPPRA routine [" << k1 << "," << k2 << "," << k3 << "]=" << k1*k2*k3 << "=[" << aurostd::modulus(db1) << "," << aurostd::modulus(db2) << "," << aurostd::modulus(db3) << "]   "  << endl;
+    aus << "00000  MESSAGE KPOINTS KPPRA routine2 [" << k1 << "," << k2 << "," << k3 << "]=" << k1*k2*k3 << "=[" << aurostd::modulus(db1) << "," << aurostd::modulus(db2) << "," << aurostd::modulus(db3) << "]   "  << endl;
+    aus << "00000  MESSAGE KPPRA per atom NK=" << NK << endl; 
     return aus.str();
 }
 
@@ -6958,7 +6960,8 @@ string KPPRA_DELTA(int& k1,int& k2,int& k3,const xmatrix<double>& rlattice,const
         k1=1;k2=1;k3=1;
     }
     db1=b1/((double) k1); db2=b2/((double) k2); db3=b3/((double) k3);
-    aus << "00000  MESSAGE KPOINTS KPPRA routine [" << k1 << "," << k2 << "," << k3 << "]=" << k1*k2*k3 << "=[" << aurostd::modulus(db1) << "," << aurostd::modulus(db2) << "," << aurostd::modulus(db3) << "]   "  << endl;
+    aus << "00000  MESSAGE KPOINTS KPPRA routine3 [" << k1 << "," << k2 << "," << k3 << "]=" << k1*k2*k3 << "=[" << aurostd::modulus(db1) << "," << aurostd::modulus(db2) << "," << aurostd::modulus(db3) << "]   "  << endl;
+    aus << "00000  MESSAGE KPPRA per atom DK=" << DK << endl; 
     return aus.str();
 }
 
