@@ -4879,7 +4879,7 @@ namespace KBIN {
 
             if (param_int == 1) {
                 reload_incar=TRUE;
-                if (KBIN::VASP_isStaticOUTCAR(xvasp.Directory) && not aurostd::substring_present_file_FAST(xvasp.Directory+"/INCAR","ICHARG=11")) {
+                if (KBIN::VASP_isStaticOUTCAR(xvasp.Directory) && not aurostd::substring_present_file_FAST(xvasp.Directory+"/INCAR","ICHARG=1")) {
                     xvasp.aopts.flag("FLAG::CHGCAR_PRESERVED", TRUE);
                     reload_incar=TRUE;
                     aus_exec << "cd " << xvasp.Directory << endl;
@@ -4897,6 +4897,10 @@ namespace KBIN {
                     aus_exec << "echo \"ICHARG=1                                        #FIX=" << mode << "\" >> INCAR " << endl;
                     aus_exec << "echo \"NELM=120                                        #FIX=" << mode << "\" >> INCAR " << endl;
                     aus_exec << "echo \"AMIN=0.01                                       #FIX=" << mode << "\" >> INCAR " << endl;
+                    aus_exec << "echo \" AMIX     = 0.2                                                  #FIX=" << mode << "\" >> INCAR " << endl;  
+                    aus_exec << "echo \" BMIX     = 0.0001 ! almost zero, but 0 will crash some versions #FIX=" << mode << "\" >> INCAR " << endl; 
+                    aus_exec << "echo \" AMIX_MAG = 0.8                                                  #FIX=" << mode << "\" >> INCAR " << endl; 
+                    aus_exec << "echo \" BMIX_MAG = 0.0001 ! almost zero, but 0 will crash some versions #FIX=" << mode << "\" >> INCAR " << endl; 
                     aurostd::execute(aus_exec);
                 }
             }
@@ -4918,6 +4922,10 @@ namespace KBIN {
                     aus_exec << "echo \"ICHARG=1                                        #FIX=" << mode << "\" >> INCAR " << endl;
                     aus_exec << "echo \"NELM=180                                        #FIX=" << mode << "\" >> INCAR " << endl;
                     aus_exec << "echo \"AMIN=0.01                                       #FIX=" << mode << "\" >> INCAR " << endl;
+                    aus_exec << "echo \" AMIX     = 0.2                                                  #FIX=" << mode << "\" >> INCAR " << endl;  
+                    aus_exec << "echo \" BMIX     = 0.0001 ! almost zero, but 0 will crash some versions #FIX=" << mode << "\" >> INCAR " << endl; 
+                    aus_exec << "echo \" AMIX_MAG = 0.8                                                  #FIX=" << mode << "\" >> INCAR " << endl; 
+                    aus_exec << "echo \" BMIX_MAG = 0.0001 ! almost zero, but 0 will crash some versions #FIX=" << mode << "\" >> INCAR " << endl; 
                     aurostd::execute(aus_exec);
                 }
             }
