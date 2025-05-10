@@ -638,7 +638,15 @@ namespace KBIN {
                 aus << "00000  MESSAGE-DEFAULT LSCOUPLING=" << (DEFAULT_VASP_FORCE_OPTION_LSCOUPLING?"ON":"OFF") << " - " << Message(aflags,"user,host,time") << endl;
             }
             aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
-            if(vflags.KBIN_VASP_FORCE_OPTION_LSCOUPLING.isentry || DEFAULT_VASP_FORCE_OPTION_LSCOUPLING) KBIN::XVASP_INCAR_PREPARE_GENERIC("LS_COUPLING",xvasp,vflags,"",0,0.0,vflags.KBIN_VASP_FORCE_OPTION_LSCOUPLING.option);
+            if(vflags.KBIN_VASP_FORCE_OPTION_LSCOUPLING.isentry || DEFAULT_VASP_FORCE_OPTION_LSCOUPLING) {
+                KBIN::XVASP_INCAR_PREPARE_GENERIC("LS_COUPLING",xvasp,vflags,"",0,0.0,vflags.KBIN_VASP_FORCE_OPTION_LSCOUPLING.option);
+
+                // Turn off SYM for spin-orbit coupling calculations; KY 20250509
+                vflags.KBIN_VASP_FORCE_OPTION_SYM.option = FALSE;             
+                aus << "00000  MESSAGE-OPTION  [VASP_FORCE_OPTION]TURN OFF SYM FOR LSCOUPLING=ON" << Message(aflags,"user,host,time") << endl;
+                aus << "00000  MESSAGE-OPTION  [VASP_FORCE_OPTION]SYM=OFF  " << Message(aflags,"user,host,time") << endl;
+                aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
+            }
             xvasp.aopts.flag("FLAG::XVASP_INCAR_changed",TRUE);
         }
 
