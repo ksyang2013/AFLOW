@@ -4895,7 +4895,6 @@ namespace KBIN {
                     if (vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme != "NORMAL") {
                         aus_exec << "cat " << _AFLOWIN_ << " | sed \"s/\\[VASP_FORCE_OPTION\\]ALGO/#\\[VASP_FORCE_OPTION\\]ALGO/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl;
                         aus_exec << "cat " << _AFLOWIN_ << " | sed \"s/##\\[/#\\[/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl;
-                        //aus_exec << "cat aflow.in | grep -v 'ALGO=' > aflow.tmp && mv aflow.tmp aflow.in" << endl;
                         aus_exec << "echo \"[VASP_FORCE_OPTION]ALGO=NORMAL      // Self Correction\"" << " >> " << _AFLOWIN_ << " " << endl;
                     }
                         
@@ -4905,10 +4904,10 @@ namespace KBIN {
                     aus_exec << "echo \"ICHARG=1                                        #FIX=" << mode << "\" >> INCAR " << endl;
                     aus_exec << "echo \"NELM=120                                        #FIX=" << mode << "\" >> INCAR " << endl;
                     aus_exec << "echo \"AMIN=0.01                                       #FIX=" << mode << "\" >> INCAR " << endl;
-                    aus_exec << "echo \" AMIX     = 0.2                                                  #FIX=" << mode << "\" >> INCAR " << endl;  
-                    aus_exec << "echo \" BMIX     = 0.0001 ! almost zero, but 0 will crash some versions #FIX=" << mode << "\" >> INCAR " << endl; 
-                    aus_exec << "echo \" AMIX_MAG = 0.8                                                  #FIX=" << mode << "\" >> INCAR " << endl; 
-                    aus_exec << "echo \" BMIX_MAG = 0.0001 ! almost zero, but 0 will crash some versions #FIX=" << mode << "\" >> INCAR " << endl; 
+                    aus_exec << "echo \"AMIX     = 0.2                                  #FIX=" << mode << "\" >> INCAR " << endl;  
+                    aus_exec << "echo \"BMIX     = 0.0001                               #FIX=" << mode << "\" >> INCAR " << endl; 
+                    aus_exec << "echo \"AMIX_MAG = 0.8                                  #FIX=" << mode << "\" >> INCAR " << endl; 
+                    aus_exec << "echo \"BMIX_MAG = 0.0001                               #FIX=" << mode << "\" >> INCAR " << endl; 
                     aurostd::execute(aus_exec);
                 }
             }
@@ -4930,10 +4929,10 @@ namespace KBIN {
                     aus_exec << "echo \"ICHARG=1                                        #FIX=" << mode << "\" >> INCAR " << endl;
                     aus_exec << "echo \"NELM=180                                        #FIX=" << mode << "\" >> INCAR " << endl;
                     aus_exec << "echo \"AMIN=0.01                                       #FIX=" << mode << "\" >> INCAR " << endl;
-                    aus_exec << "echo \" AMIX     = 0.2                                                  #FIX=" << mode << "\" >> INCAR " << endl;  
-                    aus_exec << "echo \" BMIX     = 0.0001 ! almost zero, but 0 will crash some versions #FIX=" << mode << "\" >> INCAR " << endl; 
-                    aus_exec << "echo \" AMIX_MAG = 0.8                                                  #FIX=" << mode << "\" >> INCAR " << endl; 
-                    aus_exec << "echo \" BMIX_MAG = 0.0001 ! almost zero, but 0 will crash some versions #FIX=" << mode << "\" >> INCAR " << endl; 
+                    aus_exec << "echo \"AMIX     = 0.2                                  #FIX=" << mode << "\" >> INCAR " << endl;  
+                    aus_exec << "echo \"BMIX     = 0.0001                               #FIX=" << mode << "\" >> INCAR " << endl; 
+                    aus_exec << "echo \"AMIX_MAG = 0.8                                  #FIX=" << mode << "\" >> INCAR " << endl; 
+                    aus_exec << "echo \"BMIX_MAG = 0.0001                               #FIX=" << mode << "\" >> INCAR " << endl; 
                     aurostd::execute(aus_exec);
                 }
             }
