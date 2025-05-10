@@ -4542,7 +4542,7 @@ namespace KBIN {
         
         // "reload" reads INCAR file (with modifications), so it must be set as TRUE if directly modiftying INCAR
         // must set it as FALSE if ONLY do the operation via xvasp class (otherwise, loading INCAR will clean xvasp.INCAR)
-        // if one has to set it as TRUE, then one option is to output xvasp.INCAR.str to file INCAR imediately
+        // if one has to set it as TRUE, then one option is to output xvasp.INCAR.str to file INCAR imediately, then do the reload
         // aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));
         // "rewrite" write xvasp.INCAR.str() to file INCAR 
 
@@ -4657,13 +4657,14 @@ namespace KBIN {
             //    rewrite_incar=TRUE;
             //}
             
-            ////ALGO = Normal
-            //reload_incar=TRUE;
-            //aus_exec << "cd " << xvasp.Directory << endl;
-            //aus_exec << "cp INCAR INCAR.eddrmm" << endl;
-            //aus_exec << "cat INCAR | grep -v 'ALGO' > aflow.tmp && mv aflow.tmp INCAR" << endl; // remove ALGO
-            //aus_exec << "echo \"ALGO = Normal                                        #FIX=" << mode << "\" >> INCAR " << endl;
-            //aurostd::execute(aus_exec);
+            //ALGO = Normal
+            reload_incar=TRUE;
+            aus_exec << "cd " << xvasp.Directory << endl;
+            aus_exec << "cp INCAR INCAR.eddrmm" << endl;
+            aus_exec << "cat INCAR | grep -v 'ALGO' > aflow.tmp && mv aflow.tmp INCAR" << endl; // remove ALGO
+            aus_exec << "echo \"ALGO = Normal                                        #FIX=" << mode << "\" >> INCAR " << endl;
+            aus_exec << "echo \"ADDGRID=.TRUE.                                        #FIX=" << mode << "\" >> INCAR " << endl;
+            aurostd::execute(aus_exec);
         }
 
         if(mode=="LREAL") {
