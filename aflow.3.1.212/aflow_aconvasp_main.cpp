@@ -10427,6 +10427,9 @@ namespace pflow {
     if(vpflow.flag("PROTO::AIMS")) str.xstructure2aims();
 
     if(LDEBUG) cerr << soliloquy << " END" << endl;  
+
+    if (str.species.size()) 
+        str.is_vasp5_poscar_format = TRUE;  //Kesong fixes this to use vasp5 format if species are given, 2025
     return str;
   }
 } // namespace pflow
