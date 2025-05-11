@@ -5710,6 +5710,7 @@ namespace aurostd {
     // ***************************************************************************
     string GetLineWithKeywordAndRemoveWhiteSpaces(const string& FileContent, const string& keyword) {
         string ostr = GetLineWithKeyword(FileContent, keyword);
+        ostr = aurostd::RemoveComments(ostr);
         ostr = aurostd::RemoveWhiteSpaces(ostr);
         return (ostr);
     }

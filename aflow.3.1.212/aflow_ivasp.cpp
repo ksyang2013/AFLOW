@@ -123,7 +123,7 @@ namespace KBIN {
         // VASP VASP WRITE
         if(Krun) Krun=(Krun && aurostd::stringstream2file(xvasp.POSCAR,string(xvasp.Directory+"/POSCAR")));
         //KESONG YANG, 2025-03-29
-        string stmp = RemoveCommentLines(aurostd::RemoveEmptyLines(SortLinesAlphabetically(RemoveDuplicateLines(xvasp.INCAR.str())))); 
+        string stmp = aurostd::RemoveEmptyLines(RemoveCommentLines(SortLinesAlphabetically(RemoveDuplicateLines(xvasp.INCAR.str())))); 
         if(Krun) Krun=(Krun && aurostd::string2file(stmp,string(xvasp.Directory+"/INCAR")));
         if(Krun) Krun=(Krun && aurostd::stringstream2file(xvasp.KPOINTS,string(xvasp.Directory+"/KPOINTS")));
         if(Krun) Krun=(Krun && aurostd::stringstream2file(xvasp.POTCAR,string(xvasp.Directory+"/POTCAR")));
@@ -477,7 +477,7 @@ ISPIN=2
                     Krun=FALSE;
                     return Krun;
                 }
-                xvasp.INCAR << aurostd::file2string(file);
+                xvasp.INCAR << aurostd::RemoveEmptyLines(aurostd::RemoveWhiteSpaces(aurostd::RemoveComments(aurostd::file2string(file))));
             }
             if(vflags.KBIN_VASP_INCAR_FILE.flag("COMMAND") && !vflags.KBIN_VASP_INCAR_FILE.flag("FILE")) {
                 file=aurostd::substring2string(AflowIn,"[VASP_INCAR_FILE]COMMAND=",FALSE);
@@ -2672,20 +2672,20 @@ namespace KBIN {
         //plays with ismear for metal (Ni), 20250423 
         if (RunType != "BANDS") {
             if (aurostd::substring2bool(stmp, "ISMEAR", TRUE)) {
-                string stmp =  GetLineWithKeywordAndRemoveWhiteSpaces(xvasp.INCAR_orig.str(), "ISMEAR");
-                ss_INCAR << aurostd::PaddedPOST(stmp, _incarpad_)  << "# Apply user-defined settings " << endl; }  
+                string str_tmp =  GetLineWithKeywordAndRemoveWhiteSpaces(xvasp.INCAR_orig.str(), "ISMEAR");
+                ss_INCAR << aurostd::RemoveComments(aurostd::PaddedPOST(str_tmp, _incarpad_))  << "# Apply user-defined settings " << endl; }  
             else
                 ss_INCAR << aurostd::PaddedPOST("ISMEAR=-5",_incarpad_) << notes << endl;
 
             if (aurostd::substring2bool(stmp, "SIGMA", TRUE)) {
-                string stmp =  GetLineWithKeywordAndRemoveWhiteSpaces(xvasp.INCAR_orig.str(), "SIGMA");
-                ss_INCAR << aurostd::PaddedPOST(stmp, _incarpad_)  << "# Apply user-defined settings " << endl; }  
+                string str_tmp =  GetLineWithKeywordAndRemoveWhiteSpaces(xvasp.INCAR_orig.str(), "SIGMA");
+                ss_INCAR << aurostd::RemoveComments(aurostd::PaddedPOST(str_tmp, _incarpad_))  << "# Apply user-defined settings " << endl; }  
             else
                 ss_INCAR << aurostd::PaddedPOST("SIGMA=0.05",_incarpad_) << notes << endl;
         }
 
         if (aurostd::substring2bool(stmp, "NELM")) 
-            ss_INCAR << GetLineWithKeywordAndRemoveWhiteSpaces(stmp, "NELM") << endl;
+            ss_INCAR << aurostd::RemoveComments(GetLineWithKeywordAndRemoveWhiteSpaces(stmp, "NELM")) << endl;
         else  
             ss_INCAR << aurostd::PaddedPOST("NELM=120",_incarpad_)        <<  notes  << endl; //default is good since we can keep restarting
 
@@ -3883,7 +3883,7 @@ namespace KBIN {
         // xvasp.INCAR << endl;
         // rewrite incar
         aurostd::RemoveFile(string(xvasp.Directory+"/INCAR"));
-        string stmp = RemoveCommentLines(aurostd::RemoveEmptyLines(SortLinesAlphabetically(RemoveDuplicateLines(xvasp.INCAR.str())))); 
+        string stmp = aurostd::RemoveEmptyLines(RemoveCommentLines(SortLinesAlphabetically(RemoveDuplicateLines(xvasp.INCAR.str())))); 
         aurostd::string2file(stmp,string(xvasp.Directory+"/INCAR"));
     }
 }
@@ -4950,7 +4950,7 @@ namespace KBIN {
         // reload first (since INCAR may be changed), then rewrite? KY 2025-04-19, fixes bug in ZBRENT
         // rewrite to restart (writing xvasp to VASP files) 
         if(rewrite_incar) { 
-            string stmp = RemoveCommentLines(aurostd::RemoveEmptyLines(SortLinesAlphabetically(RemoveDuplicateLines(xvasp.INCAR.str())))); 
+            string stmp = aurostd::RemoveEmptyLines(RemoveCommentLines(SortLinesAlphabetically(RemoveDuplicateLines(xvasp.INCAR.str())))); 
             aurostd::string2file(stmp,string(xvasp.Directory+"/INCAR"));
         }
 
