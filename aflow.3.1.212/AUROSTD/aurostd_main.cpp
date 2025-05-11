@@ -5683,7 +5683,7 @@ namespace aurostd {
         int imax; 
         string strline;
         imax=aurostd::GetNLinesString(FileContent);
-        for(int i=1;i<=imax;i++) {
+        for(int i=0;i<imax;i++) {
             strline=aurostd::GetLineString(FileContent,i);
             if(aurostd::substring2bool(strline,keyword,TRUE)) FLAG = TRUE;
         }
@@ -5697,7 +5697,7 @@ namespace aurostd {
         int imax; 
         string strline, ostr="";
         imax=aurostd::GetNLinesString(FileContent);
-        for(int i=1;i<=imax;i++) {
+        for(int i=0;i<imax;i++) {
             strline=aurostd::GetLineString(FileContent,i);
             if(aurostd::substring2bool(strline,keyword,TRUE)) {
                 ostr = strline;
@@ -5735,7 +5735,7 @@ namespace aurostd {
         ostringstream oss; oss.str("");
         vector<string> vlines;
         int imax=aurostd::GetNLinesString(FileContent);
-        for(int i=1;i<=imax;i++) {
+        for(int i=0;i<imax;i++) {
             strline=aurostd::GetLineString(FileContent,i);
             if(strline.length()) oss << strline << endl;
         }
@@ -5760,7 +5760,7 @@ namespace aurostd {
         std::unordered_set<std::string> uniqueLines;
         int imax = aurostd::GetNLinesString(FileContent);
 
-        for (int i = 1; i <= imax; i++) {
+        for (int i = 0; i < imax; i++) {
             strline = aurostd::GetLineString(FileContent, i);
             std::string unique_part = getUniquePart(strline);
             if (uniqueLines.find(unique_part) == uniqueLines.end()) {
@@ -5780,7 +5780,7 @@ namespace aurostd {
         std::vector<std::string> vlines;
         int imax = aurostd::GetNLinesString(FileContent);
 
-        for (int i = 1; i <= imax; i++) {
+        for (int i = 0; i < imax; i++) {
             strline = aurostd::GetLineString(FileContent, i);
             vlines.push_back(strline);
         }
@@ -5803,7 +5803,7 @@ namespace aurostd {
         std::vector<std::string> vlines;
         int imax = aurostd::GetNLinesString(FileContent);
 
-        for (int i = 1; i <= imax; i++) {
+        for (int i = 0; i < imax; i++) {
             strline = aurostd::GetLineString(FileContent, i);
             if (!strline.empty() && strline[0] != '#') {
                 oss << strline << std::endl;
@@ -5863,7 +5863,7 @@ namespace aurostd {
             string strline, value, firstLine, stmp;
             imax=aurostd::GetNLinesString(FileContent);
             vector<string> targetLines, tokens;
-            for(int i=0;i<=imax;i++) {
+            for(int i=0;i<imax;i++) {
                 strline=aurostd::GetLineString(FileContent,i);
                 if(aurostd::substring2bool(strline,keyword,TRUE) && !aurostd::substring2bool(strline,"#" + keyword,TRUE)) {
                     targetLines.push_back(strline);
