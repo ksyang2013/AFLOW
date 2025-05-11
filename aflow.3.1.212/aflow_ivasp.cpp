@@ -4901,10 +4901,14 @@ namespace KBIN {
                         aus_exec << "echo \"[VASP_FORCE_OPTION]ALGO=NORMAL      // Self Correction\"" << " >> " << _AFLOWIN_ << " " << endl;
                     }
                         
+                    aus_exec << "cat INCAR | grep -v 'ISTART' > incar.tmp && mv incar.tmp INCAR" << endl; 
                     aus_exec << "cat INCAR | grep -v 'ICHARG' > incar.tmp && mv incar.tmp INCAR" << endl; 
+                    aus_exec << "cat INCAR | grep -v 'LWAVE' > incar.tmp && mv incar.tmp INCAR" << endl; 
                     aus_exec << "cat INCAR | grep -v 'NELM' > incar.tmp && mv incar.tmp INCAR" << endl; 
                     aus_exec << "cat INCAR | grep -v 'AMIN' > incar.tmp && mv incar.tmp INCAR" << endl;  
+                    aus_exec << "echo \"ISTART=1                                        #FIX=" << mode << "\" >> INCAR " << endl;
                     aus_exec << "echo \"ICHARG=1                                        #FIX=" << mode << "\" >> INCAR " << endl;
+                    aus_exec << "echo \"LWAVE = TRUE                                    #FIX=" << mode << "\" >> INCAR " << endl;
                     aus_exec << "echo \"NELM=120                                        #FIX=" << mode << "\" >> INCAR " << endl;
                     aus_exec << "echo \"AMIN=0.01                                       #FIX=" << mode << "\" >> INCAR " << endl;
                     aus_exec << "echo \"AMIX     = 0.2                                  #FIX=" << mode << "\" >> INCAR " << endl;  
@@ -4915,7 +4919,7 @@ namespace KBIN {
                 }
             }
 
-            //check spin, if static and not spin, then turn on
+            //check spin, if static and not spin, then turn on spin
             if (param_int >= 2){
                 if (not KBIN::VASP_isSpinOUTCAR(xvasp.Directory) && KBIN::VASP_isStaticOUTCAR(xvasp.Directory)) {
                     reload_incar=TRUE;
@@ -4926,11 +4930,15 @@ namespace KBIN {
                     aus_exec << "cat aflow.in | grep -v 'SPIN=ON      // Self Correction' > aflow.tmp && mv aflow.tmp aflow.in" << endl;
                     aus_exec << "echo \"[VASP_FORCE_OPTION]SPIN=ON      // Self Correction\"" << " >> " << _AFLOWIN_ << " " << endl;
                     aus_exec << "cat INCAR | grep -v 'MAGMOM' > incar.tmp && mv incar.tmp INCAR" << endl; //use default seting of vasp
+                    aus_exec << "cat INCAR | grep -v 'ISTART' > incar.tmp && mv incar.tmp INCAR" << endl; 
                     aus_exec << "cat INCAR | grep -v 'ICHARG' > incar.tmp && mv incar.tmp INCAR" << endl; 
+                    aus_exec << "cat INCAR | grep -v 'LWAVE' > incar.tmp && mv incar.tmp INCAR" << endl; 
                     aus_exec << "cat INCAR | grep -v 'NELM' > incar.tmp && mv incar.tmp INCAR" << endl; 
-                    aus_exec << "cat INCAR | grep -v 'AMIN' > incar.tmp && mv incar.tmp INCAR" << endl; 
+                    aus_exec << "cat INCAR | grep -v 'AMIN' > incar.tmp && mv incar.tmp INCAR" << endl;  
+                    aus_exec << "echo \"ISTART=1                                        #FIX=" << mode << "\" >> INCAR " << endl;
                     aus_exec << "echo \"ICHARG=1                                        #FIX=" << mode << "\" >> INCAR " << endl;
-                    aus_exec << "echo \"NELM=180                                        #FIX=" << mode << "\" >> INCAR " << endl;
+                    aus_exec << "echo \"LWAVE = TRUE                                    #FIX=" << mode << "\" >> INCAR " << endl;
+                    aus_exec << "echo \"NELM=120                                        #FIX=" << mode << "\" >> INCAR " << endl;
                     aus_exec << "echo \"AMIN=0.01                                       #FIX=" << mode << "\" >> INCAR " << endl;
                     aus_exec << "echo \"AMIX     = 0.2                                  #FIX=" << mode << "\" >> INCAR " << endl;  
                     aus_exec << "echo \"BMIX     = 0.0001                               #FIX=" << mode << "\" >> INCAR " << endl; 
