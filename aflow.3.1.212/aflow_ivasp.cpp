@@ -124,7 +124,8 @@ namespace KBIN {
         // VASP VASP WRITE
         if(Krun) Krun=(Krun && aurostd::stringstream2file(xvasp.POSCAR,string(xvasp.Directory+"/POSCAR")));
         //KESONG YANG, 2025-03-29
-        string stmp = aurostd::RemoveEmptyLines(RemoveCommentLines(SortLinesAlphabetically(RemoveDuplicateLines(xvasp.INCAR.str())))); 
+        string stmp = RemoveEmptyLines(RemoveCommentLines(SortLinesAlphabetically(RemoveDuplicateLines(xvasp.INCAR.str())))); 
+        //string stmp = aurostd::RemoveEmptyLines(RemoveCommentLines(SortLinesAlphabetically(RemoveDuplicateLines(xvasp.INCAR.str())))); 
         if(Krun) Krun=(Krun && aurostd::string2file(stmp,string(xvasp.Directory+"/INCAR")));
         if(Krun) Krun=(Krun && aurostd::stringstream2file(xvasp.KPOINTS,string(xvasp.Directory+"/KPOINTS")));
         if(Krun) Krun=(Krun && aurostd::stringstream2file(xvasp.POTCAR,string(xvasp.Directory+"/POTCAR")));

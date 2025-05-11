@@ -1296,9 +1296,9 @@ const std::string base64_chars =
 // ***************************************************************************
 namespace aurostd {
     bool doesKeywordExist(const string& FileContent, const string& keyword);
+    bool doesKeywordExistLine(const string& strline, const string& keyword);
     string GetLineWithKeyword(const string& FileContent, const string& keyword);
     string GetLineWithKeywordAndRemoveWhiteSpaces(const string& FileContent, const string& keyword);
-    bool doesKeywordExistLine(const string& strline, const string& keyword);
     void capitalizeString(string& s);
     string RemoveEmptyLines(const string& FileContent);
     string getUniquePart(const std::string& line);

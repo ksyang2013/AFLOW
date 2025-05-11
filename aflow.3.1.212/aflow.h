@@ -2450,19 +2450,14 @@ namespace KBIN {
   void GetStatDiel(string& outcar, xvector<double>& eigr, xvector<double>& eigi); // CAMILO
   void GetDynaDiel(string& outcar, xvector<double>& eigr, xvector<double>& eigi); // CAMILO
   //KESONG
-  bool VASP_CheckRelaxReachNSW(string dir);
+  bool VASP_CheckConvergedOUTCAR(string dir);
+  bool VASP_CheckUnconvergedOUTCAR(string dir);
   bool VASP_isSpinOUTCAR(string dir); 
   bool VASP_isRelaxOUTCAR(string dir);
   bool VASP_isStaticOUTCAR(string dir);
-  bool VASP_CheckUnconvergedOUTCAR(string dir);
-  bool doesKeywordExist(const string& FileContent, const string& keyword); 
-  bool doesKeywordExistLine(const string& strline, const string& keyword); 
-  void capitalizeString(string& s);
-  string GetValueOfKey(const string& FileContent, const string& keyword); 
-  string RemoveEmptyLines(const string& FileContent);
-  string RemoveLineWithKeyword(const string& FileContent, const string& keyword, bool CleanBlankLine=true);
-  string RemoveLineWithKeyword(const string& FileContent, const vector<string>& vkeyword, bool CleanBlankLine=true);
-  string RemoveLineWithMultipleKeywords(const string& FileContent, const string& keywords, bool CleanBlankLine=true);
+  bool VASP_CheckRelaxReachNSW(string dir);
+  bool RecyclePOSCARfromCONTCAR(_xvasp& xvasp);
+  string ExtractINCARStrfromAflowIn(_xvasp& xvasp);
   //KESONG
 }
 
