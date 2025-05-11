@@ -5710,7 +5710,6 @@ namespace aurostd {
     // ***************************************************************************
     string GetLineWithKeywordAndRemoveWhiteSpaces(const string& FileContent, const string& keyword) {
         string ostr = GetLineWithKeyword(FileContent, keyword);
-        ostr = aurostd::RemoveComments(ostr);
         ostr = aurostd::RemoveWhiteSpaces(ostr);
         return (ostr);
     }
@@ -5794,6 +5793,19 @@ namespace aurostd {
 
         return oss.str();
     }
+
+    // ***************************************************************************
+    // Remove comments from oneline, including the newline breaker
+    string RemoveCommentsFromLine(const std::string& strline) {
+        std::ostringstream oss;
+
+        if (!strline.empty() && strline.find('#') == std::string::npos) {
+            oss << strline; 
+        }
+
+        return oss.str();
+    }
+
 
     // ***************************************************************************
     string RemoveCommentLines(const std::string& FileContent) {

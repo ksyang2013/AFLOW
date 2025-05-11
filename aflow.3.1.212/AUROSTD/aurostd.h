@@ -1305,6 +1305,7 @@ namespace aurostd {
     string RemoveDuplicateLines(const std::string& FileContent);
     string SortLinesAlphabetically(const std::string& FileContent);
     string RemoveCommentLines(const std::string& FileContent);
+    string RemoveCommentsFromLine(const std::string& strline);
     string RemoveLineWithKeyword(const string& FileContent, const string& keyword, bool CleanBlankLine);
     string RemoveLineWithKeyword(const string& FileContent, const vector<string>& vkeyword, bool CleanBlankLine);
     string RemoveLineWithMultipleKeywords(const string& FileContent, const string& keywords, bool CleanBlankLine);

@@ -31,6 +31,7 @@ using aurostd::RemoveDuplicateLines;
 using aurostd::SortLinesAlphabetically;
 using aurostd::RemoveCommentLines;
 using aurostd::RemoveEmptyLines;
+using aurostd::RemoveCommentsFromLine;
 
 //// ***************************************************************************
 //KESONG 2025-04-21
@@ -2665,27 +2666,28 @@ namespace KBIN {
         ss_INCAR << aurostd::PaddedPOST("LWAVE=.FALSE.",_incarpad_)   <<  notes << endl;
         ss_INCAR << aurostd::PaddedPOST("LCHARG=.TRUE.",_incarpad_)   <<  notes << endl;
 
-        string stmp = ExtractINCARStrfromAflowIn(xvasp);
-        if (stmp.empty())
-            stmp = xvasp.INCAR_orig.str();
-        
+        string strINCAR = ExtractINCARStrfromAflowIn(xvasp);
+        if (strINCAR.empty())
+            strINCAR = xvasp.INCAR_orig.str();
+
         //plays with ismear for metal (Ni), 20250423 
         if (RunType != "BANDS") {
-            if (aurostd::substring2bool(stmp, "ISMEAR", TRUE)) {
-                string str_tmp =  GetLineWithKeywordAndRemoveWhiteSpaces(xvasp.INCAR_orig.str(), "ISMEAR");
-                ss_INCAR << aurostd::RemoveComments(aurostd::PaddedPOST(str_tmp, _incarpad_))  << "# Apply user-defined settings " << endl; }  
+            if (aurostd::substring2bool(strINCAR, "ISMEAR", TRUE)) {
+                string str_tmp =  RemoveCommentsFromLine(GetLineWithKeywordAndRemoveWhiteSpaces(strINCAR, "ISMEAR"));
+                ss_INCAR << aurostd::PaddedPOST(str_tmp, _incarpad_) << "# Apply user-defined settings " << endl; }  
             else
                 ss_INCAR << aurostd::PaddedPOST("ISMEAR=-5",_incarpad_) << notes << endl;
 
-            if (aurostd::substring2bool(stmp, "SIGMA", TRUE)) {
-                string str_tmp =  GetLineWithKeywordAndRemoveWhiteSpaces(xvasp.INCAR_orig.str(), "SIGMA");
-                ss_INCAR << aurostd::RemoveComments(aurostd::PaddedPOST(str_tmp, _incarpad_))  << "# Apply user-defined settings " << endl; }  
+            if (aurostd::substring2bool(strINCAR, "SIGMA", TRUE)) {
+                string str_tmp =  RemoveCommentsFromLine(GetLineWithKeywordAndRemoveWhiteSpaces(strINCAR, "SIGMA"));
+                ss_INCAR << aurostd::PaddedPOST(str_tmp, _incarpad_) << "# Apply user-defined settings " << endl; }  
             else
                 ss_INCAR << aurostd::PaddedPOST("SIGMA=0.05",_incarpad_) << notes << endl;
         }
 
-        if (aurostd::substring2bool(stmp, "NELM")) 
-            ss_INCAR << aurostd::RemoveComments(GetLineWithKeywordAndRemoveWhiteSpaces(stmp, "NELM")) << endl;
+        if (aurostd::substring2bool(strINCAR, "NELM")) {
+            string str_tmp = RemoveCommentsFromLine(GetLineWithKeywordAndRemoveWhiteSpaces(strINCAR, "NELM")); 
+            ss_INCAR << aurostd::PaddedPOST(str_tmp, _incarpad_) << "# Apply user-defined settings " << endl; }  
         else  
             ss_INCAR << aurostd::PaddedPOST("NELM=120",_incarpad_)        <<  notes  << endl; //default is good since we can keep restarting
 
