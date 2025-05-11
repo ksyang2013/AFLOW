@@ -4880,73 +4880,51 @@ namespace KBIN {
 
         if(mode=="CSLOSHING") {
             file_error="aflow.error.csloshing" + aurostd::utype2string(param_int);
-            // fix aflowlin
             reload_incar=TRUE;  //if reload, then the modification of INCAR will be saved
+            //rewrite_incar=TRUE;  
             if (vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme != "NORMAL") {
                 vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme="NORMAL";
                 KBIN::XVASP_INCAR_PREPARE_GENERIC("ALGO",xvasp,vflags,"",0,0.0,FALSE);//write it into INCAR first, then the modification will not be lost
                 aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));
+                
+                // fix aflowlin
+                aus_exec << "cd " << xvasp.Directory << endl;
+                aus_exec << "cat " << _AFLOWIN_ << " | sed \"s/\\[VASP_FORCE_OPTION\\]ALGO/#\\[VASP_FORCE_OPTION\\]ALGO/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl;
+                aus_exec << "cat " << _AFLOWIN_ << " | sed \"s/##\\[/#\\[/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl;
+                aus_exec << "echo \"[VASP_FORCE_OPTION]ALGO=NORMAL      // Self Correction\"" << " >> " << _AFLOWIN_ << " " << endl;
+                aurostd::execute(aus_exec);
             }
 
-            if (param_int == 1) {
-                reload_incar=TRUE;
-                if (KBIN::VASP_isStaticOUTCAR(xvasp.Directory) && not aurostd::substring_present_file_FAST(xvasp.Directory+"/INCAR","ICHARG=1")) {
-                    xvasp.aopts.flag("FLAG::CHGCAR_PRESERVED", TRUE);
-                    reload_incar=TRUE;
-                    aus_exec << "cd " << xvasp.Directory << endl;
-
-                    if (vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme != "NORMAL") {
-                        aus_exec << "cat " << _AFLOWIN_ << " | sed \"s/\\[VASP_FORCE_OPTION\\]ALGO/#\\[VASP_FORCE_OPTION\\]ALGO/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl;
-                        aus_exec << "cat " << _AFLOWIN_ << " | sed \"s/##\\[/#\\[/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl;
-                        aus_exec << "echo \"[VASP_FORCE_OPTION]ALGO=NORMAL      // Self Correction\"" << " >> " << _AFLOWIN_ << " " << endl;
-                    }
-                        
-                    aus_exec << "cat INCAR | grep -v 'ISTART' > incar.tmp && mv incar.tmp INCAR" << endl; 
-                    aus_exec << "cat INCAR | grep -v 'ICHARG' > incar.tmp && mv incar.tmp INCAR" << endl; 
-                    aus_exec << "cat INCAR | grep -v 'LWAVE' > incar.tmp && mv incar.tmp INCAR" << endl; 
-                    aus_exec << "cat INCAR | grep -v 'NELM' > incar.tmp && mv incar.tmp INCAR" << endl; 
-                    aus_exec << "cat INCAR | grep -v 'AMIN' > incar.tmp && mv incar.tmp INCAR" << endl;  
-                    aus_exec << "echo \"ISTART=1                                        #FIX=" << mode << "\" >> INCAR " << endl;
-                    aus_exec << "echo \"ICHARG=1                                        #FIX=" << mode << "\" >> INCAR " << endl;
-                    aus_exec << "echo \"LWAVE = TRUE                                    #FIX=" << mode << "\" >> INCAR " << endl;
-                    aus_exec << "echo \"NELM=120                                        #FIX=" << mode << "\" >> INCAR " << endl;
-                    aus_exec << "echo \"AMIN=0.01                                       #FIX=" << mode << "\" >> INCAR " << endl;
-                    aus_exec << "echo \"AMIX     = 0.2                                  #FIX=" << mode << "\" >> INCAR " << endl;  
-                    aus_exec << "echo \"BMIX     = 0.0001                               #FIX=" << mode << "\" >> INCAR " << endl; 
-                    aus_exec << "echo \"AMIX_MAG = 0.8                                  #FIX=" << mode << "\" >> INCAR " << endl; 
-                    aus_exec << "echo \"BMIX_MAG = 0.0001                               #FIX=" << mode << "\" >> INCAR " << endl; 
-                    aurostd::execute(aus_exec);
-                }
-            }
+            //if (param_int == 1) {
+            //    if (KBIN::VASP_isStaticOUTCAR(xvasp.Directory) && not aurostd::substring_present_file_FAST(xvasp.Directory+"/INCAR","ICHARG=1")) {
+            //        xvasp.aopts.flag("FLAG::CHGCAR_PRESERVED", TRUE);
+            //    }
+            //}
 
             //check spin, if static and not spin, then turn on spin
             if (param_int >= 2){
                 if (not KBIN::VASP_isSpinOUTCAR(xvasp.Directory) && KBIN::VASP_isStaticOUTCAR(xvasp.Directory)) {
-                    reload_incar=TRUE;
                     KBIN::XVASP_INCAR_PREPARE_GENERIC("SPIN",xvasp,vflags,"",0,0.0,vflags.KBIN_VASP_FORCE_OPTION_SPIN.option);
                     aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));
-                    aus_exec << "cd " << xvasp.Directory << endl;
-                    aus_exec << "cat " << _AFLOWIN_ << " | sed \"s/\\[VASP_FORCE_OPTION\\]SPIN/#\\[VASP_FORCE_OPTION\\]SPIN/g\" | sed \"s/##\\[/#\\[/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl;
-                    aus_exec << "cat aflow.in | grep -v 'SPIN=ON      // Self Correction' > aflow.tmp && mv aflow.tmp aflow.in" << endl;
-                    aus_exec << "echo \"[VASP_FORCE_OPTION]SPIN=ON      // Self Correction\"" << " >> " << _AFLOWIN_ << " " << endl;
-                    aus_exec << "cat INCAR | grep -v 'MAGMOM' > incar.tmp && mv incar.tmp INCAR" << endl; //use default seting of vasp
-                    aus_exec << "cat INCAR | grep -v 'ISTART' > incar.tmp && mv incar.tmp INCAR" << endl; 
-                    aus_exec << "cat INCAR | grep -v 'ICHARG' > incar.tmp && mv incar.tmp INCAR" << endl; 
-                    aus_exec << "cat INCAR | grep -v 'LWAVE' > incar.tmp && mv incar.tmp INCAR" << endl; 
-                    aus_exec << "cat INCAR | grep -v 'NELM' > incar.tmp && mv incar.tmp INCAR" << endl; 
-                    aus_exec << "cat INCAR | grep -v 'AMIN' > incar.tmp && mv incar.tmp INCAR" << endl;  
-                    aus_exec << "echo \"ISTART=1                                        #FIX=" << mode << "\" >> INCAR " << endl;
-                    aus_exec << "echo \"ICHARG=1                                        #FIX=" << mode << "\" >> INCAR " << endl;
-                    aus_exec << "echo \"LWAVE = TRUE                                    #FIX=" << mode << "\" >> INCAR " << endl;
-                    aus_exec << "echo \"NELM=120                                        #FIX=" << mode << "\" >> INCAR " << endl;
-                    aus_exec << "echo \"AMIN=0.01                                       #FIX=" << mode << "\" >> INCAR " << endl;
-                    aus_exec << "echo \"AMIX     = 0.2                                  #FIX=" << mode << "\" >> INCAR " << endl;  
-                    aus_exec << "echo \"BMIX     = 0.0001                               #FIX=" << mode << "\" >> INCAR " << endl; 
-                    aus_exec << "echo \"AMIX_MAG = 0.8                                  #FIX=" << mode << "\" >> INCAR " << endl; 
-                    aus_exec << "echo \"BMIX_MAG = 0.0001                               #FIX=" << mode << "\" >> INCAR " << endl; 
-                    aurostd::execute(aus_exec);
                 }
             }
+
+            aus_exec << "cd " << xvasp.Directory << endl;
+            aus_exec << "cat INCAR | grep -v 'ISTART' > incar.tmp && mv incar.tmp INCAR" << endl; 
+            aus_exec << "cat INCAR | grep -v 'ICHARG' > incar.tmp && mv incar.tmp INCAR" << endl; 
+            aus_exec << "cat INCAR | grep -v 'LWAVE' > incar.tmp && mv incar.tmp INCAR" << endl; 
+            aus_exec << "cat INCAR | grep -v 'NELM' > incar.tmp && mv incar.tmp INCAR" << endl; 
+            aus_exec << "cat INCAR | grep -v 'AMIN' > incar.tmp && mv incar.tmp INCAR" << endl;  
+            aus_exec << "echo \"ISTART=1                                        #FIX=" << mode << "\" >> INCAR " << endl;
+            aus_exec << "echo \"ICHARG=1                                        #FIX=" << mode << "\" >> INCAR " << endl;
+            aus_exec << "echo \"LWAVE = TRUE                                    #FIX=" << mode << "\" >> INCAR " << endl;
+            aus_exec << "echo \"NELM=120                                        #FIX=" << mode << "\" >> INCAR " << endl;
+            aus_exec << "echo \"AMIN=0.01                                       #FIX=" << mode << "\" >> INCAR " << endl;
+            aus_exec << "echo \"AMIX     = 0.2                                  #FIX=" << mode << "\" >> INCAR " << endl;  
+            aus_exec << "echo \"BMIX     = 0.0001                               #FIX=" << mode << "\" >> INCAR " << endl; 
+            aus_exec << "echo \"AMIX_MAG = 0.8                                  #FIX=" << mode << "\" >> INCAR " << endl; 
+            aus_exec << "echo \"BMIX_MAG = 0.0001                               #FIX=" << mode << "\" >> INCAR " << endl; 
+            aurostd::execute(aus_exec);
         }
 
         //KESONG ADDS THIS, recycle CONTCAR, no waste time in relaxation; 2019-07-19
@@ -4969,11 +4947,9 @@ namespace KBIN {
             xvasp.KPOINTS.str(std::string()); xvasp.KPOINTS << aurostd::file2string(xvasp.Directory+"/KPOINTS");
         }
 
-        // reload first (since INCAR may be changed), then rewrite? Kesong 2025-04-19, fixes bug in ZBRENT
-        // rewrite to restart ---------------------------------
-        // rewrite means writing xvasp to VASP files
+        // reload first (since INCAR may be changed), then rewrite? KY 2025-04-19, fixes bug in ZBRENT
+        // rewrite to restart (writing xvasp to VASP files) 
         if(rewrite_incar) { 
-            //{aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));}
             string stmp = RemoveCommentLines(aurostd::RemoveEmptyLines(SortLinesAlphabetically(RemoveDuplicateLines(xvasp.INCAR.str())))); 
             aurostd::string2file(stmp,string(xvasp.Directory+"/INCAR"));
         }
