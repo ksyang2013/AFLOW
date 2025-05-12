@@ -479,7 +479,8 @@ ISPIN=2
                     Krun=FALSE;
                     return Krun;
                 }
-                xvasp.INCAR << aurostd::RemoveEmptyLines(aurostd::RemoveWhiteSpaces(aurostd::RemoveComments(aurostd::file2string(file))));
+                // do not format the INCAR if using external mode; KY 20250511
+                xvasp.INCAR << aurostd::file2string(file);
             }
             if(vflags.KBIN_VASP_INCAR_FILE.flag("COMMAND") && !vflags.KBIN_VASP_INCAR_FILE.flag("FILE")) {
                 file=aurostd::substring2string(AflowIn,"[VASP_INCAR_FILE]COMMAND=",FALSE);
