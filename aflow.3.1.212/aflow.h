@@ -2453,6 +2453,7 @@ namespace KBIN {
   bool VASP_CheckConvergedOUTCAR(string dir);
   bool VASP_CheckUnconvergedOUTCAR(string dir);
   bool VASP_isSpinOUTCAR(string dir); 
+  bool VASP_isLSCouplingOUTCAR(string dir); 
   bool VASP_isRelaxOUTCAR(string dir);
   bool VASP_isStaticOUTCAR(string dir);
   bool VASP_CheckRelaxReachNSW(string dir);

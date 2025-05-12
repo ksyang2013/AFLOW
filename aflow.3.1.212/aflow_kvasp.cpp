@@ -65,6 +65,12 @@ namespace KBIN{
         if (outcar.ISPIN == 2 ) isSpin = TRUE;
         return (isSpin);
     }
+
+    bool VASP_isLSCouplingOUTCAR(string dir) {
+        xOUTCAR outcar(dir+"/OUTCAR");
+        return (outcar.isLSCOUPLING);
+    }
+
 }
 //
 // ***************************************************************************
@@ -1578,7 +1584,7 @@ namespace KBIN {
 
                                     
                                     // done write INCAR; KESONG 2025-03-29 
-                                    string stmp = aurostd::RemoveEmptyLines(aurostd::RemoveCommentLines(aurostd::SortLinesAlphabetically(aurostd::RemoveDuplicateLines(xvasp.INCAR.str())))); 
+                                    string stmp = aurostd::RemoveCommentLines(aurostd::RemoveEmptyLines(aurostd::SortLinesAlphabetically(aurostd::RemoveDuplicateLines(xvasp.INCAR.str()))));
                                     aurostd::string2file(stmp,string(xvasp.Directory+"/INCAR"));
                                     
                                     // NOW DO THE STATIC RUN

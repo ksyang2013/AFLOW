@@ -4907,12 +4907,10 @@ namespace KBIN {
             //    }
             //}
 
-            //check spin, if static and not spin, then turn on spin
-            if (param_int >= 2){
-                if (not KBIN::VASP_isSpinOUTCAR(xvasp.Directory) && KBIN::VASP_isStaticOUTCAR(xvasp.Directory)) {
-                    KBIN::XVASP_INCAR_PREPARE_GENERIC("SPIN",xvasp,vflags,"",0,0.0,vflags.KBIN_VASP_FORCE_OPTION_SPIN.option);
-                    aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));
-                }
+            //check spin, if static and not spin or soc, then turn on spin
+            if ((not KBIN::VASP_isSpinOUTCAR(xvasp.Directory) or not KBIN::VASP_isLSCouplingOUTCAR(xvasp.Directory)) && KBIN::VASP_isStaticOUTCAR(xvasp.Directory)) {
+                KBIN::XVASP_INCAR_PREPARE_GENERIC("SPIN",xvasp,vflags,"",0,0.0,vflags.KBIN_VASP_FORCE_OPTION_SPIN.option);
+                aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));
             }
 
             aus_exec << "cd " << xvasp.Directory << endl;
@@ -4921,6 +4919,10 @@ namespace KBIN {
             aus_exec << "cat INCAR | grep -v 'LWAVE' > incar.tmp && mv incar.tmp INCAR" << endl; 
             aus_exec << "cat INCAR | grep -v 'NELM' > incar.tmp && mv incar.tmp INCAR" << endl; 
             aus_exec << "cat INCAR | grep -v 'AMIN' > incar.tmp && mv incar.tmp INCAR" << endl;  
+            aus_exec << "cat INCAR | grep -v 'AMIX' > incar.tmp && mv incar.tmp INCAR" << endl;  
+            aus_exec << "cat INCAR | grep -v 'BMIX' > incar.tmp && mv incar.tmp INCAR" << endl;  
+            aus_exec << "cat INCAR | grep -v 'AMIX_MAG' > incar.tmp && mv incar.tmp INCAR" << endl;  
+            aus_exec << "cat INCAR | grep -v 'BMIX_MAG' > incar.tmp && mv incar.tmp INCAR" << endl;  
             aus_exec << "echo \"ISTART=1                                        #FIX=" << mode << "\" >> INCAR " << endl;
             aus_exec << "echo \"ICHARG=1                                        #FIX=" << mode << "\" >> INCAR " << endl;
             aus_exec << "echo \"LWAVE = TRUE                                    #FIX=" << mode << "\" >> INCAR " << endl;
