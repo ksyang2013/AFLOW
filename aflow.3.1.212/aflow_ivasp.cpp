@@ -20,7 +20,7 @@
 // ***************************************************************************
 using aurostd::doesKeywordExist;
 using aurostd::GetLineWithKeyword;
-using aurostd::GetLineWithKeywordAndRemoveWhiteSpaces;
+using aurostd::GetLineWithKeywordAndRemoveWhiteSpaces;  // use it to deal with EDIFF =  and EDIFFG =
 using aurostd::doesKeywordExistLine;
 using aurostd::capitalizeString;
 using aurostd::getUniquePart;
@@ -2669,8 +2669,10 @@ namespace KBIN {
         ss_INCAR << aurostd::PaddedPOST("LCHARG=.TRUE.",_incarpad_)   <<  notes << endl;
 
         string strINCAR = ExtractINCARStrfromAflowIn(xvasp);
-        if (strINCAR.empty())
-            strINCAR = xvasp.INCAR_orig.str();
+        strINCAR += xvasp.INCAR_orig.str();
+        strINCAR = RemoveDuplicateLines(strINCAR);
+        //if (strINCAR.empty())
+        //    strINCAR = xvasp.INCAR_orig.str();
 
         //plays with ismear for metal (Ni), 20250423 
         if (RunType != "BANDS") {

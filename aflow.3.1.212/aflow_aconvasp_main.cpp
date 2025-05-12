@@ -1433,8 +1433,12 @@ void DEVELOP(vector<string> argv) {
     string dir = argv.at(2);
     if (1) {
         ////check OUTCAR of vasp64 version
-        //string odir = "./";
+        //string stmp = aurostd::file2string("./INCAR");
+        //cerr << stmp ;
+        //cerr << "here: " << aurostd::RemoveComments(stmp); 
         //xOUTCAR outcar("./OUTCAR");
+        string stmp = "EDIFFG = -0.01";
+        cerr << aurostd::doesKeywordExist(stmp, "EDIFF") << endl;
     }
 }
 

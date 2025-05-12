@@ -5682,6 +5682,8 @@ namespace aurostd {
         int imax; 
         string strline;
         imax=aurostd::GetNLinesString(FileContent);
+        
+        //starting from 1 and to imax when using GetLineString function (which counts from 1 to imax)
         for(int i=1;i<=imax;i++) {
             strline=aurostd::GetLineString(FileContent,i);
             if(aurostd::substring2bool(strline,keyword,TRUE)) FLAG = TRUE;
@@ -5696,6 +5698,8 @@ namespace aurostd {
         int imax; 
         string strline, ostr="";
         imax=aurostd::GetNLinesString(FileContent);
+        
+        //starting from 1 and to imax when using GetLineString function (which counts from 1 to imax)
         for(int i=1;i<=imax;i++) {
             strline=aurostd::GetLineString(FileContent,i);
             if(aurostd::substring2bool(strline,keyword,TRUE)) {
@@ -5733,6 +5737,8 @@ namespace aurostd {
         ostringstream oss; oss.str("");
         vector<string> vlines;
         int imax=aurostd::GetNLinesString(FileContent);
+        
+        //starting from 1 and to imax when using GetLineString function (which counts from 1 to imax)
         for(int i=1;i<=imax;i++) {
             strline=aurostd::GetLineString(FileContent,i);
             if(strline.length()) oss << strline << endl;
@@ -5758,6 +5764,7 @@ namespace aurostd {
         std::unordered_set<std::string> uniqueLines;
         int imax = aurostd::GetNLinesString(FileContent);
 
+        //starting from 1 and to imax when using GetLineString function (which counts from 1 to imax)
         for (int i = 1; i <= imax; i++) {
             strline = aurostd::GetLineString(FileContent, i);
             std::string unique_part = getUniquePart(strline);
@@ -5778,6 +5785,7 @@ namespace aurostd {
         std::vector<std::string> vlines;
         int imax = aurostd::GetNLinesString(FileContent);
 
+        //starting from 1 and to imax when using GetLineString function (which counts from 1 to imax)
         for (int i = 1; i <= imax; i++) {
             strline = aurostd::GetLineString(FileContent, i);
             vlines.push_back(strline);
@@ -5796,13 +5804,11 @@ namespace aurostd {
     // ***************************************************************************
     // Remove comments from oneline, including the newline breaker
     string RemoveCommentsFromLine(const std::string& strline) {
-        std::ostringstream oss;
-
-        if (!strline.empty() && strline.find('#') == std::string::npos) {
-            oss << strline; 
+        size_t pos = strline.find('#');
+        if (pos != std::string::npos) {
+            return strline.substr(0, pos);  // return part before '#'
         }
-
-        return oss.str();
+        return strline;  // no comment found
     }
 
 
