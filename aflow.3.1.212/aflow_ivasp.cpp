@@ -2690,7 +2690,7 @@ namespace KBIN {
             string str_tmp = RemoveCommentsFromLine(GetLineWithKeywordAndRemoveWhiteSpaces(strINCAR, "NELM")); 
             ss_INCAR << aurostd::PaddedPOST(str_tmp, _incarpad_) << "# Apply user-defined settings " << endl; }  
         else  
-            ss_INCAR << aurostd::PaddedPOST("NELM=120",_incarpad_)        <<  notes  << endl; //default is good since we can keep restarting
+            ss_INCAR << aurostd::PaddedPOST("NELM=90",_incarpad_)        <<  notes  << endl; //good enough since we can keep restarting
 
 
         if(vflags.KBIN_VASP_FORCE_OPTION_PREC.preserved==FALSE) {
@@ -4921,7 +4921,7 @@ namespace KBIN {
             aus_exec << "echo \"ISTART=1                                        #FIX=" << mode << "\" >> INCAR " << endl;
             aus_exec << "echo \"ICHARG=1                                        #FIX=" << mode << "\" >> INCAR " << endl;
             aus_exec << "echo \"LWAVE = TRUE                                    #FIX=" << mode << "\" >> INCAR " << endl;
-            aus_exec << "echo \"NELM=120                                        #FIX=" << mode << "\" >> INCAR " << endl;
+            aus_exec << "echo \"NELM=90                                         #FIX=" << mode << "\" >> INCAR " << endl;
             aus_exec << "echo \"AMIN=0.01                                       #FIX=" << mode << "\" >> INCAR " << endl;
             aus_exec << "echo \"AMIX     = 0.2                                  #FIX=" << mode << "\" >> INCAR " << endl;  
             aus_exec << "echo \"BMIX     = 0.0001                               #FIX=" << mode << "\" >> INCAR " << endl; 
