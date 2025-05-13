@@ -1432,6 +1432,12 @@ void DEVELOP(vector<string> argv) {
     cout << argv.at(2) << endl;
     string dir = argv.at(2);
     if (1) {
+        string stmp = "This is a ISIF test #NSW";
+        cerr << aurostd::substring2bool(stmp, "ISIF") << endl;
+        cerr << aurostd::substring2bool(stmp, "NSW") << endl;
+        cerr << aurostd::substring2bool(stmp, "#NSW") << endl;
+        cerr << aurostd::substring2bool2(stmp, "NSW") << endl;
+        cerr << aurostd::substring2bool2(stmp, "#NSW") << endl;
         ////check OUTCAR of vasp64 version
         //string stmp = aurostd::file2string("./INCAR");
         //cerr << stmp ;
@@ -1439,12 +1445,12 @@ void DEVELOP(vector<string> argv) {
         //xOUTCAR outcar("./OUTCAR");
         //string stmp = "MAGMOM=0 0 -5 0 0 -5 0 0 -5 0 0 5 0 0 5 0 0 5 0 0 5 0 0 5 0 0 5 0 0 5 0 0 5 0 0 5 0 0 5 0 0 5 0 0 5 0 0 5 0 0 5 0 0 5 0 0 5 111*0 # test";
         //cerr << aurostd::formatVaspParams(stmp) << endl;
-        string path = "./";
-        cerr << "isSpin: " << KBIN::VASP_isSpinOUTCAR(path) << endl; 
-        cerr <<  KBIN::VASP_isLSCouplingOUTCAR(path) << endl;
-        cerr <<  KBIN::VASP_isStaticOUTCAR(path) << endl;
-        cerr << ((not KBIN::VASP_isSpinOUTCAR(path) and (not KBIN::VASP_isLSCouplingOUTCAR(path))) && KBIN::VASP_isStaticOUTCAR(path)) << endl;
-        cerr << (not (KBIN::VASP_isSpinOUTCAR(path) or KBIN::VASP_isLSCouplingOUTCAR(path)) && KBIN::VASP_isStaticOUTCAR(path)) << endl;
+        //string path = "./";
+        //cerr << "isSpin: " << KBIN::VASP_isSpinOUTCAR(path) << endl; 
+        //cerr <<  KBIN::VASP_isLSCouplingOUTCAR(path) << endl;
+        //cerr <<  KBIN::VASP_isStaticOUTCAR(path) << endl;
+        //cerr << ((not KBIN::VASP_isSpinOUTCAR(path) and (not KBIN::VASP_isLSCouplingOUTCAR(path))) && KBIN::VASP_isStaticOUTCAR(path)) << endl;
+        //cerr << (not (KBIN::VASP_isSpinOUTCAR(path) or KBIN::VASP_isLSCouplingOUTCAR(path)) && KBIN::VASP_isStaticOUTCAR(path)) << endl;
 
     }
 }

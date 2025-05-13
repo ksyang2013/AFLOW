@@ -5833,8 +5833,7 @@ namespace aurostd {
 
     // ***************************************************************************
     // Remove keyword lines from file string 
-    // very serious bug in aurostd::substring2bool, which cannot not find comment "#NSW" 
-    // fix it in future
+    // Note that aurostd::substring2bool does not check comment lines (after #), like "#NSW" 
     string RemoveLineWithKeyword(const string& FileContent, const string& keyword, bool CleanBlankLine){
         string strline;
         ostringstream outstr;
