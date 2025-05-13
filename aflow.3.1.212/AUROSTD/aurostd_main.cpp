@@ -5902,6 +5902,80 @@ namespace aurostd {
         return (obj);
     }
 
+    // Trim from both ends
+    string trim(const std::string& s) {
+        auto start = s.find_first_not_of(" \t");
+        auto end = s.find_last_not_of(" \t");
+        return (start == std::string::npos) ? "" : s.substr(start, end - start + 1);
+    }
+
+    // Normalize spaces around '='
+    string normalize_equals_spacing(const std::string& line) {
+        std::regex eq_re(R"(\s*=\s*)");
+        return std::regex_replace(line, eq_re, " = ");
+    }
+
+    // Join lines into a single string
+    string join_lines(const std::vector<std::string>& lines) {
+        std::ostringstream oss;
+        for (const auto& line : lines) {
+            oss << line << '\n';
+        }
+        return oss.str();
+    }
+    
+    // ***************************************************************************
+    // Format INCAR
+    string formatVaspParams(const std::string& file_content) {
+        size_t align_width = 40;
+        std::vector<std::string> lines;
+        aurostd::string2tokens(file_content, lines, "\n");
+        std::vector<std::string> formatted_lines;
+
+        for (const std::string& raw_line : lines) {
+            std::string line = trim(raw_line);
+
+            // Block comment (starts with #)
+            if (line.rfind("#", 0) == 0) {
+                size_t second_hash = line.find('#', 1);
+                if (second_hash != std::string::npos) {
+                    std::string block_comment = trim(line.substr(0, second_hash));
+                    std::string inline_comment = trim(line.substr(second_hash));
+                    if (block_comment.length() <= align_width) {
+                        formatted_lines.emplace_back(block_comment + std::string(align_width - block_comment.length(), ' ') + " " + inline_comment);
+                    } else {
+                        formatted_lines.emplace_back(block_comment + " " + inline_comment);
+                    }
+                } else {
+                    formatted_lines.emplace_back(line);
+                }
+                continue;
+            }
+
+            // Split code/comment
+            size_t comment_pos = line.find('#');
+            std::string code = comment_pos != std::string::npos ? trim(line.substr(0, comment_pos)) : line;
+            std::string comment = comment_pos != std::string::npos ? "# " + trim(line.substr(comment_pos + 1)) : "";
+
+            // Normalize spacing
+            code = normalize_equals_spacing(code);
+
+            // Align comment if code isn't too long
+            if (!comment.empty() && code.length() <= align_width) {
+                std::ostringstream oss;
+                oss << std::left << std::setw(align_width + 1) << code << comment;
+                formatted_lines.emplace_back(oss.str());
+            } else if (!comment.empty()) {
+                formatted_lines.emplace_back(code + " " + comment);
+            } else {
+                formatted_lines.emplace_back(code);
+            }
+        }
+
+        return join_lines(formatted_lines);
+
+    }
+
 }
 // ***************************************************************************
 //KY -END

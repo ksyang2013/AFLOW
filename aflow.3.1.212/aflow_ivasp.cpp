@@ -32,6 +32,7 @@ using aurostd::SortLinesAlphabetically;
 using aurostd::RemoveCommentLines;
 using aurostd::RemoveEmptyLines;
 using aurostd::RemoveCommentsFromLine;
+using aurostd::formatVaspParams;
 
 //// ***************************************************************************
 //KESONG 2025-04-21
@@ -125,7 +126,7 @@ namespace KBIN {
         if(Krun) Krun=(Krun && aurostd::stringstream2file(xvasp.POSCAR,string(xvasp.Directory+"/POSCAR")));
         //KESONG YANG, 2025-03-29
         string stmp = RemoveEmptyLines(RemoveCommentLines(SortLinesAlphabetically(RemoveDuplicateLines(xvasp.INCAR.str())))); 
-        //string stmp = aurostd::RemoveEmptyLines(RemoveCommentLines(SortLinesAlphabetically(RemoveDuplicateLines(xvasp.INCAR.str())))); 
+        stmp = aurostd::formatVaspParams(stmp);
         if(Krun) Krun=(Krun && aurostd::string2file(stmp,string(xvasp.Directory+"/INCAR")));
         if(Krun) Krun=(Krun && aurostd::stringstream2file(xvasp.KPOINTS,string(xvasp.Directory+"/KPOINTS")));
         if(Krun) Krun=(Krun && aurostd::stringstream2file(xvasp.POTCAR,string(xvasp.Directory+"/POTCAR")));
@@ -2631,6 +2632,7 @@ namespace KBIN {
         if(vflags.KBIN_VASP_FORCE_OPTION_RELAX_TYPE.flag("IONS_CELL_VOLUME") && number>1) {  // whatever is the number
             xvasp.aopts.flag("FLAG::XVASP_INCAR_changed",FALSE);
             string stmp = RemoveCommentLines(aurostd::RemoveEmptyLines(SortLinesAlphabetically(RemoveDuplicateLines(xvasp.INCAR.str())))); 
+            stmp = aurostd::formatVaspParams(stmp);
             aurostd::string2file(stmp,string(xvasp.Directory+"/INCAR"));
         }
 
@@ -3890,6 +3892,7 @@ namespace KBIN {
         // rewrite incar
         aurostd::RemoveFile(string(xvasp.Directory+"/INCAR"));
         string stmp = aurostd::RemoveEmptyLines(RemoveCommentLines(SortLinesAlphabetically(RemoveDuplicateLines(xvasp.INCAR.str())))); 
+        stmp = aurostd::formatVaspParams(stmp);
         aurostd::string2file(stmp,string(xvasp.Directory+"/INCAR"));
     }
 }
@@ -4327,11 +4330,13 @@ namespace KBIN {
         stringstream aus_exec;
         aus_exec << "cd " << xvasp.Directory << endl;
         aus_exec << "cat vasp.out >> " << preserve_name << " " << endl;
-        aus_exec << "rm -f aflow.tmp CHG CONTCAR DOSCAR EIGENVAL IBZKPT OUTCAR OSZICAR PCDAT WAVECAR aflow.qsub* XDATCAR vasprun.xml vasp.out core* " << endl;
+        aus_exec << "rm -f aflow.tmp CHG CONTCAR DOSCAR EIGENVAL IBZKPT OUTCAR OSZICAR PCDAT aflow.qsub* XDATCAR vasprun.xml vasp.out core* " << endl;
         if(!xvasp.aopts.flag("FLAG::CHGCAR_PRESERVED")) aus_exec << "rm -f CHGCAR " << endl;
+        if(!xvasp.aopts.flag("FLAG::WAVECAR_PRESERVED")) aus_exec << "rm -f WAVECAR " << endl;
         aurostd::execute(aus_exec);
     }
 }
+
 namespace KBIN {
     void XVASP_Afix_ROTMAT(_xvasp& xvasp,int mode,bool verbose,_aflags &aflags,ofstream &FileMESSAGE) {
         // cerr << "KBIN::XVASP_Afix_ROTMAT mode=" << mode << endl;
@@ -4887,13 +4892,12 @@ namespace KBIN {
         if(mode=="CSLOSHING") {
             file_error="aflow.error.csloshing" + aurostd::utype2string(param_int);
             reload_incar=TRUE;  //if reload, then the modification of INCAR will be saved
-            //rewrite_incar=TRUE;  
+            rewrite_incar=TRUE;  
+
             if (vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme != "NORMAL") {
                 vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme="NORMAL";
                 KBIN::XVASP_INCAR_PREPARE_GENERIC("ALGO",xvasp,vflags,"",0,0.0,FALSE);//write it into INCAR first, then the modification will not be lost
-                aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));
                 
-                // fix aflowlin
                 aus_exec << "cd " << xvasp.Directory << endl;
                 aus_exec << "cat " << _AFLOWIN_ << " | sed \"s/\\[VASP_FORCE_OPTION\\]ALGO/#\\[VASP_FORCE_OPTION\\]ALGO/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl;
                 aus_exec << "cat " << _AFLOWIN_ << " | sed \"s/##\\[/#\\[/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl;
@@ -4901,22 +4905,28 @@ namespace KBIN {
                 aurostd::execute(aus_exec);
             }
 
+            //check spin, if static and not spin or soc, then turn on spin
+            if ((not KBIN::VASP_isSpinOUTCAR(xvasp.Directory) or not KBIN::VASP_isLSCouplingOUTCAR(xvasp.Directory)) && KBIN::VASP_isStaticOUTCAR(xvasp.Directory)) {
+                KBIN::XVASP_INCAR_PREPARE_GENERIC("SPIN",xvasp,vflags,"",0,0.0,vflags.KBIN_VASP_FORCE_OPTION_SPIN.option);
+                aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));
+            }
+            
             //if (param_int == 1) {
             //    if (KBIN::VASP_isStaticOUTCAR(xvasp.Directory) && not aurostd::substring_present_file_FAST(xvasp.Directory+"/INCAR","ICHARG=1")) {
             //        xvasp.aopts.flag("FLAG::CHGCAR_PRESERVED", TRUE);
             //    }
             //}
 
-            //check spin, if static and not spin or soc, then turn on spin
-            if ((not KBIN::VASP_isSpinOUTCAR(xvasp.Directory) or not KBIN::VASP_isLSCouplingOUTCAR(xvasp.Directory)) && KBIN::VASP_isStaticOUTCAR(xvasp.Directory)) {
-                KBIN::XVASP_INCAR_PREPARE_GENERIC("SPIN",xvasp,vflags,"",0,0.0,vflags.KBIN_VASP_FORCE_OPTION_SPIN.option);
-                aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));
-            }
+            vflags.KBIN_VASP_FORCE_OPTION_WAVECAR.option = 1;
+            xvasp.aopts.flag("FLAG::CHGCAR_PRESERVED", TRUE);
+            xvasp.aopts.flag("FLAG::WAVECAR_PRESERVED", TRUE);
+            KBIN::XVASP_INCAR_PREPARE_GENERIC("CHGCAR",xvasp,vflags,"",0,0.0,TRUE);
+            KBIN::XVASP_INCAR_PREPARE_GENERIC("WAVECAR",xvasp,vflags,"",0,0.0,TRUE);
+            aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));
 
             aus_exec << "cd " << xvasp.Directory << endl;
             aus_exec << "cat INCAR | grep -v 'ISTART' > incar.tmp && mv incar.tmp INCAR" << endl; 
             aus_exec << "cat INCAR | grep -v 'ICHARG' > incar.tmp && mv incar.tmp INCAR" << endl; 
-            aus_exec << "cat INCAR | grep -v 'LWAVE' > incar.tmp && mv incar.tmp INCAR" << endl; 
             aus_exec << "cat INCAR | grep -v 'NELM' > incar.tmp && mv incar.tmp INCAR" << endl; 
             aus_exec << "cat INCAR | grep -v 'AMIN' > incar.tmp && mv incar.tmp INCAR" << endl;  
             aus_exec << "cat INCAR | grep -v 'AMIX' > incar.tmp && mv incar.tmp INCAR" << endl;  
@@ -4925,8 +4935,7 @@ namespace KBIN {
             aus_exec << "cat INCAR | grep -v 'BMIX_MAG' > incar.tmp && mv incar.tmp INCAR" << endl;  
             aus_exec << "echo \"ISTART=1                                        #FIX=" << mode << "\" >> INCAR " << endl;
             aus_exec << "echo \"ICHARG=1                                        #FIX=" << mode << "\" >> INCAR " << endl;
-            aus_exec << "echo \"LWAVE = TRUE                                    #FIX=" << mode << "\" >> INCAR " << endl;
-            aus_exec << "echo \"NELM=90                                         #FIX=" << mode << "\" >> INCAR " << endl;
+            aus_exec << "echo \"NELM=90                                        #FIX=" << mode << "\" >> INCAR " << endl;
             aus_exec << "echo \"AMIN=0.01                                       #FIX=" << mode << "\" >> INCAR " << endl;
             aus_exec << "echo \"AMIX     = 0.2                                  #FIX=" << mode << "\" >> INCAR " << endl;  
             aus_exec << "echo \"BMIX     = 0.0001                               #FIX=" << mode << "\" >> INCAR " << endl; 
@@ -4946,10 +4955,12 @@ namespace KBIN {
             xvasp.INCAR_orig.str(std::string()); xvasp.INCAR_orig << xvasp.INCAR.str();
             xvasp.INCAR.str(std::string()); xvasp.INCAR << aurostd::file2string(xvasp.Directory+"/INCAR");
         }
+
         if(reload_poscar) {
             xvasp.POSCAR_orig.str(std::string()); xvasp.POSCAR_orig << xvasp.POSCAR.str();
             xvasp.POSCAR.str(std::string()); xvasp.POSCAR << aurostd::file2string(xvasp.Directory+"/POSCAR");
         }
+
         if(reload_kpoints) {
             xvasp.KPOINTS_orig.str(std::string()); xvasp.KPOINTS_orig << xvasp.KPOINTS.str();
             xvasp.KPOINTS.str(std::string()); xvasp.KPOINTS << aurostd::file2string(xvasp.Directory+"/KPOINTS");
@@ -4959,6 +4970,7 @@ namespace KBIN {
         // rewrite to restart (writing xvasp to VASP files) 
         if(rewrite_incar) { 
             string stmp = aurostd::RemoveEmptyLines(RemoveCommentLines(SortLinesAlphabetically(RemoveDuplicateLines(xvasp.INCAR.str())))); 
+            stmp = aurostd::formatVaspParams(stmp);
             aurostd::string2file(stmp,string(xvasp.Directory+"/INCAR"));
         }
 

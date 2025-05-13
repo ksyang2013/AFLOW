@@ -29,6 +29,7 @@
 #include <pthread.h>
 #include <pwd.h>
 #include <queue>
+#include <regex>
 #include <set>
 #include <sstream>
 #include <stdarg.h>
@@ -1310,6 +1311,7 @@ namespace aurostd {
     string RemoveLineWithKeyword(const string& FileContent, const vector<string>& vkeyword, bool CleanBlankLine);
     string RemoveLineWithMultipleKeywords(const string& FileContent, const string& keywords, bool CleanBlankLine);
     string GetValueOfKey(const string& FileContent, const string& keyword);
+    string formatVaspParams(const std::string& file_content);
 }
 // ***************************************************************************
 //KY 

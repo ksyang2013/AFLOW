@@ -24,6 +24,7 @@
 using aurostd::RemoveWhiteSpaces;
 using aurostd::RemoveWhiteSpacesFromTheBack;
 using aurostd::FileExist;
+using aurostd::formatVaspParams;
 
 pthread_mutex_t mutex_KVASP=PTHREAD_MUTEX_INITIALIZER;
 
@@ -1584,7 +1585,8 @@ namespace KBIN {
 
                                     
                                     // done write INCAR; KESONG 2025-03-29 
-                                    string stmp = aurostd::RemoveCommentLines(aurostd::RemoveEmptyLines(aurostd::SortLinesAlphabetically(aurostd::RemoveDuplicateLines(xvasp.INCAR.str()))));
+                                    string stmp = aurostd::RemoveEmptyLines(aurostd::RemoveCommentLines(aurostd::SortLinesAlphabetically(aurostd::RemoveDuplicateLines(xvasp.INCAR.str())))); 
+                                    stmp = aurostd::formatVaspParams(stmp);
                                     aurostd::string2file(stmp,string(xvasp.Directory+"/INCAR"));
                                     
                                     // NOW DO THE STATIC RUN

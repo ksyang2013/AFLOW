@@ -2449,7 +2449,7 @@ namespace KBIN {
   bool VASP_CheckUnconvergedOSZICAR(string dir);
   void GetStatDiel(string& outcar, xvector<double>& eigr, xvector<double>& eigi); // CAMILO
   void GetDynaDiel(string& outcar, xvector<double>& eigr, xvector<double>& eigi); // CAMILO
-  //KESONG
+  //KEYANG
   bool VASP_CheckConvergedOUTCAR(string dir);
   bool VASP_CheckUnconvergedOUTCAR(string dir);
   bool VASP_isSpinOUTCAR(string dir); 
@@ -2459,7 +2459,7 @@ namespace KBIN {
   bool VASP_CheckRelaxReachNSW(string dir);
   bool RecyclePOSCARfromCONTCAR(_xvasp& xvasp);
   string ExtractINCARStrfromAflowIn(_xvasp& xvasp);
-  //KESONG
+  //KEYANG
 }
 
 // ----------------------------------------------------------------------------
