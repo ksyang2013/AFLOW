@@ -3412,12 +3412,10 @@ namespace KBIN {
             for(int i=1;i<=imax;i++) {
                 strline=aurostd::GetLineString(FileContent,i);
                 if(
-                        // aurostd::substring2bool(strline,"ISPIND",TRUE) || 
                         aurostd::substring2bool(strline,"#ISPIND",TRUE) ||
-                        //aurostd::substring2bool(strline,"ISPIN",TRUE) 
                         aurostd::substring2bool(strline,"#ISPIN",TRUE) ||
                         ((vflags.KBIN_VASP_FORCE_OPTION_AUTO_MAGMOM.isentry && vflags.KBIN_VASP_FORCE_OPTION_AUTO_MAGMOM.option)    //corey
-                         && (aurostd::substring2bool(strline,"MAGMOM",TRUE) || aurostd::substring2bool(strline,"#MAGMOM",TRUE)))) { //corey
+                         && (aurostd::substring2bool(strline,"#MAGMOM",TRUE)))) { //corey // since spin is on, no need to remove MAGMOM; KSYANG 2025
                     xvasp.INCAR << "";
                 } else {
                     if(strline.length()) xvasp.INCAR << strline << endl;
@@ -4897,7 +4895,9 @@ namespace KBIN {
 
             if (vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme != "NORMAL") {
                 vflags.KBIN_VASP_FORCE_OPTION_ALGO.xscheme="NORMAL";
-                KBIN::XVASP_INCAR_PREPARE_GENERIC("ALGO",xvasp,vflags,"",0,0.0,FALSE);//write it into INCAR first, then the modification will not be lost
+                KBIN::XVASP_INCAR_PREPARE_GENERIC("ALGO",xvasp,vflags,"",0,0.0,FALSE); 
+                //write it into INCAR first, then the modification will not be lost
+                //option (FALSE) does not apply for ALGO, it can be either TRUE or FALSE
                 
                 aus_exec << "cd " << xvasp.Directory << endl;
                 aus_exec << "cat " << _AFLOWIN_ << " | sed \"s/\\[VASP_FORCE_OPTION\\]ALGO/#\\[VASP_FORCE_OPTION\\]ALGO/g\" > aflow.tmp && mv aflow.tmp " << _AFLOWIN_ << "" << endl;
@@ -4907,18 +4907,13 @@ namespace KBIN {
             }
 
             //check spin, if static and not spin or soc, then turn on spin
-            if ((not KBIN::VASP_isSpinOUTCAR(xvasp.Directory) or not KBIN::VASP_isLSCouplingOUTCAR(xvasp.Directory)) && KBIN::VASP_isStaticOUTCAR(xvasp.Directory)) {
+            if (not (KBIN::VASP_isSpinOUTCAR(xvasp.Directory) or KBIN::VASP_isLSCouplingOUTCAR(xvasp.Directory)) && KBIN::VASP_isStaticOUTCAR(xvasp.Directory)) {
+                vflags.KBIN_VASP_FORCE_OPTION_SPIN.option = TRUE;
                 KBIN::XVASP_INCAR_PREPARE_GENERIC("SPIN",xvasp,vflags,"",0,0.0,vflags.KBIN_VASP_FORCE_OPTION_SPIN.option);
                 aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));
             }
-            
-            //if (param_int == 1) {
-            //    if (KBIN::VASP_isStaticOUTCAR(xvasp.Directory) && not aurostd::substring_present_file_FAST(xvasp.Directory+"/INCAR","ICHARG=1")) {
-            //        xvasp.aopts.flag("FLAG::CHGCAR_PRESERVED", TRUE);
-            //    }
-            //}
 
-            vflags.KBIN_VASP_FORCE_OPTION_WAVECAR.option = 1;
+            // save CHGCAR & WAVECAR for restarting
             xvasp.aopts.flag("FLAG::CHGCAR_PRESERVED", TRUE);
             xvasp.aopts.flag("FLAG::WAVECAR_PRESERVED", TRUE);
             KBIN::XVASP_INCAR_PREPARE_GENERIC("CHGCAR",xvasp,vflags,"",0,0.0,TRUE);

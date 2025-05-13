@@ -1437,8 +1437,15 @@ void DEVELOP(vector<string> argv) {
         //cerr << stmp ;
         //cerr << "here: " << aurostd::RemoveComments(stmp); 
         //xOUTCAR outcar("./OUTCAR");
-        string stmp = "EDIFFG = -0.01";
-        cerr << aurostd::doesKeywordExist(stmp, "EDIFF") << endl;
+        //string stmp = "MAGMOM=0 0 -5 0 0 -5 0 0 -5 0 0 5 0 0 5 0 0 5 0 0 5 0 0 5 0 0 5 0 0 5 0 0 5 0 0 5 0 0 5 0 0 5 0 0 5 0 0 5 0 0 5 0 0 5 0 0 5 111*0 # test";
+        //cerr << aurostd::formatVaspParams(stmp) << endl;
+        string path = "./";
+        cerr << "isSpin: " << KBIN::VASP_isSpinOUTCAR(path) << endl; 
+        cerr <<  KBIN::VASP_isLSCouplingOUTCAR(path) << endl;
+        cerr <<  KBIN::VASP_isStaticOUTCAR(path) << endl;
+        cerr << ((not KBIN::VASP_isSpinOUTCAR(path) and (not KBIN::VASP_isLSCouplingOUTCAR(path))) && KBIN::VASP_isStaticOUTCAR(path)) << endl;
+        cerr << (not (KBIN::VASP_isSpinOUTCAR(path) or KBIN::VASP_isLSCouplingOUTCAR(path)) && KBIN::VASP_isStaticOUTCAR(path)) << endl;
+
     }
 }
 
