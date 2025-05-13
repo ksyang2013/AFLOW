@@ -4333,6 +4333,7 @@ namespace KBIN {
         aus_exec << "rm -f aflow.tmp CHG CONTCAR DOSCAR EIGENVAL IBZKPT OUTCAR OSZICAR PCDAT aflow.qsub* XDATCAR vasprun.xml vasp.out core* " << endl;
         if(!xvasp.aopts.flag("FLAG::CHGCAR_PRESERVED")) aus_exec << "rm -f CHGCAR " << endl;
         if(!xvasp.aopts.flag("FLAG::WAVECAR_PRESERVED")) aus_exec << "rm -f WAVECAR " << endl;
+        xvasp.aopts.flag("FLAG::WAVECAR_PRESERVED", FALSE);
         aurostd::execute(aus_exec);
     }
 }
@@ -4935,7 +4936,7 @@ namespace KBIN {
             aus_exec << "cat INCAR | grep -v 'BMIX_MAG' > incar.tmp && mv incar.tmp INCAR" << endl;  
             aus_exec << "echo \"ISTART=1                                        #FIX=" << mode << "\" >> INCAR " << endl;
             aus_exec << "echo \"ICHARG=1                                        #FIX=" << mode << "\" >> INCAR " << endl;
-            aus_exec << "echo \"NELM=90                                        #FIX=" << mode << "\" >> INCAR " << endl;
+            aus_exec << "echo \"NELM=5                                        #FIX=" << mode << "\" >> INCAR " << endl;
             aus_exec << "echo \"AMIN=0.01                                       #FIX=" << mode << "\" >> INCAR " << endl;
             aus_exec << "echo \"AMIX     = 0.2                                  #FIX=" << mode << "\" >> INCAR " << endl;  
             aus_exec << "echo \"BMIX     = 0.0001                               #FIX=" << mode << "\" >> INCAR " << endl; 
