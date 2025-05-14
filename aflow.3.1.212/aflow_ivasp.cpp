@@ -1797,11 +1797,11 @@ Monkhorst-Pack
                 if(TRUE) FileMESSAGE << stringKPPRA;
                 if(TRUE) {
                     aus.precision(5);
-                    aus << "00000  MESSAGE " << STRING_KPOINTS_TO_SHOW << " KPPRA routine ["
+                    aus << "00000  MESSAGE " << STRING_KPOINTS_TO_SHOW << " KPPRA routine (in unit of 2*pi) ["  //KYANG 20250514
                         << xvasp.str.kpoints_k1 << "," << xvasp.str.kpoints_k2 << "," << xvasp.str.kpoints_k3 << "]=" << xvasp.str.kpoints_k1*xvasp.str.kpoints_k2*xvasp.str.kpoints_k3 << "=["
-                        << modulus(xvasp.str.klattice(1)/((double) xvasp.str.kpoints_k1)) << ","
-                        << modulus(xvasp.str.klattice(2)/((double) xvasp.str.kpoints_k2)) << ","
-                        << modulus(xvasp.str.klattice(3)/((double) xvasp.str.kpoints_k3)) << "]   " << endl;
+                        << modulus(xvasp.str.klattice(1)/(2*pi)/((double) xvasp.str.kpoints_k1)) << ","
+                        << modulus(xvasp.str.klattice(2)/(2*pi)/((double) xvasp.str.kpoints_k2)) << ","
+                        << modulus(xvasp.str.klattice(3)/(2*pi)/((double) xvasp.str.kpoints_k3)) << "]   " << endl;
                     aurostd::PrintMessageStream(FileMESSAGE,aus,XHOST.QUIET);
                 }
                 //exit(0);
