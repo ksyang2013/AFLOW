@@ -4937,6 +4937,18 @@ namespace KBIN {
             aus_exec << "echo \"BMIX     = 0.0001                               #FIX=" << mode << "\" >> INCAR " << endl; 
             aus_exec << "echo \"AMIX_MAG = 0.8                                  #FIX=" << mode << "\" >> INCAR " << endl; 
             aus_exec << "echo \"BMIX_MAG = 0.0001                               #FIX=" << mode << "\" >> INCAR " << endl; 
+            if (param_int>=2) {
+                aus_exec << "cat INCAR | grep -v 'NELM' > incar.tmp && mv incar.tmp INCAR" << endl; 
+                aus_exec << "cat INCAR | grep -v 'AMIX' > incar.tmp && mv incar.tmp INCAR" << endl;  
+                aus_exec << "cat INCAR | grep -v 'BMIX' > incar.tmp && mv incar.tmp INCAR" << endl;  
+                aus_exec << "cat INCAR | grep -v 'AMIX_MAG' > incar.tmp && mv incar.tmp INCAR" << endl;  
+                aus_exec << "cat INCAR | grep -v 'BMIX_MAG' > incar.tmp && mv incar.tmp INCAR" << endl;  
+                aus_exec << "echo \"NELM= 200                                       #FIX=" << mode << "\" >> INCAR " << endl;
+                aus_exec << "echo \"AMIX     = 0.1                                  #FIX=" << mode << "\" >> INCAR " << endl;  
+                aus_exec << "echo \"AMIX_MAG = 0.4                                  #FIX=" << mode << "\" >> INCAR " << endl; 
+                aus_exec << "echo \"BMIX     = 0.00001                               #FIX=" << mode << "\" >> INCAR " << endl; 
+                aus_exec << "echo \"BMIX_MAG = 0.00001                               #FIX=" << mode << "\" >> INCAR " << endl; 
+            }
             aurostd::execute(aus_exec);
         }
 
