@@ -1639,7 +1639,10 @@ namespace KBIN {
                                     if(vflags.KBIN_VASP_FORCE_OPTION_RWIGS_STATIC)
                                         KBIN::XVASP_INCAR_RWIGS_Static(xvasp,vflags,FileMESSAGE,OFF);
                                     // done write INCAR
-                                    aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));
+                                    string stmp = aurostd::RemoveEmptyLines(aurostd::RemoveCommentLines(aurostd::SortLinesAlphabetically(aurostd::RemoveDuplicateLines(xvasp.INCAR.str())))); 
+                                    stmp = aurostd::formatVaspParams(stmp);
+                                    aurostd::string2file(stmp,string(xvasp.Directory+"/INCAR"));
+                                    //aurostd::stringstream2file(xvasp.INCAR,string(xvasp.Directory+"/INCAR"));
                                     if(0)  {
                                         stringstream command;
                                         command << "cd " <<  xvasp.Directory << endl;
