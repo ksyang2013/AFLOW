@@ -2672,21 +2672,10 @@ namespace KBIN {
         ss_INCAR << aurostd::PaddedPOST("LCHARG=.TRUE.",_incarpad_)   <<  notes << endl;
 
         string strINCAR = ExtractINCARStrfromAflowIn(xvasp);
-        strINCAR += xvasp.INCAR_orig.str();
+        //strINCAR += xvasp.INCAR_orig.str();
         strINCAR = RemoveDuplicateLines(strINCAR);
         //if (strINCAR.empty())
         //    strINCAR = xvasp.INCAR_orig.str();
-
-        ////plays with ismear for metal (Ni), 20250423 
-        //if (RunType != "BANDS") {
-        //    if (aurostd::substring2bool(strINCAR, "ISMEAR", TRUE)) {
-        //        string str_tmp =  GetLineWithKeyword(strINCAR, "ISMEAR");
-        //        ss_INCAR << aurostd::PaddedPOST(str_tmp, _incarpad_) << endl; }
-
-        //    if (aurostd::substring2bool(strINCAR, "SIGMA", TRUE)) {
-        //        string str_tmp =  GetLineWithKeyword(strINCAR, "SIGMA");
-        //        ss_INCAR << aurostd::PaddedPOST(str_tmp, _incarpad_) << endl; }
-        //}
 
         if (aurostd::substring2bool(strINCAR, "NELM")) {
             string str_tmp = RemoveCommentsFromLine(GetLineWithKeywordAndRemoveWhiteSpaces(strINCAR, "NELM")); 
@@ -2725,12 +2714,25 @@ namespace KBIN {
             ss_INCAR << aurostd::PaddedPOST("ISMEAR=0",_incarpad_)    <<  notes  << endl; 
             ss_INCAR << aurostd::PaddedPOST("SIGMA=0.1",_incarpad_)    <<  notes  << endl; 
         } else {
-            ss_INCAR << aurostd::PaddedPOST(GetLineWithKeyword(strINCAR, "ISMEAR"), _incarpad_) << endl;
-            ss_INCAR << aurostd::PaddedPOST(GetLineWithKeyword(strINCAR, "SIGMA"), _incarpad_) << endl;
+            if (aurostd::substring2bool(strINCAR, "ISMEAR", TRUE)) {
+                string str_tmp =  GetLineWithKeyword(strINCAR, "ISMEAR");
+                ss_INCAR << aurostd::PaddedPOST(str_tmp, _incarpad_) << endl; 
+            } else {
+                ss_INCAR << aurostd::PaddedPOST("ISMEAR=-5",_incarpad_)    <<  notes  << endl;
+            }
 
-    }
+            if (aurostd::substring2bool(strINCAR, "SIGMA", TRUE)) {
+                string str_tmp =  GetLineWithKeyword(strINCAR, "SIGMA");
+                ss_INCAR << aurostd::PaddedPOST(str_tmp, _incarpad_) << endl; 
+            } else {
+                ss_INCAR << aurostd::PaddedPOST("SIGMA=0.05",_incarpad_)    <<  notes  << endl; 
+            }
+            //    ss_INCAR << aurostd::PaddedPOST(GetLineWithKeyword(strINCAR, "ISMEAR"), _incarpad_) << endl;
+            //    ss_INCAR << aurostd::PaddedPOST(GetLineWithKeyword(strINCAR, "SIGMA"), _incarpad_) << endl;
 
-    xvasp.INCAR << RemoveDuplicateLines(aurostd::RemoveEmptyLines(ss_INCAR.str())) << endl;
+        }
+
+        xvasp.INCAR << RemoveDuplicateLines(aurostd::RemoveEmptyLines(ss_INCAR.str())) << endl;
 }
 }
 
@@ -2744,7 +2746,7 @@ namespace KBIN {
         xvasp.INCAR.str(std::string());
         xvasp.aopts.flag("FLAG::XVASP_INCAR_changed",TRUE);
         vector<string> vkey; 
-        string stag = "IBRION; NSW; ISIF; NELM; NELMIN";
+        string stag = "IBRION; NSW; ISIF; NELM; NELMIN;ISMEAR,SIGMA";
         aurostd::string2tokens(stag, vkey, ";");
         string stmp =  aurostd::RemoveLineWithKeyword(FileContent, vkey, true);
         xvasp.INCAR << aurostd::RemoveEmptyLines(stmp);  //remove empty line but not remove "\n" 
@@ -2886,7 +2888,7 @@ namespace KBIN {
         else {
             if(vflags.KBIN_VASP_FORCE_OPTION_RELAX_MODE.xscheme=="ENERGY"){
                 stringstream stmp;
-                double dvalue_EDIFFG = 1E-6*xvasp.str.atoms.size()*0.9;
+                double dvalue_EDIFFG = 1E-6*xvasp.str.atoms.size();
                 stmp << std::scientific << std::setprecision(0) << std::uppercase << dvalue_EDIFFG;
                 xvasp.INCAR << aurostd::PaddedPOST("EDIFFG=" + stmp.str(), _incarpad_) << "# 0.001meV/atom [PREC=ACCURATE] " << endl;
             }
