@@ -2746,7 +2746,7 @@ namespace KBIN {
         xvasp.INCAR.str(std::string());
         xvasp.aopts.flag("FLAG::XVASP_INCAR_changed",TRUE);
         vector<string> vkey; 
-        string stag = "IBRION; NSW; ISIF; NELM; NELMIN;ISMEAR,SIGMA";
+        string stag = "IBRION; NSW; ISIF; NELM; NELMIN;ISMEAR; SIGMA";
         aurostd::string2tokens(stag, vkey, ";");
         string stmp =  aurostd::RemoveLineWithKeyword(FileContent, vkey, true);
         xvasp.INCAR << aurostd::RemoveEmptyLines(stmp);  //remove empty line but not remove "\n" 
