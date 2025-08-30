@@ -824,7 +824,7 @@ BIN_b2 = /ocean/projects/dmr210002p/shared/bin
 ################################################################################################
 install: all
 	cp -f aflow $(BIN)/aflow.$(VERSNUMBER).$(DAY) 
-	cp -f aflow_data  $(BIN)/
+	#cp -f aflow_data  $(BIN)/
 	ls -las $(BIN)/aflow*
 	rm -f $(BIN)/aflow 
 	ln -s $(BIN)/aflow.$(VERSNUMBER).$(DAY)	 $(BIN)/aflow
