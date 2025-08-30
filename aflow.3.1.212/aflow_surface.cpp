@@ -1197,6 +1197,7 @@ namespace slab {
 namespace slab {
   xstructure MAKE_SLAB(string options,istream& cin) {
     xstructure str_in(cin,IOAFLOW_AUTO);
+    str_in.title = aurostd::RemoveCharacter(str_in.title, '\r');  //Fixes bug 2025-08-29, KESONG
     xstructure str_out("");
     str_out=MAKE_SLAB(options,str_in);
     //MAKE_SLAB(options,str_in);

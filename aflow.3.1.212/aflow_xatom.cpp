@@ -2047,6 +2047,7 @@ ostream& operator<<(ostream& oss,const xstructure& a) { // operator<<
         if(a_iomode==IOVASP_POSCAR)  oss << a.title <<endl; // << " (POSCAR) " << endl;
         if(a_iomode==IOVASP_ABCCAR)  oss << a.title <<endl; // << " (ABCCAR) " << endl;
         if(a_iomode==IOVASP_WYCKCAR) oss << a.title <<endl; // << " (WYCKCAR) " << endl;
+
         if(a.neg_scale==FALSE) {
             oss.precision(6);  // DANE
             oss << a.scale; // << endl; // CO 170630
