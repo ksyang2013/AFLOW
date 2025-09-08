@@ -2590,10 +2590,11 @@ namespace KBIN {
                 //static or already reached accuracy in relax
                 xwarning.flag("IBZKPT", (!reachedAccuracy) &&
                             aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","VERY BAD NEWS! internal error in subroutine IBZKPT") && 
-                            (!aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Tetrahedron method fails for NKPT<4.")));
+                            (!aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Tetrahedron method fails")));
 
-                xwarning.flag("IBZKPT_KNPT", (aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Tetrahedron method fails for NKPT<4.")) ||
-                        (aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","IBZKPT: tetrahedron method fails for NKPT<4")));  //KESONG, 2025-03-30, VASP64 format
+                xwarning.flag("IBZKPT_KNPT", (aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","Tetrahedron method fails")) ||
+                        (aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","IBZKPT: tetrahedron method fails")) ||  //KESONG, 2025-03-30, VASP64 format
+                        (aurostd::substring_present_file_FAST(xvasp.Directory+"/vasp.out","BZINTS: Tetrahedron method fails")));  //KESONG, 2025-09-08, VASP64 format
 
                 // No need to fix this
                 //xwarning.flag("EDDRMM", (!reachedAccuracy) &&
