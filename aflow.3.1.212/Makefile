@@ -842,7 +842,7 @@ install_tscc: all
 	$(MAKE) check
 install_expanse: all
 	cp -f aflow $(BIN_expanse)/aflow.$(VERSNUMBER).$(DAY)
-	cp -f aflow_data  $(BIN_expanse)/
+	#cp -f aflow_data  $(BIN_expanse)/
 	ls -las $(BIN_expanse)/aflow*
 	rm -f $(BIN_expanse)/aflow 
 	ln -s $(BIN_expanse)/aflow.$(VERSNUMBER).$(DAY)	 $(BIN_expanse)/aflow
