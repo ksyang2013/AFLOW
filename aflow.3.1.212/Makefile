@@ -190,7 +190,7 @@ SQLITE_OBJ             = $(SQLITE_C:.c=.o)	#CO 170614
 OBJS_ALL= aflow.o $(AUROSTD_OBJ) $(AFLOW_CLASS_OBJ) $(AFLOW_FUNCS_OBJ) $(PFLOW_FUNCS_OBJ) $(ESTRUCTURE_FUNCS_OBJ) $(POCCUPATION_FUNCS_OBJ) $(APENNSY_FUNCS_OBJ) $(AUROSTD) $(LIBRARIES_FUNCS_OBJ) aflow_mix_experiments.o $(CONTRIB_FUNCS_OBJ) aflowlib_webapp_entry.cpp aflowlib_webapp_bands.cpp $(AFLOWLIB_OBJ) $(AGL_OBJ) $(AEL_OBJ) $(APL_OBJ) ${COMPARE_FUNCS_DH_OBJ} $(CHULL_OBJ) $(POCC_OBJ) $(SQLITE_OBJ) ${COMPARE_FUNCS_DH_OBJ} $(CHULL_OBJ) $(POCC_OBJ) $(SQLITE_OBJ) \
 #		  $(ANRL_OBJ) 
 
-all: aflow #aflow_data 
+all: aflow aflow_data 
 	$(MAKE) check
 aflow: $(OBJS_ALL) Makefile 
 #	$(CPP) $(LIBS_AFLOW) -o aflow *.o $(LIB_MKL) $(LIBS_AFLOW)
@@ -824,7 +824,7 @@ BIN_b2 = /ocean/projects/dmr210002p/shared/bin
 ################################################################################################
 install: all
 	cp -f aflow $(BIN)/aflow.$(VERSNUMBER).$(DAY) 
-	#cp -f aflow_data  $(BIN)/
+	cp -f aflow_data  $(BIN)/
 	ls -las $(BIN)/aflow*
 	rm -f $(BIN)/aflow 
 	ln -s $(BIN)/aflow.$(VERSNUMBER).$(DAY)	 $(BIN)/aflow
@@ -842,7 +842,7 @@ install_tscc: all
 	$(MAKE) check
 install_expanse: all
 	cp -f aflow $(BIN_expanse)/aflow.$(VERSNUMBER).$(DAY)
-	#cp -f aflow_data  $(BIN_expanse)/
+	cp -f aflow_data  $(BIN_expanse)/
 	ls -las $(BIN_expanse)/aflow*
 	rm -f $(BIN_expanse)/aflow 
 	ln -s $(BIN_expanse)/aflow.$(VERSNUMBER).$(DAY)	 $(BIN_expanse)/aflow
