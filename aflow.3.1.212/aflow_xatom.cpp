@@ -2348,7 +2348,6 @@ ostream& operator<<(ostream& oss,const xstructure& a) { // operator<<
         const std::string pseudo_dir = "./"; // Directory for pseudopotential files
         const std::string outdir = "./out";  // Output directory
         const std::string prefix = "qe_calc"; // Prefix for output files
-        const int kpoints[3] = {6, 6, 6};    // Default k-point grid (Monkhorst-Pack)
         const double ecutwfc = 40.0;         // Wavefunction cutoff (Ry)
         const double ecutrho = 320.0;        // Charge density cutoff (Ry)
 
@@ -2444,9 +2443,20 @@ ostream& operator<<(ostream& oss,const xstructure& a) { // operator<<
         }
         
         // --- K_POINTS (automatic Monkhorst-Pack grid) ---
+        int kpoints[3] = {6, 6, 6};    // Default k-point grid (Monkhorst-Pack) 
+        double ksep = 0.04 * 2 * Pi_r;      // Added by Prof. YANG; 2026-04-08 for NANO115L 2026
+                                            // https://www.tcm.phy.cam.ac.uk/castep/documentation/WebHelp/content/modules/castep/dlgcastepelecoptkpoints.htm
+
+        xvector<double> data(6);
+        data=Getabc_angles(a.klattice,DEGREES);
+        data(1)*=a.scale;data(2)*=a.scale;data(3)*=a.scale;
+
+        kpoints[0] = data(1)/ksep;
+        kpoints[1] = data(2)/ksep;
+        kpoints[2] = data(3)/ksep;
+
         oss << "K_POINTS (automatic)" << std::endl;
         oss << kpoints[0] << " " << kpoints[1] << " " << kpoints[2] << " 0 0 0" << std::endl;
-
 
         oss << "! AFLOW::QE END " << endl;
         return oss;
