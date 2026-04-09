@@ -7139,7 +7139,26 @@ namespace pflow {
 	  << modulus(str.klattice(3))/str.kpoints_k3 << "]" << endl;
       oss << kintro << "KPPRA     = " << str.kpoints_kppra << " (found) " << endl;
       // oss << kintro << "next line for automatic scripting (with cat POSCAR | aflow --kpoints | grep -i AUTO | sed \"s/AUTO//g\")" << endl;
-      oss << kintro << "KPOINTS   = " << str.kpoints_k1 << " " << str.kpoints_k2 << " " << str.kpoints_k3 <<endl;
+      //oss << kintro << "KPOINTS   = " << str.kpoints_k1 << " " << str.kpoints_k2 << " " << str.kpoints_k3 <<endl;
+      
+      // KS YANG 2026
+      //Re-assign kpoints using ksep
+      oss << endl << " ------------------------------- " << endl; // Yang 2026-04-08
+      oss << " KPOINTS generated using ksep = 0.04 (default) " << endl; // Yang 2026-04-08
+      int kpoints[3] = {6, 6, 6};    // Default k-point grid (Monkhorst-Pack) 
+      double ksep = 0.04 * 2 * Pi_r;      // Added by Prof. YANG; 2026-04-08 for NANO115L 2026
+                                          // https://www.tcm.phy.cam.ac.uk/castep/documentation/WebHelp/content/modules/castep/dlgcastepelecoptkpoints.htm
+
+      xvector<double> data(6);
+      data=Getabc_angles(str.klattice,DEGREES);
+      data(1)*=str.scale;data(2)*=str.scale;data(3)*=str.scale;
+
+      kpoints[0] = data(1)/ksep;
+      kpoints[1] = data(2)/ksep;
+      kpoints[2] = data(3)/ksep;
+
+      oss << kintro << "KPOINTS   = " << kpoints[0] << " " << kpoints[1] << " " << kpoints[2] << endl;
+      
       if(LDEBUG) cerr << "pflow::KPOINTS: END" << endl;
       return str;
     }
