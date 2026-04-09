@@ -7138,8 +7138,8 @@ namespace pflow {
 	  << modulus(str.klattice(2))/str.kpoints_k2 << ","
 	  << modulus(str.klattice(3))/str.kpoints_k3 << "]" << endl;
       oss << kintro << "KPPRA     = " << str.kpoints_kppra << " (found) " << endl;
-      // oss << kintro << "next line for automatic scripting (with cat POSCAR | aflow --kpoints | grep -i AUTO | sed \"s/AUTO//g\")" << endl;
-      //oss << kintro << "KPOINTS   = " << str.kpoints_k1 << " " << str.kpoints_k2 << " " << str.kpoints_k3 <<endl;
+      //oss << kintro << "next line for automatic scripting (with cat POSCAR | aflow --kpoints | grep -i AUTO | sed \"s/AUTO//g\")" << endl;
+      oss << kintro << "KPOINTS   = " << str.kpoints_k1 << " " << str.kpoints_k2 << " " << str.kpoints_k3 <<endl;
       
       // KS YANG 2026
       //Re-assign kpoints using ksep
